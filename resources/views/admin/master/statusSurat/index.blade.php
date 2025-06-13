@@ -31,7 +31,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Sopir</h4>
+                    <h4 class="card-title">Master Status Surat</h4>
                 </div>
                 <div class="card-body">
                     <button type="button" id="btn-add" class="btn btn-primary btn-md">
@@ -42,8 +42,7 @@
                             <thead>
                                 <tr>
                                     <th width="40px">No</th>
-                                    <th>Nama Sopir</th>
-                                    <th>Kontak</th>
+                                    <th>Status</th>
                                     <th width="80px">Aksi</th>
                                 </tr>
                             </thead>
@@ -58,7 +57,7 @@
 <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-            <form id="form-data" method="post" action="{{ route('admin.master.sopir.store') }}">
+            <form id="form-data" method="post" action="{{ route('admin.master.statusSurat.store') }}">
               @csrf
               <input type="hidden" name="key" class="form-control" id="key-form">
                 <div class="modal-header">
@@ -66,12 +65,8 @@
                 </div>
                 <div class="modal-body" id="modal-body">
                     <div class="form-group">
-                        <label for="nama-form">Nama sopir</label>
-                        <input type="text" name="nama" class="form-control" id="nama-form" placeholder="Masukan Nama sopir" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="kontak-form">Kontak sopir</label>
-                        <input type="text" name="kontak" class="form-control" id="kontak-form" placeholder="Masukan Kontak sopir" required/>
+                        <label for="status-form">Status Surat</label>
+                        <input type="text" name="status" class="form-control" id="status-form" placeholder="Masukan status" required/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -87,73 +82,39 @@
 @section('js')
 <script>
     var dt;
-    var $gudangForm = $("#id_gudang-form");
-    var $supplierForm = $("#id_sopir-form");
     $(document).ready(function() {
-
-        $gudangForm.select2({
-            placeholder: "Pilih Sopir",
-            language: "id",
-            ajax: {
-                url: "{{route('admin.getSelectsopir')}}",
-                dataType: 'json',
-                delay: 500,
-                cache: true,
-                data: function (params) {
-                    return {
-                        search: params.term
-                    };
-                },
-                processResults: function (res) {
-                    return {
-                        results: $.map(res.data, function (item) {
-                            return {
-                                id: `${item.id}`,
-                                text: `${item.nama}`
-                            };
-                        })
-                    };
-                },
-                error: function (err, textStatus, errorThrown) {
-                    var message = err.responseJSON.message;
-                    notif("danger", "fas fa-exclamation", "Notifikasi Error", message, "error");
-                }
-            }
-        });
 
         dt = $("#table-data").DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.master.sopir.scopeData') }}",
+                url: "{{ route('admin.master.statusSurat.scopeData') }}",
                 type: "post"
             },
             columns: [
                 { data: "DT_RowIndex", name: "DT_RowIndex", searchable: "false", orderable: "false" },
-                { data: "nama", name: "nama" },
-                { data: "kontak", name: "kontak" },
+                { data: "status", name: "status" },
                 { data: "action", name: "action", searchable: "false", orderable: "false" }
             ],
             order: [[ 1, "asc" ]],
         });
 
         $("#btn-add").on("click",function(){
-            $("#modalDataLabel").text("Tambah Data sopir");
+            $("#modalDataLabel").text("Tambah Status");
             $("#modalData").modal("show");
         });
 
         $("body").on("click",".btn-edit",function(){
-            $("#modalDataLabel").text("Ubah Data sopir");
+            $("#modalDataLabel").text("Ubah Status Surat");
             formLoading("#form-data","#modal-body",true);
             let key = $(this).data("key");
             $.ajax({
-                url: "{{ route('admin.master.sopir.detail') }}",
+                url: "{{ route('admin.master.statusSurat.detail') }}",
                 type: "POST",
                 data: {key:key},
                 success:function(res){
                     $("#key-form").val(key);
                     $.each(res.data,function(k,v){
-                        console.log(res.data);
                         $(`#${k}-form`).val(v).trigger("change");
                     });
                 },
@@ -190,7 +151,7 @@
                 if (willDelete) {
                     notifLoading("Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                     $.ajax({
-                        url: "{{ route('admin.master.sopir.destroy') }}",
+                        url: "{{ route('admin.master.statusSurat.destroy') }}",
                         type: "POST",
                         data: {key:key},
                         success:function(res){

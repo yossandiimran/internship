@@ -31,7 +31,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">tempat</h4>
+                    <h4 class="card-title">Master Divisi</h4>
                 </div>
                 <div class="card-body">
                     <button type="button" id="btn-add" class="btn btn-primary btn-md">
@@ -42,9 +42,8 @@
                             <thead>
                                 <tr>
                                     <th width="40px">No</th>
-                                    <th>Nama tempat</th>
-                                    <th>Keterangan</th>
-                                    <th>Foto</th>
+                                    <th>Divisi</th>
+                                    <th>Lokasi</th>
                                     <th width="80px">Aksi</th>
                                 </tr>
                             </thead>
@@ -59,7 +58,7 @@
 <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-            <form id="form-data" method="post" action="{{ route('admin.master.tempat.store') }}">
+            <form id="form-data" method="post" action="{{ route('admin.master.divisi.store') }}">
               @csrf
               <input type="hidden" name="key" class="form-control" id="key-form">
                 <div class="modal-header">
@@ -67,16 +66,12 @@
                 </div>
                 <div class="modal-body" id="modal-body">
                     <div class="form-group">
-                        <label for="nama_tempat-form">Nama tempat</label>
-                        <input type="text" name="nama_tempat" class="form-control" id="nama_tempat-form" placeholder="Masukan Nama tempat" required autocomplete="off" />
+                        <label for="divisi-form">Divisi</label>
+                        <input type="text" name="divisi" class="form-control" id="divisi-form" placeholder="Masukan divisi" required/>
                     </div>
                     <div class="form-group">
-                        <label for="keterangan-form">Keterangan</label>
-                        <textarea name="keterangan" class="form-control" id="keterangan-form" required> </textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="foto-form">Foto Tempat</label>
-                        <input type="file" name="foto" class="form-control" id="foto-form" required/>
+                        <label for="lokasi-form">Lokasi</label>
+                        <input type="text" name="lokasi" class="form-control" id="lokasi-form" placeholder="Masukan Nomor Polisi" required/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -98,40 +93,35 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.master.tempat.scopeData') }}",
+                url: "{{ route('admin.master.divisi.scopeData') }}",
                 type: "post"
             },
             columns: [
                 { data: "DT_RowIndex", name: "DT_RowIndex", searchable: "false", orderable: "false" },
-                { data: "nama_tempat", name: "nama_tempat" },
-                { data: "keterangan", name: "keterangan" },
-                { data: "foto", name: "foto" },
+                { data: "divisi", name: "divisi" },
+                { data: "lokasi", name: "lokasi" },
                 { data: "action", name: "action", searchable: "false", orderable: "false" }
             ],
             order: [[ 1, "asc" ]],
         });
 
         $("#btn-add").on("click",function(){
-            $("#modalDataLabel").text("Tambah Data tempat");
+            $("#modalDataLabel").text("Tambah Divisi");
             $("#modalData").modal("show");
         });
 
         $("body").on("click",".btn-edit",function(){
-            $("#modalDataLabel").text("Ubah Data tempat");
+            $("#modalDataLabel").text("Ubah Divisi");
             formLoading("#form-data","#modal-body",true);
             let key = $(this).data("key");
             $.ajax({
-                url: "{{ route('admin.master.tempat.detail') }}",
+                url: "{{ route('admin.master.divisi.detail') }}",
                 type: "POST",
                 data: {key:key},
                 success:function(res){
                     $("#key-form").val(key);
                     $.each(res.data,function(k,v){
-                        console.log(res.data);
-                        // console.log('#${k}-form')
-                        if(`#${k}-form` != '#foto-form'){
-                            $(`#${k}-form`).val(v).trigger("change");
-                        }
+                        $(`#${k}-form`).val(v).trigger("change");
                     });
                 },
                 error:function(err, status, message){
@@ -167,7 +157,7 @@
                 if (willDelete) {
                     notifLoading("Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                     $.ajax({
-                        url: "{{ route('admin.master.tempat.destroy') }}",
+                        url: "{{ route('admin.master.divisi.destroy') }}",
                         type: "POST",
                         data: {key:key},
                         success:function(res){

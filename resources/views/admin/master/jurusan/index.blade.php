@@ -31,7 +31,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Bus</h4>
+                    <h4 class="card-title">Master Jurusan</h4>
                 </div>
                 <div class="card-body">
                     <button type="button" id="btn-add" class="btn btn-primary btn-md">
@@ -42,13 +42,7 @@
                             <thead>
                                 <tr>
                                     <th width="40px">No</th>
-                                    <th>Bus</th>
-                                    <th>Nomor Polisi</th>
-                                    <th>Jumlah Kursi</th>
-                                    <th>Tarif</th>
-                                    <th>Sopir</th>
-                                    <th>Status</th>
-                                    <th>Foto</th>
+                                    <th>Jurusan</th>
                                     <th width="80px">Aksi</th>
                                 </tr>
                             </thead>
@@ -63,7 +57,7 @@
 <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-            <form id="form-data" method="post" action="{{ route('admin.master.bus.store') }}">
+            <form id="form-data" method="post" action="{{ route('admin.master.jurusan.store') }}">
               @csrf
               <input type="hidden" name="key" class="form-control" id="key-form">
                 <div class="modal-header">
@@ -71,43 +65,8 @@
                 </div>
                 <div class="modal-body" id="modal-body">
                     <div class="form-group">
-                        <label for="bus-form">Nama bus</label>
-                        <input type="text" name="bus" class="form-control" id="bus-form" placeholder="Masukan bus" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_sopir-form">Sopir</label>
-                        <select name="id_sopir" class="form-control" id="id_sopir-form"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="nopol-form">Nomor Polisi</label>
-                        <input type="text" name="nopol" class="form-control" id="nopol-form" placeholder="Masukan Nomor Polisi" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="jumlah_kursi-form">Jumlah Kursi</label>
-                        <input type="number" name="jumlah_kursi" class="form-control" id="jumlah_kursi-form" placeholder="Masukan Jumlah Kursi" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="tarif-form">Tarif Bus</label>
-                        <input type="number" name="tarif" class="form-control" id="tarif-form" placeholder="Masukan Tarif Bus" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="type_bus-form">Tipe Bus</label>
-                        <!-- <input type="text" name="type_bus" class="form-control" id="type_bus-form" placeholder="Masukan Tarif Bus" required/> -->
-                        <select name="type_bus" class="form-control" id="type_bus-form">
-                            <option value="Ekonomi">Ekonomi</option>
-                            <option value="Bisnis">Bisnis</option>
-                            <option value="Eksekutif">Eksekutif</option>
-                        </select>
-                         
-                    </div>
-                    <div class="form-group">
-                        <label for="keterangan-form">Keterangan</label>
-                        <textarea name="keterangan" class="form-control" id="keterangan-form" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="foto-form">Foto Bus</label>
-                        <input type="file" name="foto" class="form-control" id="foto-form"/>
-                         
+                        <label for="jurusan-form">jurusan</label>
+                        <input type="text" name="jurusan" class="form-control" id="jurusan-form" placeholder="Masukan jurusan" required/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -123,83 +82,40 @@
 @section('js')
 <script>
     var dt;
-    var $sopirForm = $("#id_sopir-form");
     $(document).ready(function() {
-
-        $sopirForm.select2({
-            placeholder: "Pilih Sopir",
-            language: "id",
-            ajax: {
-                url: "{{route('admin.getSelectsopir')}}",
-                dataType: 'json',
-                delay: 500,
-                cache: true,
-                data: function (params) {
-                    return {
-                        search: params.term
-                    };
-                },
-                processResults: function (res) {
-                    return {
-                        results: $.map(res.data, function (item) {
-                            return {
-                                id: `${item.id}`,
-                                text: `${item.nama}`
-                            };
-                        })
-                    };
-                },
-                error: function (err, textStatus, errorThrown) {
-                    var message = err.responseJSON.message;
-                    notif("danger", "fas fa-exclamation", "Notifikasi Error", message, "error");
-                }
-            }
-        });
 
         dt = $("#table-data").DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.master.bus.scopeData') }}",
+                url: "{{ route('admin.master.jurusan.scopeData') }}",
                 type: "post"
             },
             columns: [
                 { data: "DT_RowIndex", name: "DT_RowIndex", searchable: "false", orderable: "false" },
-                { data: "bus", name: "bus" },
-                { data: "nopol", name: "nopol" },
-                { data: "jumlah_kursi", name: "jumlah_kursi" },
-                { data: "tarif", name: "tarif" },
-                { data: "sopir", name: "sopir" },
-                { data: "status", name: "status" },
-                { data: "foto", name: "foto" },
+                { data: "jurusan", name: "jurusan" },
                 { data: "action", name: "action", searchable: "false", orderable: "false" }
             ],
             order: [[ 1, "asc" ]],
         });
 
         $("#btn-add").on("click",function(){
-            $("#modalDataLabel").text("Tambah Data Bus");
+            $("#modalDataLabel").text("Tambah jurusan");
             $("#modalData").modal("show");
         });
 
         $("body").on("click",".btn-edit",function(){
-            $("#modalDataLabel").text("Ubah Data bus");
+            $("#modalDataLabel").text("Ubah jurusan");
             formLoading("#form-data","#modal-body",true);
             let key = $(this).data("key");
             $.ajax({
-                url: "{{ route('admin.master.bus.detail') }}",
+                url: "{{ route('admin.master.jurusan.detail') }}",
                 type: "POST",
                 data: {key:key},
                 success:function(res){
                     $("#key-form").val(key);
                     $.each(res.data,function(k,v){
-                        console.log(res.data);
-                        if(k == 'id_sopir' && v !== '-'){
-                            $sopirForm.append(`<option value="${v}" selected="selected">${res.data.sopir.nama}</option>`);
-                        }
-                        if(`#${k}-form` != '#foto-form'){
-                            $(`#${k}-form`).val(v).trigger("change");
-                        }
+                        $(`#${k}-form`).val(v).trigger("change");
                     });
                 },
                 error:function(err, status, message){
@@ -235,7 +151,7 @@
                 if (willDelete) {
                     notifLoading("Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                     $.ajax({
-                        url: "{{ route('admin.master.bus.destroy') }}",
+                        url: "{{ route('admin.master.jurusan.destroy') }}",
                         type: "POST",
                         data: {key:key},
                         success:function(res){

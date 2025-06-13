@@ -4,54 +4,49 @@ namespace App\Http\Controllers\Admin\Master;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\MasterTempat;
+use App\Models\MasterJurusan;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use DataTables;
 use Validator;
-use Illuminate\Support\Facades\Storage;
 
-class MasterTempatController extends Controller
+class MasterJurusanController extends Controller
 {
     /**
-     * Return sap tempat settings view
+     * Return sap bus settings view
      */
     public function index()
     {
-        return view('admin.master.tempat.index');
+        return view('admin.master.jurusan.index');
     }
 
     /**
-     * Return sap tempat data for datatables
+     * Return sap bus data for datatables
      */
     public function scopeData(Request $req)
     {
-        $data = MasterTempat::select('*');
+        $data = MasterJurusan::select('*');
         return DataTables::of($data)
                 ->addIndexColumn()
                 ->removeColumn('id')
-                ->addColumn('foto', function($val) {
-                    $url = asset('storage/' . $val->foto);
-                    return '<img src="'.$url.'" width="100">';
-                })
                 ->addColumn('action', function($val) {
-                    $key = encrypt("tempat".$val->id);
+                    $key = encrypt("jurusan".$val->id);
                     return '<div class="btn-group">'.
                                 '<button class="btn btn-warning btn-sm btn-edit" data-key="'.$key.'" title="Ubah Data"><i class="fas fa-pen"></i></button>'.
                                 '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>'.
                             '</div>';
                 })
-                ->rawColumns(['action', 'foto'])
+                ->rawColumns(['action', 'foto', 'status'])
                 ->make(true);
     }
 
     /**
-     * Return sap tempat settings detail
+     * Return sap bus settings detail
      */
     public function detail(Request $req)
     {
         try {
-            $key = str_replace("tempat", "", decrypt($req->key));
-            $data = MasterTempat::select('*')->whereId($key)->firstOrFail();
+            $key = str_replace("jurusan", "", decrypt($req->key));
+            $data = MasterJurusan::select('*')->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
@@ -62,51 +57,39 @@ class MasterTempatController extends Controller
 
 
     /**
-     * Store create or update sap tempat settings
+     * Store create or update sap bus settings
      */
     public function store(Request $req)
     {
         $pwRules = 'nullable';
-
       
         $validator = Validator::make($req->input(), [
             'key' => 'nullable|string',
-            'nama_tempat' => 'required|string',
-            'keterangan' => 'required|string',
-            // 'foto' => 'required|file',
+            'jurusan' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return $this->sendError("Error validation", $validator->errors());
         }
 
-        if($req->file('foto')){
-            $foto = $req->file('foto')->store('uploads', 'public');
-        }
-
         try {
             if(empty($req->key)){
                 // Create Data
-                $data = MasterTempat::create([
-                    'nama_tempat' => $req->nama_tempat,
-                    'keterangan' => $req->keterangan,
-                    'foto' => $foto
+                $data = MasterJurusan::create([
+                    'jurusan' => $req->jurusan,
                 ]);
                 // Save Log
             } else {
                 // Validation
-                $key = str_replace("tempat", "", decrypt($req->key));
-                $data = MasterTempat::findOrFail($key);
+                $key = str_replace("jurusan", "", decrypt($req->key));
+                $data = MasterJurusan::findOrFail($key);
 
-                // Cek Foto
                 if(!$req->file('foto')){
                     $foto = $data->foto;
                 }
                 // Update Data
                 $data->update([
-                    'nama_tempat' => $req->nama_tempat,
-                    'keterangan' => $req->keterangan,
-                    'foto' => $foto
+                    'jurusan' => $req->jurusan,
                 ]);
             }
             return $this->sendResponse(null, "Berhasil memproses data.");
@@ -121,8 +104,8 @@ class MasterTempatController extends Controller
     {
         try {
             // Validation
-            $key = str_replace("tempat", "", decrypt($req->key));
-            $data = MasterTempat::findOrFail($key);
+            $key = str_replace("jurusan", "", decrypt($req->key));
+            $data = MasterJurusan::findOrFail($key);
             // Delete Process
             $data->delete();
             return $this->sendResponse(null, "Berhasil menghapus data.");

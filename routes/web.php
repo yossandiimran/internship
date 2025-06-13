@@ -22,29 +22,29 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
 
     // Master route
     Route::group(['prefix' => 'master', 'namespace' => 'Master', 'as' => 'master.','middleware' => ['permission:1,2']], function () {
-        // Master Bus
-        Route::group(['prefix' => 'bus', 'as' => 'bus.','middleware' => ['permission:1']], function () {
-            Route::get('/', 'MasterBusController@index')->name('index');
-            Route::post('detail', 'MasterBusController@detail')->name('detail');
-            Route::post('store', 'MasterBusController@store')->name('store');
-            Route::post('scopeData', 'MasterBusController@scopeData')->name('scopeData');
-            Route::post('destroy', 'MasterBusController@destroy')->name('destroy');
+        // Master Divisi
+        Route::group(['prefix' => 'divisi', 'as' => 'divisi.','middleware' => ['permission:1']], function () {
+            Route::get('/', 'MasterDivisiController@index')->name('index');
+            Route::post('detail', 'MasterDivisiController@detail')->name('detail');
+            Route::post('store', 'MasterDivisiController@store')->name('store');
+            Route::post('scopeData', 'MasterDivisiController@scopeData')->name('scopeData');
+            Route::post('destroy', 'MasterDivisiController@destroy')->name('destroy');
         });
-        // Master Sopir
-        Route::group(['prefix' => 'sopir', 'as' => 'sopir.','middleware' => ['permission:1']], function () {
-            Route::get('/', 'MasterSopirController@index')->name('index');
-            Route::post('detail', 'MasterSopirController@detail')->name('detail');
-            Route::post('store', 'MasterSopirController@store')->name('store');
-            Route::post('scopeData', 'MasterSopirController@scopeData')->name('scopeData');
-            Route::post('destroy', 'MasterSopirController@destroy')->name('destroy');
+        // Master Jurusan
+        Route::group(['prefix' => 'jurusan', 'as' => 'jurusan.','middleware' => ['permission:1']], function () {
+            Route::get('/', 'MasterJurusanController@index')->name('index');
+            Route::post('detail', 'MasterJurusanController@detail')->name('detail');
+            Route::post('store', 'MasterJurusanController@store')->name('store');
+            Route::post('scopeData', 'MasterJurusanController@scopeData')->name('scopeData');
+            Route::post('destroy', 'MasterJurusanController@destroy')->name('destroy');
         });
-         // Master Tempat
-         Route::group(['prefix' => 'tempat', 'as' => 'tempat.','middleware' => ['permission:1']], function () {
-            Route::get('/', 'MasterTempatController@index')->name('index');
-            Route::post('detail', 'MasterTempatController@detail')->name('detail');
-            Route::post('store', 'MasterTempatController@store')->name('store');
-            Route::post('scopeData', 'MasterTempatController@scopeData')->name('scopeData');
-            Route::post('destroy', 'MasterTempatController@destroy')->name('destroy');
+         // Master Status Surat
+         Route::group(['prefix' => 'statusSurat', 'as' => 'statusSurat.','middleware' => ['permission:1']], function () {
+            Route::get('/', 'MasterStatusSuratController@index')->name('index');
+            Route::post('detail', 'MasterStatusSuratController@detail')->name('detail');
+            Route::post('store', 'MasterStatusSuratController@store')->name('store');
+            Route::post('scopeData', 'MasterStatusSuratController@scopeData')->name('scopeData');
+            Route::post('destroy', 'MasterStatusSuratController@destroy')->name('destroy');
         });
     });
 

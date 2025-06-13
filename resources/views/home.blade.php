@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-md-5 pl-5" style="display: flex; align-items:center;">
                 <span class="text-home">
-                    <h1>Selamat Datang Di Aplikasi <br> Booking Bus Halaman Admin</h1>
+                    <h1>Selamat Datang Di Aplikasi <br> Wika Internship Information System</h1>
                 </span>
             </div>
             <div class="col-md-6">

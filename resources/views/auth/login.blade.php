@@ -53,7 +53,7 @@
                 </g>
             </svg>
         </span>
-        <span class="app-brand-text demo text-body fw-bold">Booking Bus Admin Page</span>
+        <span class="app-brand-text demo text-body fw-bold">Wika Admin Page</span>
     </a>
 </div>
 <!-- /Logo -->
