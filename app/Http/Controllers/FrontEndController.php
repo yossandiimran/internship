@@ -19,23 +19,11 @@ class FrontEndController extends Controller
      */
     public function index()
     {
-        $data['bus'] = MasterDivisi::get();
-        $data['type_bus'] = MasterDivisi::distinct()->pluck('divisi');
-        return view('frontend.index', $data);
+        return view('frontend.index');
     }
 
-    public function prosesFormFe(Request $req){
-        $data['type_bus'] = MasterBus::distinct()->pluck('type_bus');
-        $data['bus'] = MasterBus::where('type_bus', $req->bus)
-        ->where('jumlah_kursi', '>=', $req->jumlahSeat)
-        ->where(function ($query) use ($req) {
-            $query->whereDate('status', '!=', $req->tgl_berangkat)
-                  ->orWhereNull('status');
-        })
-        ->get();
-        $data['tempat'] = MasterTempat::get();
-        $data['formData'] = $req->all();
-        return view('frontend.cekbus', $data);
+    public function daftarInternship(){
+        return view('frontend.registerInternship');
 
     }
 

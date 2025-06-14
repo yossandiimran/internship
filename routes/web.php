@@ -6,7 +6,7 @@ Auth::routes(['register' => false]);
 
 Route::get('/', 'FrontEndController@index')->name('index');
 Route::get('/fe', 'FrontEndController@index')->name('fe');
-Route::post('/prosesFormFe', 'FrontEndController@prosesFormFe')->name('prosesFormFe');
+Route::get('/daftarInternship', 'FrontEndController@daftarInternship')->name('daftarInternship');
 Route::post('/createTransaksi', 'FrontEndController@createTransaksi')->name('createTransaksi');
 Route::post('/cekTransaksi', 'FrontEndController@cekTransaksi')->name('cekTransaksi');
 

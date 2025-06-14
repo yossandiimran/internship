@@ -6,7 +6,7 @@
     <title>Internship</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <link href="assets/img/favicon.png" rel="icon">
+    <link href="{{ asset('assets/invent/assets/img/favicon.png')}}" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -39,13 +39,10 @@
             <li>
               <a href="#testimonials">Alumni</a>
             </li>
-            <li>
-              <a href="#contact">Kontak</a>
-            </li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
-        <a class="btn-getstarted" href="#about">Masuk</a>
+        <a class="btn-getstarted" href="{{url('login')}}">Masuk</a>
       </div>
     </header>
     <main class="main">
@@ -65,7 +62,7 @@
               <h1 class="hero-title mb-4">Platfrom khusus internship PT.Wika</h1>
               <p class="hero-description mb-4">"Selamat datang di platform informasi internship PT WIKA, tempat kami membantu mahasiswa dan siswa SMK menjalani magang dengan lebih terarah, terstruktur, dan transparan."</p>
               <div class="cta-wrapper">
-                <a href="#" class="btn btn-primary">Daftar</a>
+                <a href="{{url('daftarInternship')}}" class="btn btn-primary">Daftar</a>
               </div>
             </div>
             <div class="col-lg-6">
@@ -284,7 +281,7 @@
                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                    </div>
                    <div class="profile-info">
-                     <img src="assets/img/person/person-f-3.webp" alt="Profile Image">
+                     <img src="{{ asset('assets/invent/assets/img/person/person-f-3.webp')}}" alt="Profile Image">
                      <div>
                        <h3>Rani Oktaviani</h3>
                        <h4>Mahasiswa Teknik Informatika</h4>
@@ -307,7 +304,7 @@
                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                    </div>
                    <div class="profile-info">
-                     <img src="assets/img/person/person-f-10.webp" alt="Profile Image">
+                     <img src="{{ asset('assets/invent/assets/img/person/person-f-10.webp')}}" alt="Profile Image">
                      <div>
                        <h3>Dina Maharani</h3>
                        <h4>UI/UX Designer Intern</h4>
@@ -330,7 +327,7 @@
                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                    </div>
                    <div class="profile-info">
-                     <img src="assets/img/person/person-m-5.webp" alt="Profile Image">
+                     <img src="{{ asset('assets/invent/assets/img/person/person-m-5.webp')}}" alt="Profile Image">
                      <div>
                        <h3>Ilham Saputra</h3>
                        <h4>Backend Developer Intern</h4>
@@ -353,7 +350,7 @@
                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                    </div>
                    <div class="profile-info">
-                     <img src="assets/img/person/person-m-2.webp" alt="Profile Image">
+                     <img src="{{ asset('assets/invent/assets/img/person/person-m-2.webp')}}" alt="Profile Image">
                      <div>
                        <h3>Reza Dwi Putra</h3>
                        <h4>Marketing Intern</h4>
@@ -376,7 +373,7 @@
                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                    </div>
                    <div class="profile-info">
-                     <img src="assets/img/person/person-f-7.webp" alt="Profile Image">
+                     <img src="{{ asset('assets/invent/assets/img/person/person-f-7.webp')}}" alt="Profile Image">
                      <div>
                        <h3>Putri Ayuningtyas</h3>
                        <h4>HR Intern</h4>
@@ -394,83 +391,6 @@
      </section>
 
       <!-- /Testimonials Section -->
-      <!-- Contact Section -->
-      <section id="contact" class="contact section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-          <h2>Contact</h2>
-        </div>
-        <!-- End Section Title -->
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="form-wrapper" data-aos="fade-up" data-aos-delay="400">
-                <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-                  <div class="row">
-                    <div class="col-md-6 form-group">
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="bi bi-person"></i>
-                        </span>
-                        <input type="text" name="name" class="form-control" placeholder="Your name*" required="">
-                      </div>
-                    </div>
-                    <div class="col-md-6 form-group">
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="bi bi-envelope"></i>
-                        </span>
-                        <input type="email" class="form-control" name="email" placeholder="Email address*" required="">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-md-6 form-group">
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="bi bi-phone"></i>
-                        </span>
-                        <input type="text" class="form-control" name="phone" placeholder="Phone number*" required="">
-                      </div>
-                    </div>
-                    <div class="col-md-6 form-group">
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="bi bi-list"></i>
-                        </span>
-                        <select name="subject" class="form-control" required="">
-                          <option value="">Select service*</option>
-                          <option value="Service 1">Consulting</option>
-                          <option value="Service 2">Development</option>
-                          <option value="Service 3">Marketing</option>
-                          <option value="Service 4">Support</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group mt-3">
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="bi bi-chat-dots"></i>
-                        </span>
-                        <textarea class="form-control" name="message" rows="6" placeholder="Write a message*" required=""></textarea>
-                      </div>
-                    </div>
-                    <div class="my-3">
-                      <div class="loading">Loading</div>
-                      <div class="error-message"></div>
-                      <div class="sent-message">Your message has been sent. Thank you!</div>
-                    </div>
-                    <div class="text-center">
-                      <button type="submit">Submit Message</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- /Contact Section -->
     </main>
     <footer id="footer" class="footer light-background">
       <div class="container footer-top">

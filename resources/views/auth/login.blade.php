@@ -53,11 +53,11 @@
                 </g>
             </svg>
         </span>
-        <span class="app-brand-text demo text-body fw-bold">Wika Admin Page</span>
+        <span class="app-brand-text demo text-body fw-bold">Wika Internship</span>
     </a>
 </div>
 <!-- /Logo -->
-<h4 class="mb-2 text-center">Welcome ! 👋</h4>
+<h4 class="mb-2 text-center">Halo ! 👋</h4>
 <div class="card-body p-3">
     <form method="POST" action="{{ route('login') }}" class="needs-validation" autocomplete="off">
         @csrf
