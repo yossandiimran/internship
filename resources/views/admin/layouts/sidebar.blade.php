@@ -93,19 +93,19 @@
                     </span>
                     <h4 class="text-section">Internship</h4>
                 </li>
-                  <li class="nav-item {{ request()->is('admin/internship/profile/') || request()->is('admin/internship/profile/*') ? 'active' : '' }}">
+                  <li class="nav-item {{ request()->is('admin/InternshipMember/profile') || request()->is('admin/InternshipMember/profile/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.internshipMember.profile.index') }}">
                         <i class="fas fa-user"></i>
                         <p>Profile</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->is('admin/internship/pengajuan/') || request()->is('admin/internship/pengajuan/*') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/InternshipMember/pengajuan') || request()->is('admin/InternshipMember/pengajuan/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.internshipMember.pengajuan.index') }}">
                         <i class="fas fa-envelope"></i>
                         <p>Pengajuan Internship</p>
                     </a>
                 </li>
-                 <li class="nav-item {{ request()->is('admin/internship/penilaian/') || request()->is('admin/internship/penilaian/*') ? 'active' : '' }}">
+                 <li class="nav-item {{ request()->is('admin/InternshipMember/penilaian') || request()->is('admin/InternshipMember/penilaian/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.internshipMember.penilaian.index') }}">
                         <i class="fas fa-star"></i>
                         <p>Sertifikat & Penilaian</p>
@@ -117,13 +117,13 @@
                     </span>
                     <h4 class="text-section">Activity</h4>
                 </li>
-                <li class="nav-item {{ request()->is('admin/internship/jobdesc/') || request()->is('admin/internship/jobdesc/*') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/InternshipMember/jobdesc') || request()->is('admin/InternshipMember/jobdesc/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.internshipMember.jobdesc.index') }}">
                         <i class="fas fa-list"></i>
                         <p>Jobdesc</p>
                     </a>
                 </li>
-                 <li class="nav-item {{ request()->is('admin/internship/absensi/') || request()->is('admin/internship/absensi/*') ? 'active' : '' }}">
+                 <li class="nav-item {{ request()->is('admin/InternshipMember/absensi') || request()->is('admin/InternshipMember/absensi/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.internshipMember.absensi.index') }}">
                         <i class="fas fa-clock"></i>
                         <p>Absensi</p>
