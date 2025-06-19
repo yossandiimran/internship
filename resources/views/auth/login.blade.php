@@ -59,6 +59,9 @@
 <!-- /Logo -->
 <h4 class="mb-2 text-center">Halo ! 👋</h4>
 <div class="card-body p-3">
+     @if(session('success'))
+     <div class="alert alert-success">{{ session('success') }}</div>
+     @endif
     <form method="POST" action="{{ route('login') }}" class="needs-validation" autocomplete="off">
         @csrf
         <div class="mb-3">

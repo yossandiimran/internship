@@ -8,6 +8,8 @@
                         <p>Beranda</p>
                     </a>
                 </li>
+                {{-- Sidebar untuk hak akses group_user level 1 (ADMIN) --}}
+                @if(permission([1]))
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
@@ -32,6 +34,8 @@
                         <p>Sertifikat & Penilaian</p>
                     </a>
                 </li>
+                @endif
+                @if(permission([1]))
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
@@ -56,7 +60,6 @@
                     </span>
                     <h4 class="text-section">Master Data</h4>
                 </li>
-                @if(permission([1,2,3,5]))
                 <li class="nav-item {{ request()->is('admin/master/divisi') || request()->is('admin/master/divisi/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.master.divisi.index') }}">
                         <i class="fas fa-clipboard"></i>
@@ -82,9 +85,50 @@
                     </a>
                 </li>
                 @endif
-                
-                @if(permission([1,2,3,5]))
-                 
+                {{-- Sidebar untuk hak akses group_user level 2 (internship) --}}
+                @if(permission([2]))
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Internship</h4>
+                </li>
+                  <li class="nav-item {{ request()->is('admin/internship/profile/') || request()->is('admin/internship/profile/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.internshipMember.profile.index') }}">
+                        <i class="fas fa-user"></i>
+                        <p>Profile</p>
+                    </a>
+                </li>
+                <li class="nav-item {{ request()->is('admin/internship/pengajuan/') || request()->is('admin/internship/pengajuan/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.internshipMember.pengajuan.index') }}">
+                        <i class="fas fa-envelope"></i>
+                        <p>Pengajuan Internship</p>
+                    </a>
+                </li>
+                 <li class="nav-item {{ request()->is('admin/internship/penilaian/') || request()->is('admin/internship/penilaian/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.internshipMember.penilaian.index') }}">
+                        <i class="fas fa-star"></i>
+                        <p>Sertifikat & Penilaian</p>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Activity</h4>
+                </li>
+                <li class="nav-item {{ request()->is('admin/internship/jobdesc/') || request()->is('admin/internship/jobdesc/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.internshipMember.jobdesc.index') }}">
+                        <i class="fas fa-list"></i>
+                        <p>Jobdesc</p>
+                    </a>
+                </li>
+                 <li class="nav-item {{ request()->is('admin/internship/absensi/') || request()->is('admin/internship/absensi/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.internshipMember.absensi.index') }}">
+                        <i class="fas fa-clock"></i>
+                        <p>Absensi</p>
+                    </a>
+                </li>
                 @endif
             </ul>
         </div>

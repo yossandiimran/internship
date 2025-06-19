@@ -23,15 +23,28 @@
       <section id="contact" class="contact section" style="padding: 50px">
         <div class="container section-title" data-aos="fade-up">
           <h2>Pendaftaran Internship</h2>
+          @if(session('error'))
+          <div class="alert alert-danger">{{ session('error') }}</div>
+          @endif
           <div class="row">
             <div class="col-lg-12">
               <div class="form-wrapper" data-aos="fade-up" data-aos-delay="400">
-                <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+                <form method="POST" action="{{ route('createAkun') }}">
+                  @csrf
                   <div class="row">
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap*" required="" autocomplete="off">
+                        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap*" required="" autocomplete="off" value="Yossandi imran">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-12 form-group">
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" name="username" class="form-control" placeholder="Username*" required="" autocomplete="off" value="yossandiimran">
                       </div>
                     </div>
                   </div>
@@ -40,7 +53,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                        <input type="email" class="form-control" name="email" placeholder="Email address*" required="" autocomplete="off">
+                        <input type="email" class="form-control" name="email" placeholder="Email address*" required="" autocomplete="off" value="yossandiimran02@gmail.com">
                       </div>
                     </div>
                   </div>
@@ -49,7 +62,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                        <input type="number" class="form-control" name="no_hp" placeholder="Nomor HP*" required="" autocomplete="off">
+                        <input type="number" class="form-control" name="no_hp" placeholder="Nomor HP*" required="" autocomplete="off" value="08123456789">
                       </div>
                     </div>
                   </div>
@@ -58,15 +71,11 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" name="password" placeholder="Password*" required="" autocomplete="off">
+                        <input type="password" class="form-control" name="password" placeholder="Password*" required="" autocomplete="off" value="Admin1234%">
                       </div>
                     </div>
                   </div>
-                  <div class="my-3">
-                    <div class="loading">Loading</div>
-                    <div class="error-message"></div>
-                    <div class="sent-message">Your message has been sent. Thank you!</div>
-                  </div>
+                  <br>
                   <div class="text-center">
                     <button type="submit">Daftar</button>
                   </div>

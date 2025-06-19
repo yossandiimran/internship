@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\MasterDivisi;
-use App\Models\MasterJurusan;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use DB;
 use DateTime;
-use DataTables;
-use Validator;
+use Hash;
 
 class FrontEndController extends Controller
 {
@@ -27,35 +24,42 @@ class FrontEndController extends Controller
 
     }
 
-    public function createTransaksi(Request $req){
-        DB::beginTransaction();
-
+    public function createAkun(Request $req){
         try{
-            $kode = $this->generateBookingCode();
-            $dt = new DateTime();
-            $trx = Transaksi::create([
-                'kode_booking' => $kode,
-                'tgl_booking' => $dt->format('Y-m-d'),
-                'tgl_berangkat' => $req->tgl_berangkat,
-                'tgl_kembali' => $req->tgl_kembali,
-                'nama_pelanggan' => $req->nama_pelanggan,
-                'kontak_pelanggan' => $req->kontak_pelanggan,
-                'status_booking' => 1,
-            ]);
 
-            foreach($req->idBus as $key => $bus){
-                $trxDetail = TransaksiDetail::create([
-                    'kode_booking' => $kode,
-                    'id_bus' => $bus,
-                    'tarif' => $req->tarifBus[$key]
-                ]);
+            $existingUser = User::where('email', $req->email)->first();
+            $existingUsername = User::where('username', $req->username)->first();
+            $existingHandphone = User::where('no_hp', $req->no_hp)->first();
+            
+            if ($existingUser) {
+                return redirect()->back()->with('error', 'Email sudah terdaftar!');
             }
 
-            DB::commit();
+            if ($existingUsername) {
+                return redirect()->back()->with('error', 'Username sudah terdaftar!');
+            }
             
-            return $this->sendResponse($trx, 'Transaksi berhasil dibuat.');
+            if ($existingHandphone) {
+                return redirect()->back()->with('error', 'Nomor Handphone sudah terdaftar!');
+            }
+
+            $data =  User::create([
+                'name' => $req->name,
+                'username' => $req->username,
+                'email' => $req->email,
+                'no_hp' => $req->no_hp,
+                'alamat' => "-",
+                'kode_pos' => "-",
+                'kelurahan' => "-",
+                'kecamatan' => "-",
+                'kota' => "-",
+                'provinsi' => "-",
+                'group_user' => '2',
+                'is_internship' => true,
+                'password' => Hash::make($req->password),
+            ]);
+             return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');
         }catch(\Throwable $err){
-            DB::rollback();
             return $this->sendError('Kesalahan sistem saat proses login, silahkan hubungi admin.');
         }
     }
