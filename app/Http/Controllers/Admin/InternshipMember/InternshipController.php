@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin\InternshipMember;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\MasterDivisi;
+use App\Models\SuratBalasan;
+use App\Models\SuratBalasanPemohon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use DataTables;
 use Validator;
 
@@ -16,7 +18,8 @@ class InternshipController extends Controller
      */
     public function index()
     {
-        return view('admin.internshipMember.internship.index');
+        $data['user'] = Auth::user();
+        return view('admin.internshipMember.internship.index', $data);
     }
 
     /**
@@ -24,12 +27,13 @@ class InternshipController extends Controller
      */
     public function scopeData(Request $req)
     {
-        $data = MasterDivisi::select('*');
+        $user = Auth::user();
+        $data = SuratBalasan::select('*')->where('id_pemohon',  $user->id);
         return DataTables::of($data)
                 ->addIndexColumn()
                 ->removeColumn('id')
                 ->addColumn('action', function($val) {
-                    $key = encrypt("divisi".$val->id);
+                    $key = encrypt("surat".$val->id);
                     return '<div class="btn-group">'.
                                 '<button class="btn btn-warning btn-sm btn-edit" data-key="'.$key.'" title="Ubah Data"><i class="fas fa-pen"></i></button>'.
                                 '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>'.
@@ -45,7 +49,7 @@ class InternshipController extends Controller
     public function detail(Request $req)
     {
         try {
-            $key = str_replace("divisi", "", decrypt($req->key));
+            $key = str_replace("surat", "", decrypt($req->key));
             $data = MasterDivisi::select('*')->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
         } catch (ModelNotFoundException $e) {
@@ -60,17 +64,16 @@ class InternshipController extends Controller
      * Store create or update sap bus settings
      */
     public function store(Request $req)
-    {
+    {  
         $pwRules = 'nullable';
+        $user = Auth::user();
       
         $validator = Validator::make($req->input(), [
             'key' => 'nullable|string',
-            'divisi' => 'required|string',
-            'lokasi' => 'required|string',
         ]);
 
-        if($req->file('foto')){
-            $foto = $req->file('foto')->store('uploads', 'public');
+        if($req->file('file_surat_pengantar')){
+            $suratPengantar = $req->file('file_surat_pengantar')->store('uploads', 'public');
         }
 
         if ($validator->fails()) {
@@ -80,14 +83,25 @@ class InternshipController extends Controller
         try {
             if(empty($req->key)){
                 // Create Data
-                $data = MasterDivisi::create([
-                    'divisi' => $req->divisi,
-                    'lokasi' => $req->lokasi,
+                $data = SuratBalasan::create([
+                    'id_pemohon' => $user->id,
+                    'tanggal_surat_pengantar' => $req->tanggal_surat_pengantar,
+                    'asal_sekolah_pemohon' => $req->asal_sekolah_pemohon,
+                    'nomor_surat_pengantar' => $req->nomor_surat_pengantar,
+                    'file_surat_pengantar' => $suratPengantar,
                 ]);
+
+                $data2 = SuratBalasanPemohon::create([
+                    'id_surat' => $data->id,
+                    'email' => $user->email,
+                    'nama_pemohon' => $user->name,
+                ]);
+                
+
                 // Save Log
             } else {
                 // Validation
-                $key = str_replace("divisi", "", decrypt($req->key));
+                $key = str_replace("surat", "", decrypt($req->key));
                 $data = MasterDivisi::findOrFail($key);
                 
                 // Update Data
@@ -100,6 +114,7 @@ class InternshipController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
         } catch (\Throwable $err) {
+            dd($err);
             return $this->sendError("Kesalahan sistem saat proses penyimpanan data, silahkan hubungi admin");
         }
     }
@@ -108,7 +123,7 @@ class InternshipController extends Controller
     {
         try {
             // Validation
-            $key = str_replace("divisi", "", decrypt($req->key));
+            $key = str_replace("surat", "", decrypt($req->key));
             $data = MasterDivisi::findOrFail($key);
             // Delete Process
             $data->delete();

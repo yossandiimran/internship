@@ -31,23 +31,11 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Profile</h4>
+                    <h4 class="card-title">Profile {{$user->name}}</h4>
                 </div>
                 <div class="card-body">
-                    <button type="button" id="btn-add" class="btn btn-primary btn-md">
-                        Buat Pengajuan
-                    </button>
                     <div class="table-responsive">
-                        <table id="table-data" class="table table-bordered table-hover" width="100%">
-                            <thead>
-                                <tr>
-                                    <th width="40px">No</th>
-                                    <th>Divisi</th>
-                                    <th>Lokasi</th>
-                                    <th width="80px">Aksi</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        
                     </div>
                 </div>
             </div>
@@ -55,33 +43,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-            <form id="form-data" method="post" action="{{ route('admin.master.divisi.store') }}">
-              @csrf
-              <input type="hidden" name="key" class="form-control" id="key-form">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDataLabel">Modal title</h5>
-                </div>
-                <div class="modal-body" id="modal-body">
-                    <div class="form-group">
-                        <label for="divisi-form">Divisi</label>
-                        <input type="text" name="divisi" class="form-control" id="divisi-form" placeholder="Masukan divisi" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="lokasi-form">Lokasi</label>
-                        <input type="text" name="lokasi" class="form-control" id="lokasi-form" placeholder="Masukan Nomor Polisi" required/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-md">Simpan</button>
-                </div>
-            </form>
-		</div>
-	</div>
-</div>
 @endsection
 
 @section('js')

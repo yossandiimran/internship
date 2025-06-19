@@ -68,6 +68,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
         // Pengajuan Internship
         Route::group(['prefix' => 'pengajuan', 'as' => 'pengajuan.','middleware' => ['permission:2']], function () {
             Route::get('/', 'InternshipController@index')->name('index');
+            Route::post('/scopeData', 'InternshipController@scopeData')->name('scopeData');
+            Route::post('/store', 'InternshipController@store')->name('store');
+            Route::get('/detail', 'InternshipController@detail')->name('detail');
+            Route::get('/store', 'InternshipController@store')->name('store');
+            Route::get('/destroy', 'InternshipController@destroy')->name('destroy');
         });
         // Absensi
         Route::group(['prefix' => 'absensi', 'as' => 'absensi.','middleware' => ['permission:2']], function () {

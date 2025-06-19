@@ -43,6 +43,33 @@
                   <div class="row">
                     <div class="col-md-12 form-group">
                       <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-star"></i></span>
+                        <input type="text" name="asal_sekolah" class="form-control" placeholder="Asal Sekolah*" required="" autocomplete="off" value="STT Mandala Bandung">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-12 form-group">
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-list"></i></span>
+                        <input type="text" name="jurusan" class="form-control" placeholder="Jurusan*" required="" autocomplete="off" value="Teknik Informatika">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-12 form-group">
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-copy"></i></span>
+                        <input type="text" name="nim" class="form-control" placeholder="NIM*" required="" autocomplete="off" value="2041105">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-12 form-group">
+                      <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
                         <input type="text" name="username" class="form-control" placeholder="Username*" required="" autocomplete="off" value="yossandiimran">
                       </div>

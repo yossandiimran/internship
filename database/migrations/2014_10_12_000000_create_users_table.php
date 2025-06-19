@@ -26,6 +26,9 @@ class CreateUsersTable extends Migration
             $table->string('kelurahan');
             $table->string('kecamatan');
             $table->string('kota');
+            $table->string('nim')->nullable();
+            $table->string('asal_sekolah')->nullable();
+            $table->string('jurusan')->nullable();
             $table->boolean('is_internship')->nullable();
             $table->string('provinsi');
             $table->smallInteger('group_user')->nullable();

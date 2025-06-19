@@ -2,6 +2,9 @@
 
 @section('css')
 <style>
+    .modal-lg {
+        max-width: 100%;
+    }
     #btn-add, #btn-add-multiple {
         margin: 0px -10px 20px 15px;
     }
@@ -42,8 +45,8 @@
                             <thead>
                                 <tr>
                                     <th width="40px">No</th>
-                                    <th>Divisi</th>
-                                    <th>Lokasi</th>
+                                    <th>Nomor Surat Pengantar</th>
+                                    <th>Status</th>
                                     <th width="80px">Aksi</th>
                                 </tr>
                             </thead>
@@ -56,36 +59,120 @@
 </div>
 
 <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-            <form id="form-data" method="post" action="{{ route('admin.master.divisi.store') }}">
-              @csrf
-              <input type="hidden" name="key" class="form-control" id="key-form">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDataLabel">Modal title</h5>
-                </div>
-                <div class="modal-body" id="modal-body">
+  <div class="modal-dialog modal-lg" role="document" style="width: 80%">
+    <div class="modal-content">
+      <form id="form-data" method="post" action="{{ route('admin.internshipMember.pengajuan.store') }}" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="key" class="form-control" id="key-form">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalDataLabel">Pengajuan Internship</h5>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    {{-- Nama Pemohon --}}
                     <div class="form-group">
-                        <label for="divisi-form">Divisi</label>
-                        <input type="text" name="divisi" class="form-control" id="divisi-form" placeholder="Masukan divisi" required/>
+                      <label for="nama_pemohon">Nama Pemohon</label>
+                      <input readonly type="text" name="nama_pemohon" class="form-control" id="nama_pemohon" value="{{$user->name}}" required/>
                     </div>
+                </div>
+                <div class="col-md-6">
+                    {{-- Asal Sekolah --}}
                     <div class="form-group">
-                        <label for="lokasi-form">Lokasi</label>
-                        <input type="text" name="lokasi" class="form-control" id="lokasi-form" placeholder="Masukan Nomor Polisi" required/>
+                      <label for="asal_sekolah_pemohon">Asal Sekolah Pemohon</label>
+                      <input readonly type="text" name="asal_sekolah_pemohon" class="form-control" id="asal_sekolah_pemohon" value="{{$user->asal_sekolah}}" required/>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-md">Simpan</button>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{-- Nama Pemohon --}}
+                    <div class="form-group">
+                      <label for="jurusan">Jurusan</label>
+                      <input readonly type="text" name="jurusan" class="form-control" id="jurusan" value="{{$user->jurusan}}" required/>
+                    </div>
                 </div>
-            </form>
-		</div>
-	</div>
+                <div class="col-md-6">
+                    {{-- NIM --}}
+                    <div class="form-group">
+                        <label for="jurusan">NIM</label>
+                        <input readonly type="text" name="nim" class="form-control" id="nim" value="{{$user->nim}}" required/>
+                    </div>
+                </div>
+            </div>
+          {{-- Nomor Surat Pengantar --}}
+          <div class="form-group">
+            <label for="nomor_surat_pengantar">Nomor Surat Pengantar</label>
+            <input type="text" name="nomor_surat_pengantar" class="form-control" id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required/>
+          </div>
+
+          {{-- Upload File Surat Pengantar --}}
+          <div class="form-group">
+            <label for="file_surat_pengantar">Upload Surat Pengantar (PDF)</label>
+            <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar" accept=".pdf" required/>
+          </div>
+
+          <hr>
+
+          {{-- Tombol Tambah Anggota --}}
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4>Data Pemohon Lainya</h4>
+            <button type="button" class="btn btn-success btn-sm" id="btnTambahAnggota">
+              <i class="bi bi-plus-circle"></i> Tambah Pemohon
+            </button>
+          </div>
+
+          {{-- Tabel Anggota --}}
+          <div class="table-responsive">
+            <table class="table table-bordered" id="tabel-anggota">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Email</th>
+                  <th>Jurusan</th>
+                  <th>Nomor HP</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{-- Baris dinamis akan ditambahkan di sini --}}
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary btn-md">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
 @endsection
 
 @section('js')
 <script>
+    let anggotaIndex = 0;
+    
+    $('#btnTambahAnggota').on('click', function () {
+        anggotaIndex++;
+        $('#tabel-anggota tbody').append(`
+           <tr>
+                <td><input type="text" name="anggota[${anggotaIndex}][nama]" class="form-control border-0" required></td>
+                <td><input type="text" name="anggota[${anggotaIndex}][email]" class="form-control border-0" required></td>
+                <td><input type="text" name="anggota[${anggotaIndex}][no_hp]" class="form-control border-0" required></td>
+                <td><input type="text" name="anggota[${anggotaIndex}][jurusan]" class="form-control border-0" required></td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-hapus-anggota">Hapus</button></td>
+            </tr>
+        `);
+    });
+    // Hapus baris anggota
+    $(document).on('click', '.btn-hapus-anggota', function () {
+        $(this).closest('tr').remove();
+    });
+
     var dt;
     $(document).ready(function() {
 
@@ -93,20 +180,20 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.master.divisi.scopeData') }}",
+                url: "{{ route('admin.internshipMember.pengajuan.scopeData') }}",
                 type: "post"
             },
             columns: [
                 { data: "DT_RowIndex", name: "DT_RowIndex", searchable: "false", orderable: "false" },
-                { data: "divisi", name: "divisi" },
-                { data: "lokasi", name: "lokasi" },
+                { data: "nomor_surat_pengantar", name: "nomor_surat_pengantar" },
+                { data: "status_surat", name: "status_surat" },
                 { data: "action", name: "action", searchable: "false", orderable: "false" }
             ],
             order: [[ 1, "asc" ]],
         });
 
         $("#btn-add").on("click",function(){
-            $("#modalDataLabel").text("Tambah Divisi");
+            $("#modalDataLabel").text("Pengajuan Internship");
             $("#modalData").modal("show");
         });
 
@@ -115,7 +202,7 @@
             formLoading("#form-data","#modal-body",true);
             let key = $(this).data("key");
             $.ajax({
-                url: "{{ route('admin.master.divisi.detail') }}",
+                url: "{{ route('admin.internshipMember.pengajuan.detail') }}",
                 type: "POST",
                 data: {key:key},
                 success:function(res){
@@ -157,7 +244,7 @@
                 if (willDelete) {
                     notifLoading("Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                     $.ajax({
-                        url: "{{ route('admin.master.divisi.destroy') }}",
+                        url: "{{ route('admin.internshipMember.pengajuan.destroy') }}",
                         type: "POST",
                         data: {key:key},
                         success:function(res){

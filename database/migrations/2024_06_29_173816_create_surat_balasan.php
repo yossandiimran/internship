@@ -15,15 +15,22 @@ class CreateSuratBalasan extends Migration
     {
         Schema::create('surat_balasan', function (Blueprint $table) {
             $table->id();
-            $table->string('nomor_surat_balasan');
+            $table->integer('id_pemohon');
             $table->string('asal_sekolah_pemohon');
-            $table->date('tanggal_dibuat');
-            $table->string('nomor_surat_mou');
-            $table->date('tanggal_surat_mou');
-            $table->string('status_pemohon');
-            $table->string('pembimbing');
-            $table->string('ttd_pembimbing');
-            $table->integer('status_surat');
+            $table->string('nomor_surat_pengantar')->nullable();
+            $table->string('file_surat_pengantar')->nullable();
+            $table->date('tanggal_surat_pengantar')->nullable();
+            $table->string('nomor_surat_balasan')->nullable();
+            $table->date('tanggal_surat_balasan')->nullable();
+            $table->string('file_surat_balasan')->nullable();
+            $table->string('nomor_surat_mou')->nullable();
+            $table->date('tanggal_surat_mou')->nullable();
+            $table->string('file_surat_mou')->nullable();
+            $table->string('pembimbing')->nullable();
+            $table->string('ttd_pembimbing')->nullable();
+            $table->string('status_permohonan')->nullable();
+            $table->integer('status_surat')->nullable();
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }
