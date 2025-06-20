@@ -64,10 +64,17 @@
       <form id="form-data" method="post" action="{{ route('admin.internshipMember.pengajuan.store') }}" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="key" class="form-control" id="key-form">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalDataLabel">Pengajuan Internship</h5>
-        </div>
+           
         <div class="modal-body" id="modal-body">
+             <div class="row">
+                <div class="col-md-11">
+                    <h3 class="modal-title" id="modalDataLabel">Pengajuan Internship</h3>
+                </div>
+                <div class="col-md-1 viewSuratPengantarDetail">
+                    <button class="btn btn-primary btn-sm">Dikirim</button>
+                </div>
+            </div>
+            <hr>    
             <div class="row">
                 <div class="col-md-6">
                     {{-- Nama Pemohon --}}
@@ -107,8 +114,12 @@
           </div>
 
           {{-- Upload File Surat Pengantar --}}
-          <div class="form-group">
+          <div class="form-group upSuratPengantar">
             <label for="file_surat_pengantar">Upload Surat Pengantar (PDF)</label>
+            <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar" accept=".pdf" required/>
+          </div>
+          <div class="form-group viewSuratPengantar">
+            <label for="file_surat_pengantar">Surat Pengantar</label>
             <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar" accept=".pdf" required/>
           </div>
 
@@ -117,7 +128,7 @@
           {{-- Tombol Tambah Anggota --}}
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h4>Data Pemohon Lainya</h4><br><div style="color: red"><i>*)Pastikan email & nomor hp yang didaftarkan sesuai dengan akun yang terdaftar sebelumnya</i></div>
-            <button type="button" class="btn btn-success btn-sm" id="btnTambahAnggota">
+            <button type="button" class="btn btn-success btn-sm upSuratPengantar" id="btnTambahAnggota">
               <i class="bi bi-plus-circle"></i> Tambah Pemohon
             </button>
           </div>
@@ -143,7 +154,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary btn-md">Simpan</button>
+          <button type="submit" class="btn btn-primary btn-md upSuratPengantar">Simpan</button>
         </div>
       </form>
     </div>
@@ -205,6 +216,15 @@
         $("#btn-add").on("click",function(){
             console.log(pengajuanList);
             if(pengajuanList.length == 0){
+                $(".upSuratPengantar").show();
+                $(".viewSuratPengantarDetail").hide();
+                $(".viewSuratPengantar").hide();
+                $('#nama_pemohon').val('{{$user->name}}').prop('readonly', true)
+                $('#asal_sekolah_pemohon').val('{{$user->asal_sekolah}}').prop('readonly', true)
+                $('#jurusan').val('{{$user->jurusanDetail->jurusan}}').prop('readonly', true)
+                $('#nim').val('{{$user->nim}}').prop('readonly', true)
+                $('#nomor_surat_pengantar').val("").prop('readonly', false)
+
                 $("#modalDataLabel").text("Pengajuan Internship");
                 $("#modalData").modal("show");
             }else{
@@ -212,8 +232,9 @@
             }
         });
 
-        $("body").on("click",".btn-edit",function(){
-            $("#modalDataLabel").text("Ubah Divisi");
+        $("body").on("click",".btn-view",function(){
+            $('#tabel-anggota tbody').html('');
+            $("#modalDataLabel").text("Detail Pengajuan");
             formLoading("#form-data","#modal-body",true);
             let key = $(this).data("key");
             $.ajax({
@@ -221,10 +242,38 @@
                 type: "POST",
                 data: {key:key},
                 success:function(res){
-                    $("#key-form").val(key);
-                    $.each(res.data,function(k,v){
-                        $(`#${k}-form`).val(v).trigger("change");
+                    console.log(res.data);
+                    $('#nama_pemohon').val(res.data.pemohon_utama.name).prop('readonly', true)
+                    $('#asal_sekolah_pemohon').val(res.data.pemohon_utama.asal_sekolah).prop('readonly', true)
+                    $('#jurusan').val(res.data.pemohon_utama.jurusan_detail.jurusan).prop('readonly', true)
+                    $('#nim').val(res.data.pemohon_utama.nim).prop('readonly', true)
+                    $('#nomor_surat_pengantar').val(res.data.nomor_surat_pengantar).prop('readonly', true)
+                    
+                    const fileUrl = `{{ asset('storage/') }}/${res.data.file_surat_pengantar}`;
+
+                    // Sembunyiin input file, tampilkan view link
+                    $(".upSuratPengantar").hide();
+                    $(".viewSuratPengantarDetail").show();
+                    $(".viewSuratPengantar").show().html(`
+                        <label>Surat Pengantar</label><br>
+                        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-danger">
+                            <i class="fas fa-file"></i>&nbsp;Lihat Surat Pengantar
+                        </a>
+                    `);
+                    
+                    $.each(res.data.pemohon, function(i, pm){
+                        $('#tabel-anggota tbody').append(`
+                            <tr>
+                                <td>${pm.nama_pemohon}</td>
+                                <td>${pm.email ?? ''}</td>
+                                <td>${pm.no_hp ?? ''}</td>
+                                <td>${pm.pemohon.jurusan_detail.jurusan ?? ''}</td>
+                                <td>#</td>
+                            </tr>
+                        `);
                     });
+                    
+                        
                 },
                 error:function(err, status, message){
                     response = err.responseJSON;

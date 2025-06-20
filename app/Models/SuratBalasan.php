@@ -11,6 +11,11 @@ class SuratBalasan extends Model
 
     protected $guarded = [];
 
+    public function pemohonUtama()
+    {
+        return $this->hasOne(User::class, 'id', 'id_pemohon');
+    }
+
     public function pemohon()
     {
         return $this->hasMany(SuratBalasanPemohon::class, 'id_surat', 'id');

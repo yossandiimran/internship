@@ -70,7 +70,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
             Route::get('/', 'InternshipController@index')->name('index');
             Route::post('/scopeData', 'InternshipController@scopeData')->name('scopeData');
             Route::post('/store', 'InternshipController@store')->name('store');
-            Route::get('/detail', 'InternshipController@detail')->name('detail');
+            Route::post('/detail', 'InternshipController@detail')->name('detail');
             Route::get('/store', 'InternshipController@store')->name('store');
             Route::get('/destroy', 'InternshipController@destroy')->name('destroy');
         });

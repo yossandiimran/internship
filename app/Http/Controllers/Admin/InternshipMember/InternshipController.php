@@ -81,7 +81,11 @@ class InternshipController extends Controller
     {
         try {
             $key = str_replace("surat", "", decrypt($req->key));
-            $data = MasterDivisi::select('*')->whereId($key)->firstOrFail();
+            $data = SuratBalasan::with([
+                'statusDetail',
+                'pemohon.pemohon.jurusanDetail',
+                'pemohonUtama.jurusanDetail',
+            ])->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
