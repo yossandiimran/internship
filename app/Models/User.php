@@ -84,4 +84,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Kehadiran::class, 'id_user', 'id');
     }
+
+    public function jurusanDetail()
+    {
+        return $this->hasOne(MasterJurusan::class, 'id', 'jurusan');
+    }
 }

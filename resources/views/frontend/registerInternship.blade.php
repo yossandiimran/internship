@@ -35,7 +35,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap*" required="" autocomplete="off" value="Yossandi imran">
+                        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>
@@ -44,7 +44,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-star"></i></span>
-                        <input type="text" name="asal_sekolah" class="form-control" placeholder="Asal Sekolah*" required="" autocomplete="off" value="STT Mandala Bandung">
+                        <input type="text" name="asal_sekolah" class="form-control" placeholder="Asal Sekolah*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>
@@ -53,7 +53,12 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-list"></i></span>
-                        <input type="text" name="jurusan" class="form-control" placeholder="Jurusan*" required="" autocomplete="off" value="Teknik Informatika">
+                        {{-- <input type="text" name="jurusan" class="form-control" placeholder="Jurusan*" required="" autocomplete="off" value="Teknik Informatika"> --}}
+                        <select name="jurusan" id="jurusan" class="form-control" required>
+                        @foreach ($jurusan as $item)
+                            <option value="{{$item->id}}">{{$item->jurusan}}</option>
+                        @endforeach
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -62,7 +67,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-copy"></i></span>
-                        <input type="text" name="nim" class="form-control" placeholder="NIM*" required="" autocomplete="off" value="2041105">
+                        <input type="text" name="nim" class="form-control" placeholder="NIM*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>
@@ -71,7 +76,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" name="username" class="form-control" placeholder="Username*" required="" autocomplete="off" value="yossandiimran">
+                        <input type="text" name="username" class="form-control" placeholder="Username*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>
@@ -80,7 +85,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                        <input type="email" class="form-control" name="email" placeholder="Email address*" required="" autocomplete="off" value="yossandiimran02@gmail.com">
+                        <input type="email" class="form-control" name="email" placeholder="Email address*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>
@@ -89,7 +94,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                        <input type="number" class="form-control" name="no_hp" placeholder="Nomor HP*" required="" autocomplete="off" value="08123456789">
+                        <input type="number" class="form-control" name="no_hp" placeholder="Nomor HP*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>
@@ -98,7 +103,7 @@
                     <div class="col-md-12 form-group">
                       <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" name="password" placeholder="Password*" required="" autocomplete="off" value="Admin1234%">
+                        <input type="password" class="form-control" name="password" placeholder="Password*" required="" autocomplete="off" value="">
                       </div>
                     </div>
                   </div>

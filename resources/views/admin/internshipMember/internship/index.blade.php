@@ -44,10 +44,10 @@
                         <table id="table-data" class="table table-bordered table-hover" width="100%">
                             <thead>
                                 <tr>
-                                    <th width="40px">No</th>
+                                    <th width="20px"><center>No</center></th>
                                     <th>Nomor Surat Pengantar</th>
-                                    <th>Status</th>
-                                    <th width="80px">Aksi</th>
+                                    <th width="20px"><center>Status</center></th>
+                                    <th width="80px"><center>Aksi</center></th>
                                 </tr>
                             </thead>
                         </table>
@@ -89,7 +89,7 @@
                     {{-- Nama Pemohon --}}
                     <div class="form-group">
                       <label for="jurusan">Jurusan</label>
-                      <input readonly type="text" name="jurusan" class="form-control" id="jurusan" value="{{$user->jurusan}}" required/>
+                      <input readonly type="text" name="jurusan" class="form-control" id="jurusan" value="{{$user->jurusanDetail->jurusan}}" required/>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -116,7 +116,7 @@
 
           {{-- Tombol Tambah Anggota --}}
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h4>Data Pemohon Lainya</h4>
+            <h4>Data Pemohon Lainya</h4><br><div style="color: red"><i>*)Pastikan email & nomor hp yang didaftarkan sesuai dengan akun yang terdaftar sebelumnya</i></div>
             <button type="button" class="btn btn-success btn-sm" id="btnTambahAnggota">
               <i class="bi bi-plus-circle"></i> Tambah Pemohon
             </button>
@@ -129,8 +129,8 @@
                 <tr>
                   <th>Nama</th>
                   <th>Email</th>
-                  <th>Jurusan</th>
                   <th>Nomor HP</th>
+                  <th>Jurusan</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -155,15 +155,25 @@
 @section('js')
 <script>
     let anggotaIndex = 0;
-    
+    const jurusanList = @json($jurusan);
+    const pengajuanList = @json($pengajuan);
+
     $('#btnTambahAnggota').on('click', function () {
         anggotaIndex++;
+        let jurusanOptions = '';
+        jurusanList.forEach(j => {
+            jurusanOptions += `<option value="${j.id}">${j.jurusan}</option>`;
+        });
         $('#tabel-anggota tbody').append(`
            <tr>
                 <td><input type="text" name="anggota[${anggotaIndex}][nama]" class="form-control border-0" required></td>
                 <td><input type="text" name="anggota[${anggotaIndex}][email]" class="form-control border-0" required></td>
                 <td><input type="text" name="anggota[${anggotaIndex}][no_hp]" class="form-control border-0" required></td>
-                <td><input type="text" name="anggota[${anggotaIndex}][jurusan]" class="form-control border-0" required></td>
+                <td>
+                    <select name="anggota[${anggotaIndex}][jurusan]" class="form-control border-0" required>
+                    ${jurusanOptions}
+                    </select>
+                </td>
                 <td><button type="button" class="btn btn-danger btn-sm btn-hapus-anggota">Hapus</button></td>
             </tr>
         `);
@@ -184,17 +194,22 @@
                 type: "post"
             },
             columns: [
-                { data: "DT_RowIndex", name: "DT_RowIndex", searchable: "false", orderable: "false" },
+                { data: "DT_RowIndex", name: "DT_RowIndex", searchable: "false", orderable: "false"},
                 { data: "nomor_surat_pengantar", name: "nomor_surat_pengantar" },
                 { data: "status_surat", name: "status_surat" },
                 { data: "action", name: "action", searchable: "false", orderable: "false" }
             ],
-            order: [[ 1, "asc" ]],
+            order: [[ 0, "asc" ]],
         });
 
         $("#btn-add").on("click",function(){
-            $("#modalDataLabel").text("Pengajuan Internship");
-            $("#modalData").modal("show");
+            console.log(pengajuanList);
+            if(pengajuanList.length == 0){
+                $("#modalDataLabel").text("Pengajuan Internship");
+                $("#modalData").modal("show");
+            }else{
+                 notif("warning","fas fa-exclamation","Perhatian !",'Tidak dapat membuat pengajuan lain karena anda sudah memiliki 1 pengajuan yang berjalan',"error");
+            }
         });
 
         $("body").on("click",".btn-edit",function(){

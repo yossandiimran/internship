@@ -15,6 +15,11 @@ class SuratBalasan extends Model
     {
         return $this->hasMany(SuratBalasanPemohon::class, 'id_surat', 'id');
     }
+
+    public function statusDetail()
+    {
+        return $this->hasOne(MasterStatusSurat::class, 'id', 'status_surat');
+    }
     
     
 }

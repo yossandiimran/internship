@@ -18,9 +18,10 @@ class CreateSuratBalasanPemohon extends Migration
             $table->integer('id_surat');
             $table->string('email');
             $table->string('nama_pemohon');
-            $table->string('nim');
-            $table->integer('id_jurusan');
-            $table->integer('id_divisi');
+            $table->string('nim')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->integer('id_jurusan')->nullable();
+            $table->integer('id_divisi')->nullable();
             $table->timestamps();
         });
     }

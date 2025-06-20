@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\MasterJurusan;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use DateTime;
 use Hash;
@@ -20,7 +21,8 @@ class FrontEndController extends Controller
     }
 
     public function daftarInternship(){
-        return view('frontend.registerInternship');
+        $data['jurusan'] = MasterJurusan::get();
+        return view('frontend.registerInternship',$data);
 
     }
 
