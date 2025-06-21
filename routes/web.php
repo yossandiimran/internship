@@ -46,17 +46,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
         });
     });
 
-    // Transaksi Route
-    Route::group(['prefix' => 'transaksi', 'namespace' => 'Transaksi', 'as' => 'transaksi.','middleware' => ['permission:1']], function () {
-        // Transaksi
-        Route::get('/', 'TransaksiController@index')->name('index');
-        Route::post('action', 'TransaksiController@store')->name('store');
-        Route::post('detail', 'TransaksiController@detail')->name('detail');
-        Route::post('scopeData', 'TransaksiController@scopeData')->name('scopeData');
-        Route::post('destroy', 'TransaksiController@destroy')->name('destroy');
-        Route::post('updateStatus', 'TransaksiController@updateStatus')->name('updateStatus');
-        // Report
-        Route::get('report', 'ReportController@index')->name('report');
+    // Permintaan Internship
+    Route::group(['prefix' => 'permintaan', 'as' => 'permintaan.','middleware' => ['permission:1']], function () {
+        Route::get('/', 'PermintaanInternshipController@index')->name('index');
+        Route::post('/scopeData', 'PermintaanInternshipController@scopeData')->name('scopeData');
+        Route::post('/store', 'PermintaanInternshipController@store')->name('store');
+        Route::post('/detail', 'PermintaanInternshipController@detail')->name('detail');
+        Route::get('/store', 'PermintaanInternshipController@store')->name('store');
+        Route::get('/destroy', 'PermintaanInternshipController@destroy')->name('destroy');
     });
 
     // Route untuk Anak Internship

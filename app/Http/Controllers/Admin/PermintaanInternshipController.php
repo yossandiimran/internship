@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\InternshipMember;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,26 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use DataTables;
 use Validator;
 
-class InternshipController extends Controller
+class PermintaanInternshipController extends Controller
 {
     /**
      * Return sap bus settings view
      */
     public function index()
     {   
-        
-        $usr = Auth::user()->load('jurusanDetail');
-        $pengajuan =  SuratBalasan::with([
-            'statusDetail',
-            'pemohon' => function ($query) use ($usr) {
-                $query->where('email', $usr->email);
-            }
-        ])->get();
-        return view('admin.internshipMember.internship.index', [
-            'user' => $usr,
-            'jurusan' => MasterJurusan::all(),
-            'pengajuan' => $pengajuan,
-        ]);
+        return view('admin.permintaanInternship.index');
     }
 
     /**
@@ -44,9 +32,7 @@ class InternshipController extends Controller
         $data = SuratBalasan::with([
             'statusDetail',
             'pemohonUtama',
-            'pemohon' => function ($query) use ($user) {
-                $query->where('email', $user->email);
-            }
+            'pemohon',
         ])->get();
         return DataTables::of($data)
                 ->addIndexColumn()
@@ -65,12 +51,10 @@ class InternshipController extends Controller
                     }
                 })
                 ->addColumn('pemohon_lain', function($val) {
-                    $pemohonLain = SuratBalasanPemohon::where('id_surat', $val->id)->with('jurusan')->get();
                     $html = '<ul>';
-                    foreach($pemohonLain as $pm){
+                    foreach($val->pemohon as $pm){
                         $html .= '<li>' . $pm->nama_pemohon . ' ('.$pm->jurusan->jurusan.')</li>'; 
                     }
-
                     $html .= '</ul>';
                     return $html;
                 })
@@ -79,10 +63,23 @@ class InternshipController extends Controller
                 })
                 ->addColumn('action', function($val) {
                     $key = encrypt("surat".$val->id);
-                    return '<div class="btn-group">'.
-                                '<button class="btn btn-primary btn-sm btn-view" data-key="'.$key.'" title="Detail"><i class="fas fa-eye"></i></button>'.
-                                '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>'.
-                            '</div>';
+                    $html = '<div class="btn-group">';
+
+                    $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="'.$key.'" title="Detail"><i class="fas fa-eye"></i></button>';
+                    
+                    if($val->statusDetail->id == 1){
+                         $html .= '<button class="btn btn-warning btn-sm btn-proses" data-key="'.$key.'" title="Proses Pengajuan"><i class="fas fa-check"></i></button>';
+                    }else if($val->statusDetail->id == 2){
+                        $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }else if($val->statusDetail->id == 3){
+                        $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }else if($val->statusDetail->id == 4){
+                        $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }else if($val->statusDetail->id == 5){
+                        $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }
+                    $html .= '</div>';
+                    return $html;
                 })
                 ->rawColumns(['action', 'foto', 'status_surat', 'pemohon_lain'])
                 ->make(true);

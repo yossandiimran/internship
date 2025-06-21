@@ -16,20 +16,20 @@
                     </span>
                     <h4 class="text-section">Internship</h4>
                 </li>
-                <li class="nav-item {{ request()->is('admin/transaksi/') || request()->is('admin/transaksi/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.transaksi.index') }}">
+                <li class="nav-item {{ request()->is('admin/permintaan') || request()->is('admin/permintaan/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-envelope"></i>
                         <p>Permintaan Internship</p>
                     </a>
                 </li>
-                 <li class="nav-item {{ request()->is('admin/transaksi/') || request()->is('admin/transaksi/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.transaksi.index') }}">
+                 <li class="nav-item {{ request()->is('admin/permintaan/') || request()->is('admin/permintaan/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-users"></i>
                         <p>Peserta Internship</p>
                     </a>
                 </li>
-                 <li class="nav-item {{ request()->is('admin/transaksi/') || request()->is('admin/transaksi/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.transaksi.index') }}">
+                 <li class="nav-item {{ request()->is('admin/permintaan/') || request()->is('admin/permintaan/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-star"></i>
                         <p>Sertifikat & Penilaian</p>
                     </a>
@@ -43,13 +43,13 @@
                     <h4 class="text-section">Laporan</h4>
                 </li>
                 <li class="nav-item {{ request()->is('admin/laporan/') || request()->is('admin/laporan/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.transaksi.index') }}">
+                    <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-file-pdf"></i>
                         <p>Laporan Absensi</p>
                     </a>
                 </li>
                 <li class="nav-item {{ request()->is('admin/laporan/') || request()->is('admin/laporan/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.transaksi.index') }}">
+                    <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-file-pdf"></i>
                         <p>Laporan Aktifitas</p>
                     </a>
@@ -79,7 +79,7 @@
                     </a>
                 </li>
                 <li class="nav-item {{ request()->is('admin/laporan') || request()->is('admin/laporan/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.transaksi.index') }}">
+                    <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-user"></i>
                         <p>User</p>
                     </a>

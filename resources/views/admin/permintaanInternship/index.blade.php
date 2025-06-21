@@ -34,12 +34,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Pengajuan Internship</h4>
+                    <h4 class="card-title">Permintaan Internship</h4>
                 </div>
                 <div class="card-body">
-                    <button type="button" id="btn-add" class="btn btn-primary btn-md">
-                        Buat Pengajuan
-                    </button>
                     <div class="table-responsive">
                         <table id="table-data" class="table table-bordered table-hover" width="100%">
                             <thead>
@@ -63,7 +60,7 @@
 <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog modal-lg" role="document" style="width: 80%">
     <div class="modal-content">
-      <form id="form-data" method="post" action="{{ route('admin.internshipMember.pengajuan.store') }}" enctype="multipart/form-data">
+      <form id="form-data" method="post" action="{{ route('admin.permintaan.store') }}" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="key" class="form-control" id="key-form">
            
@@ -82,14 +79,14 @@
                     {{-- Nama Pemohon --}}
                     <div class="form-group">
                       <label for="nama_pemohon">Nama Pemohon</label>
-                      <input readonly type="text" name="nama_pemohon" class="form-control" id="nama_pemohon" value="{{$user->name}}" required/>
+                      <input readonly type="text" name="nama_pemohon" class="form-control" id="nama_pemohon" value="" required/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     {{-- Asal Sekolah --}}
                     <div class="form-group">
                       <label for="asal_sekolah_pemohon">Asal Sekolah Pemohon</label>
-                      <input readonly type="text" name="asal_sekolah_pemohon" class="form-control" id="asal_sekolah_pemohon" value="{{$user->asal_sekolah}}" required/>
+                      <input readonly type="text" name="asal_sekolah_pemohon" class="form-control" id="asal_sekolah_pemohon" value="" required/>
                     </div>
                 </div>
             </div>
@@ -98,14 +95,14 @@
                     {{-- Nama Pemohon --}}
                     <div class="form-group">
                       <label for="jurusan">Jurusan</label>
-                      <input readonly type="text" name="jurusan" class="form-control" id="jurusan" value="{{$user->jurusanDetail->jurusan}}" required/>
+                      <input readonly type="text" name="jurusan" class="form-control" id="jurusan" value="" required/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     {{-- NIM --}}
                     <div class="form-group">
                         <label for="jurusan">NIM</label>
-                        <input readonly type="text" name="nim" class="form-control" id="nim" value="{{$user->nim}}" required/>
+                        <input readonly type="text" name="nim" class="form-control" id="nim" value="" required/>
                     </div>
                 </div>
             </div>
@@ -129,7 +126,7 @@
 
           {{-- Tombol Tambah Anggota --}}
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h4>Data Pemohon Lainya</h4><br><div style="color: red"><i>*)Pastikan email & nomor hp yang didaftarkan sesuai dengan akun yang terdaftar sebelumnya</i></div>
+            <h4>Data Pemohon Lainya</h4><br>
             <button type="button" class="btn btn-success btn-sm upSuratPengantar" id="btnTambahAnggota">
               <i class="bi bi-plus-circle"></i> Tambah Pemohon
             </button>
@@ -168,8 +165,6 @@
 @section('js')
 <script>
     let anggotaIndex = 0;
-    const jurusanList = @json($jurusan);
-    const pengajuanList = @json($pengajuan);
 
     $('#btnTambahAnggota').on('click', function () {
         anggotaIndex++;
@@ -203,7 +198,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.internshipMember.pengajuan.scopeData') }}",
+                url: "{{ route('admin.permintaan.scopeData') }}",
                 type: "post"
             },
             columns: [
@@ -223,10 +218,6 @@
                 $(".upSuratPengantar").show();
                 $(".viewSuratPengantarDetail").hide();
                 $(".viewSuratPengantar").hide();
-                $('#nama_pemohon').val('{{$user->name}}').prop('readonly', true)
-                $('#asal_sekolah_pemohon').val('{{$user->asal_sekolah}}').prop('readonly', true)
-                $('#jurusan').val('{{$user->jurusanDetail->jurusan}}').prop('readonly', true)
-                $('#nim').val('{{$user->nim}}').prop('readonly', true)
                 $('#nomor_surat_pengantar').val("").prop('readonly', false)
 
                 $("#modalDataLabel").text("Pengajuan Internship");
@@ -242,7 +233,7 @@
             formLoading("#form-data","#modal-body",true);
             let key = $(this).data("key");
             $.ajax({
-                url: "{{ route('admin.internshipMember.pengajuan.detail') }}",
+                url: "{{ route('admin.permintaan.detail') }}",
                 type: "POST",
                 data: {key:key},
                 success:function(res){
@@ -312,7 +303,7 @@
                 if (willDelete) {
                     notifLoading("Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                     $.ajax({
-                        url: "{{ route('admin.internshipMember.pengajuan.destroy') }}",
+                        url: "{{ route('admin.permintaan.destroy') }}",
                         type: "POST",
                         data: {key:key},
                         success:function(res){

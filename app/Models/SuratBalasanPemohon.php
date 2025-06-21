@@ -23,7 +23,7 @@ class SuratBalasanPemohon extends Model
 
     public function jurusan()
     {
-        return $this->hasOne(MasterJurusan::class, 'email', 'email');
+        return $this->hasOne(MasterJurusan::class, 'id', 'id_jurusan');
     }
 
 }
