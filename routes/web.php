@@ -50,7 +50,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
     Route::group(['prefix' => 'permintaan', 'as' => 'permintaan.','middleware' => ['permission:1']], function () {
         Route::get('/', 'PermintaanInternshipController@index')->name('index');
         Route::post('/scopeData', 'PermintaanInternshipController@scopeData')->name('scopeData');
-        Route::post('/store', 'PermintaanInternshipController@store')->name('store');
+        Route::post('/uploadSuratBalasan', 'PermintaanInternshipController@uploadSuratBalasan')->name('uploadSuratBalasan');
+        Route::post('/acc', 'PermintaanInternshipController@acc')->name('acc');
+        Route::post('/tolak', 'PermintaanInternshipController@tolak')->name('tolak');
+        Route::post('/selesai', 'PermintaanInternshipController@selesai')->name('selesai');
         Route::post('/detail', 'PermintaanInternshipController@detail')->name('detail');
         Route::get('/store', 'PermintaanInternshipController@store')->name('store');
         Route::get('/destroy', 'PermintaanInternshipController@destroy')->name('destroy');
@@ -67,6 +70,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
             Route::get('/', 'InternshipController@index')->name('index');
             Route::post('/scopeData', 'InternshipController@scopeData')->name('scopeData');
             Route::post('/store', 'InternshipController@store')->name('store');
+            Route::post('/uploadMou', 'InternshipController@uploadMou')->name('uploadMou');
             Route::post('/detail', 'InternshipController@detail')->name('detail');
             Route::get('/store', 'InternshipController@store')->name('store');
             Route::get('/destroy', 'InternshipController@destroy')->name('destroy');

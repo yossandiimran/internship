@@ -59,8 +59,10 @@ class InternshipController extends Controller
                     }else if($val->statusDetail->id == 3){
                         return '<button class="btn btn-danger btn-sm">'.$val->statusDetail->status.'</button>';
                     }else if($val->statusDetail->id == 4){
-                        return '<button class="btn btn-success btn-sm">'.$val->statusDetail->status.'</button>';
+                        return '<button class="btn btn-warning btn-sm">'.$val->statusDetail->status.'</button>';
                     }else if($val->statusDetail->id == 5){
+                        return '<button class="btn btn-success btn-sm">'.$val->statusDetail->status.'</button>';
+                    }else if($val->statusDetail->id == 6){
                         return '<button class="btn btn-secondary btn-sm">'.$val->statusDetail->status.'</button>';
                     }
                 })
@@ -79,10 +81,24 @@ class InternshipController extends Controller
                 })
                 ->addColumn('action', function($val) {
                     $key = encrypt("surat".$val->id);
-                    return '<div class="btn-group">'.
-                                '<button class="btn btn-primary btn-sm btn-view" data-key="'.$key.'" title="Detail"><i class="fas fa-eye"></i></button>'.
-                                '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>'.
-                            '</div>';
+                    $html = '<div class="btn-group">';
+
+                    $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="'.$key.'" title="Detail"><i class="fas fa-eye"></i></button>';
+                    
+                    if($val->statusDetail->id == 1){
+                        //  $html .= '<button class="btn btn-warning btn-sm btn-proses" data-key="'.$key.'" title="Proses Pengajuan"><i class="fas fa-check"></i></button>';
+                    }else if($val->statusDetail->id == 2){
+                         $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="'.$key.'" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
+                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }else if($val->statusDetail->id == 3){
+                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }else if($val->statusDetail->id == 4){
+                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }else if($val->statusDetail->id == 5){
+                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    }
+                    $html .= '</div>';
+                    return $html;
                 })
                 ->rawColumns(['action', 'foto', 'status_surat', 'pemohon_lain'])
                 ->make(true);
@@ -170,6 +186,40 @@ class InternshipController extends Controller
                     'lokasi' => $req->lokasi,
                 ]);
             }
+            return $this->sendResponse(null, "Berhasil memproses data.");
+        } catch (ModelNotFoundException $e) {
+            return $this->sendError("Data tidak dapat ditemukan.");
+        } catch (\Throwable $err) {
+            dd($err);
+            return $this->sendError("Kesalahan sistem saat proses penyimpanan data, silahkan hubungi admin");
+        }
+    }
+
+      public function uploadMou(Request $req)
+    {  
+        $validator = Validator::make($req->input(), [
+            'key_proses' => 'nullable|string',
+            'tanggal_surat_mou' => 'nullable|string',
+            'nomor_surat_mou' => 'nullable|string',
+        ]);
+
+        if($req->file('file_surat_mou')){
+            $suratPengantar = $req->file('file_surat_mou')->store('uploads', 'public');
+        }
+
+        if ($validator->fails()) {
+            return $this->sendError("Error validation", $validator->errors());
+        }
+
+        try {
+            $key = str_replace("surat", "", decrypt($req->key_proses));
+            $data = SuratBalasan::findOrFail($key);
+            $data->update([
+                'status_surat' => '4',
+                'tanggal_surat_mou' => $req->tanggal_surat_mou,
+                'nomor_surat_mou' => $req->nomor_surat_mou,
+                'file_surat_mou' => $suratPengantar,
+            ]);
             return $this->sendResponse(null, "Berhasil memproses data.");
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");

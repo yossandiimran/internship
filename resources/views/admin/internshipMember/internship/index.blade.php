@@ -73,7 +73,7 @@
                     <h3 class="modal-title" id="modalDataLabel">Pengajuan Internship</h3>
                 </div>
                 <div class="col-md-1 viewSuratPengantarDetail">
-                    <button class="btn btn-primary btn-sm">Dikirim</button>
+                    <button class="btn btn-primary btn-sm btn-status-permohonan">Dikirim</button>
                 </div>
             </div>
             <hr>    
@@ -115,17 +115,23 @@
             <input type="text" name="nomor_surat_pengantar" class="form-control" id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required/>
           </div>
 
-          {{-- Upload File Surat Pengantar --}}
+        {{-- Upload File Surat Pengantar --}}
+          <hr>
           <div class="form-group upSuratPengantar">
             <label for="file_surat_pengantar">Upload Surat Pengantar (PDF)</label>
             <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar" accept=".pdf" required/>
           </div>
-          <div class="form-group viewSuratPengantar">
-            <label for="file_surat_pengantar">Surat Pengantar</label>
-            <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar" accept=".pdf" required/>
+          <div class="row">
+            <div class="col-md-2">
+                <div class="form-group viewSuratPengantar"></div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group viewSuratBalasan"></div>
+            </div>
+             <div class="col-md-2">
+                <div class="form-group viewSuratMou"></div>
+            </div>
           </div>
-
-          <hr>
 
           {{-- Tombol Tambah Anggota --}}
           <div class="d-flex justify-content-between align-items-center mb-2">
@@ -163,10 +169,84 @@
   </div>
 </div>
 
+{{-- Modal Proses --}}
+<div class="modal fade" id="modalProses" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-md" role="document" style="width: 80%">
+    <div class="modal-content">
+      <form id="form-proses" method="post" action="{{ route('admin.internshipMember.pengajuan.uploadMou') }}" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="key_proses" class="form-control" id="key-form-proses">
+           
+        <div class="modal-body" id="modal-body">
+            <div class="row">
+                <div class="col-md-11">
+                    <h3 class="modal-title" id="modalDataLabel">Upload Surat MOU</h3>
+                </div>
+            </div>
+            <hr> 
+            <div class="form-group">
+                <label for="nomor_surat_mou">Nomor Surat MOU</label>
+                <input type="text" name="nomor_surat_mou" class="form-control" id="nomor_surat_mou" placeholder="Contoh: 420/123/SMKN1" required/>
+            </div> 
+            <div class="form-group">
+                <label for="tanggal_surat_mou">Tanggal Surat MOU</label>
+                <input type="date" name="tanggal_surat_mou" class="form-control" id="tanggal_surat_mou" placeholder="Contoh: 420/123/SMKN1" required/>
+            </div>   
+            {{-- Upload File Surat Pengantar --}}
+            <div class="form-group">
+                <label for="file_surat_mou">Upload Surat MOU</label>
+                <input type="file" name="file_surat_mou" class="form-control" id="file_surat_mou" accept=".pdf" required/>
+            </div>   
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary btn-md">Proses</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 @section('js')
 <script>
+    $("#form-proses").ajaxForm({
+        beforeSend:function(){
+            formLoading("#form-proses","#modal-body",true,true);
+        },
+        success:function(res){
+            dt.ajax.reload(null, false);
+            notif("success","fas fa-check","Notifikasi Progress",res.message,"done");
+            $("#form-data .form-control").val("")
+            $("#modalProses").modal("hide");
+        },
+        error:function(err, status, message){
+            response = err.responseJSON;
+            title = "Notifikasi Error";
+            message = (typeof response != "undefined") ? response.message : message;
+            if(message == "Error validation"){
+                title = "Error Validasi";
+                $.each(response.data, function(k,v){
+                    message = v[0];
+                    return false;
+                });
+            }
+            notif("danger","fas fa-exclamation",title,message,"error");
+        },
+        complete:function(){
+            formLoading("#form-data","#modal-body",false);
+        }
+    });
+
+    $("body").on("click",".btn-proses",function(){
+        let key = $(this).data("key");
+        $('#key-form-proses').val(key);
+        console.log(key);
+        
+        $("#modalProses").modal("show");
+    });
+
     let anggotaIndex = 0;
     const jurusanList = @json($jurusan);
     const pengajuanList = @json($pengajuan);
@@ -253,17 +333,55 @@
                     $('#nim').val(res.data.pemohon_utama.nim).prop('readonly', true)
                     $('#nomor_surat_pengantar').val(res.data.nomor_surat_pengantar).prop('readonly', true)
                     
-                    const fileUrl = `{{ asset('storage/') }}/${res.data.file_surat_pengantar}`;
+                    const fileUrlPengantar = `{{ asset('storage/') }}/${res.data.file_surat_pengantar}`;
+                    const fileUrlBalasan = `{{ asset('storage/') }}/${res.data.file_surat_balasan}`;
+                    const fileUrlMou = `{{ asset('storage/') }}/${res.data.file_surat_mou}`;
+
+                    let statusHtml = '';
+                    
+                    if (res.data.status_surat == 1) {
+                        statusHtml = `<button class="btn btn-primary btn-md btn-status-permohonan">Dikirim</button>`;
+                    } else if (res.data.status_surat == 2) {
+                        statusHtml = `<button class="btn btn-warning btn-md btn-status-permohonan">Diproses</button>`;
+                    } else if (res.data.status_surat == 3) {
+                        statusHtml = `<button class="btn btn-danger btn-md btn-status-permohonan">Ditolak</button>`;
+                    } else if (res.data.status_surat == 4) {
+                        statusHtml = `<button class="btn btn-warning btn-md btn-status-permohonan">Ditinjau</button>`;
+                    } else if (res.data.status_surat == 5){
+                        statusHtml = `<button class="btn btn-secondary btn-md btn-status-permohonan">Aktif</button>`;
+                    } else {
+                        statusHtml = `<button class="btn btn-secondary btn-md btn-status-permohonan">Selesai</button>`;
+                    }
+                    $('.btn-status-permohonan').replaceWith(statusHtml);
 
                     // Sembunyiin input file, tampilkan view link
                     $(".upSuratPengantar").hide();
                     $(".viewSuratPengantarDetail").show();
+
                     $(".viewSuratPengantar").show().html(`
                         <label>Surat Pengantar</label><br>
-                        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-danger">
-                            <i class="fas fa-file"></i>&nbsp;Lihat Surat Pengantar
+                        <a href="${fileUrlPengantar}" target="_blank" class="btn btn-lg btn-warning">
+                            <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Pengantar
                         </a>
                     `);
+
+                    if(res.data.file_surat_balasan != null){
+                        $(".viewSuratBalasan").show().html(`
+                            <label>Surat Balasan</label><br>
+                            <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
+                                <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Balasan
+                            </a>
+                        `);
+                    }
+
+                    if(res.data.file_surat_mou != null){
+                        $(".viewSuratMou").show().html(`
+                            <label>Surat MOU</label><br>
+                            <a href="${fileUrlMou}" target="_blank" class="btn btn-lg btn-warning">
+                                <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat MOU
+                            </a>
+                        `);
+                    }
                     
                     $.each(res.data.pemohon, function(i, pm){
                         $('#tabel-anggota tbody').append(`

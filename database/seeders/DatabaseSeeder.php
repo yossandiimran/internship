@@ -58,7 +58,10 @@ class DatabaseSeeder extends Seeder
             'status' => 'Ditolak',
         ]);
         MasterStatusSurat::create([
-            'status' => 'Berjalan',
+            'status' => 'Ditinjau',
+        ]);
+        MasterStatusSurat::create([
+            'status' => 'Aktif',
         ]);
         MasterStatusSurat::create([
             'status' => 'Selesai',
