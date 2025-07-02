@@ -52,6 +52,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
         Route::post('/scopeData', 'PermintaanInternshipController@scopeData')->name('scopeData');
         Route::post('/uploadSuratBalasan', 'PermintaanInternshipController@uploadSuratBalasan')->name('uploadSuratBalasan');
         Route::post('/acc', 'PermintaanInternshipController@acc')->name('acc');
+        Route::post('/accDivisi', 'PermintaanInternshipController@accDivisi')->name('accDivisi');
         Route::post('/tolak', 'PermintaanInternshipController@tolak')->name('tolak');
         Route::post('/selesai', 'PermintaanInternshipController@selesai')->name('selesai');
         Route::post('/detail', 'PermintaanInternshipController@detail')->name('detail');
