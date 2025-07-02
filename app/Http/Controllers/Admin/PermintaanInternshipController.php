@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\MasterJurusan;
+use App\Models\MasterDivisi;
 use App\Models\SuratBalasan;
 use App\Models\SuratBalasanPemohon;
 use App\Models\User;
@@ -20,7 +21,9 @@ class PermintaanInternshipController extends Controller
      */
     public function index()
     {   
-        return view('admin.permintaanInternship.index');
+        return view('admin.permintaanInternship.index',[
+            'divisi' => MasterDivisi::all(),
+        ]);
     }
 
     /**
@@ -101,6 +104,7 @@ class PermintaanInternshipController extends Controller
             $data = SuratBalasan::with([
                 'statusDetail',
                 'pemohon.pemohon.jurusanDetail',
+                'pemohon.divisi',
                 'pemohonUtama.jurusanDetail',
             ])->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
@@ -179,6 +183,32 @@ class PermintaanInternshipController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
         } catch (\Throwable $err) {
+            return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
+        }
+    }
+    
+    public function accDivisi(Request $req)
+    {
+        try {
+            // Validation
+            $key = str_replace("surat", "", decrypt($req->key));
+            $data = SuratBalasan::findOrFail($key);
+            
+          
+            $data->update([
+                'status_surat' => '5'
+            ]);
+            
+            foreach ($req->anggota as $ag) {
+                SuratBalasanPemohon::where('email', $ag['email'])->update([
+                    'id_divisi' => $ag['divisi']
+                ]);
+            }
+            return $this->sendResponse(null, "Proses Berhasil.");
+        } catch (ModelNotFoundException $e) {
+            return $this->sendError("Data tidak dapat ditemukan.");
+        } catch (\Throwable $err) {
+            dd($err);
             return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
         }
     }

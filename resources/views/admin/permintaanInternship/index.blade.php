@@ -162,7 +162,7 @@
 
                         {{-- Tabel Anggota --}}
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="tabel-anggota-acc">
+                            <table class="table table-bordered" id="tabel-anggota">
                                 <thead>
                                     <tr>
                                         <th>Nama</th>
@@ -190,18 +190,24 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalAppendDivisi" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
+    <div class="modal fade" id="modalAppendDivisi" role="dialog" aria-hidden="true"
         data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg" role="document" style="width: 80%">
             <div class="modal-content">
-                <form id="form-data" method="post" action="{{ route('admin.permintaan.accDivisi') }}"
+                <form id="form-data-acc" method="post" action="{{ route('admin.permintaan.accDivisi') }}"
                     enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="key" class="form-control" id="key-form">
+                    <input type="hidden" name="key" class="form-control" id="key-form-acc">
                     <div class="modal-body" id="modal-body">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3 class="modal-title">Acc Internship</h3>
+                            </div>
+                        </div>
+                        <hr>
                         {{-- Tabel Anggota --}}
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="tabel-anggota">
+                            <table class="table table-bordered" id="tabel-anggota-acc">
                                 <thead>
                                     <tr>
                                         <th>Nama</th>
@@ -210,7 +216,6 @@
                                         <th>NIM</th>
                                         <th>Jurusan</th>
                                         <th>Divisi</th>
-                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -222,7 +227,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary btn-md upSuratPengantar">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-md">ACC</button>
                     </div>
                 </form>
             </div>
@@ -275,6 +280,8 @@
 
 @section('js')
     <script>
+        const divisiList = @json($divisi);
+
         $("body").on("click", ".btn-selesai", function() {
             let key = $(this).data("key");
             swal({
@@ -373,8 +380,12 @@
 
         $("body").on("click", ".btn-acc", function() {
             let key = $(this).data("key");
+            $('#key-form-acc').val(key);
+            let divisiOption = '';
+            divisiList.forEach(j => {
+                divisiOption += `<option value="${j.id}">${j.divisi}</option>`;
+            });
             $('#tabel-anggota-acc tbody').html('');
-            formLoading("#form-data", "#modal-body", true);
             $.ajax({
                 url: "{{ route('admin.permintaan.detail') }}",
                 type: "POST",
@@ -390,8 +401,12 @@
                                 <td>${pm.no_hp ?? ''}</td>
                                 <td>${pm.nim ?? ''}</td>
                                 <td>${pm.pemohon.jurusan_detail.jurusan ?? ''}</td>
-                                <td>${pm.divisi != null  ? pm.divisi.divisi : '-'}</td>
-                                <td>#</td>
+                                <td>
+                                    <input type="hidden" name="anggota[${i}][email]" value="${pm.email}" class="form-control border-0" required>
+                                    <select name="anggota[${i}][divisi]" class="form-control border-0" required>
+                                        ${divisiOption}
+                                    </select>
+                                </td>
                             </tr>
                         `);
                     });
@@ -408,45 +423,6 @@
                 }
             });
             $("#modalAppendDivisi").modal("show");
-            // swal({
-            //     title: "Acc",
-            //     text: "Terima Permintaan Internship?",
-            //     icon: "success",
-            //     buttons:{
-            //         cancel: {
-            //             visible: true,
-            //             text : 'Batal',
-            //             className: 'btn btn-danger'
-            //         },
-            //         confirm: {
-            //             text : 'Terima',
-            //             className : 'btn btn-primary'
-            //         }
-            //     }
-            // }).then((willDelete) => {
-            //     if (willDelete) {
-            //         notifLoading("Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
-            //         $.ajax({
-            //             url: "{{ route('admin.permintaan.acc') }}",
-            //             type: "POST",
-            //             data: {key:key},
-            //             success:function(res){
-            //                 notif("success","fas fa-check","Notifikasi Progress",res.message,"done");
-            //                 dt.ajax.reload(null, false);
-            //             },
-            //             error:function(err, status, message){
-            //                 response = err.responseJSON;
-            //                 message = (typeof response != "undefined") ? response.message : message;
-            //                 notif("danger","fas fa-exclamation","Notifikasi Error",message,"error");
-            //             },
-            //             complete:function(){
-            //                 setTimeout(() => {
-            //                     loadNotif.close();
-            //                 }, 1000);
-            //             }
-            //         });
-            //     }
-            // });
         });
 
         let anggotaIndex = 0;
@@ -490,9 +466,9 @@
 
         $('#btnTambahAnggota').on('click', function() {
             anggotaIndex++;
-            let jurusanOptions = '';
-            jurusanList.forEach(j => {
-                jurusanOptions += `<option value="${j.id}">${j.jurusan}</option>`;
+            let divisiOption = '';
+            divisiList.forEach(j => {
+                divisiOption += `<option value="${j.id}">${j.jurusan}</option>`;
             });
             $('#tabel-anggota tbody').append(`
            <tr>
@@ -501,7 +477,7 @@
                 <td><input type="text" name="anggota[${anggotaIndex}][no_hp]" class="form-control border-0" required></td>
                 <td>
                     <select name="anggota[${anggotaIndex}][jurusan]" class="form-control border-0" required>
-                    ${jurusanOptions}
+                    ${divisiOption}
                     </select>
                 </td>
                 <td><button type="button" class="btn btn-danger btn-sm btn-hapus-anggota">Hapus</button></td>
@@ -740,15 +716,15 @@
                 if ($("#key-form").val()) $("#form-data .form-control").val("");
             });
 
-            $("#form-data").ajaxForm({
+            $("#form-data-acc").ajaxForm({
                 beforeSend: function() {
-                    formLoading("#form-data", "#modal-body", true, true);
+                    formLoading("#form-data-acc", "#modal-body", true, true);
                 },
                 success: function(res) {
                     dt.ajax.reload(null, false);
                     notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
-                    $("#form-data .form-control").val("")
-                    $("#modalData").modal("hide");
+                    $("#form-data-acc .form-control").val("")
+                    $("#modalAppendDivisi").modal("hide");
                 },
                 error: function(err, status, message) {
                     response = err.responseJSON;
