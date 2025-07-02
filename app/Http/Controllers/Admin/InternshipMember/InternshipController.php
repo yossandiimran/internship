@@ -19,8 +19,8 @@ class InternshipController extends Controller
      * Return sap bus settings view
      */
     public function index()
-    {   
-        
+    {
+
         $usr = Auth::user()->load('jurusanDetail');
         $pengajuan =  SuratBalasan::with([
             'statusDetail',
@@ -28,11 +28,19 @@ class InternshipController extends Controller
                 $query->where('email', $usr->email);
             }
         ])->get();
+        $pemohon = User::where('is_internship', true)->with('jurusanDetail')->get();
         return view('admin.internshipMember.internship.index', [
             'user' => $usr,
+            'pemohon' => $pemohon,
             'jurusan' => MasterJurusan::all(),
             'pengajuan' => $pengajuan,
         ]);
+    }
+
+    public function getInternshipUser()
+    {
+        $users = User::where('is_internship', true)->get();
+        return response()->json($users);
     }
 
     /**
@@ -49,59 +57,59 @@ class InternshipController extends Controller
             }
         ])->get();
         return DataTables::of($data)
-                ->addIndexColumn()
-                ->removeColumn('id')
-                ->addColumn('status_surat', function($val) {
-                    if($val->statusDetail->id == 1){
-                        return '<button class="btn btn-primary btn-sm">'.$val->statusDetail->status.'</button>';
-                    }else if($val->statusDetail->id == 2){
-                        return '<button class="btn btn-warning btn-sm">'.$val->statusDetail->status.'</button>';
-                    }else if($val->statusDetail->id == 3){
-                        return '<button class="btn btn-danger btn-sm">'.$val->statusDetail->status.'</button>';
-                    }else if($val->statusDetail->id == 4){
-                        return '<button class="btn btn-warning btn-sm">'.$val->statusDetail->status.'</button>';
-                    }else if($val->statusDetail->id == 5){
-                        return '<button class="btn btn-success btn-sm">'.$val->statusDetail->status.'</button>';
-                    }else if($val->statusDetail->id == 6){
-                        return '<button class="btn btn-secondary btn-sm">'.$val->statusDetail->status.'</button>';
-                    }
-                })
-                ->addColumn('pemohon_lain', function($val) {
-                    $pemohonLain = SuratBalasanPemohon::where('id_surat', $val->id)->with('jurusan')->get();
-                    $html = '<ul>';
-                    foreach($pemohonLain as $pm){
-                        $html .= '<li>' . $pm->nama_pemohon . ' ('.$pm->jurusan->jurusan.')</li>'; 
-                    }
+            ->addIndexColumn()
+            ->removeColumn('id')
+            ->addColumn('status_surat', function ($val) {
+                if ($val->statusDetail->id == 1) {
+                    return '<button class="btn btn-primary btn-sm">' . $val->statusDetail->status . '</button>';
+                } else if ($val->statusDetail->id == 2) {
+                    return '<button class="btn btn-warning btn-sm">' . $val->statusDetail->status . '</button>';
+                } else if ($val->statusDetail->id == 3) {
+                    return '<button class="btn btn-danger btn-sm">' . $val->statusDetail->status . '</button>';
+                } else if ($val->statusDetail->id == 4) {
+                    return '<button class="btn btn-warning btn-sm">' . $val->statusDetail->status . '</button>';
+                } else if ($val->statusDetail->id == 5) {
+                    return '<button class="btn btn-success btn-sm">' . $val->statusDetail->status . '</button>';
+                } else if ($val->statusDetail->id == 6) {
+                    return '<button class="btn btn-secondary btn-sm">' . $val->statusDetail->status . '</button>';
+                }
+            })
+            ->addColumn('pemohon_lain', function ($val) {
+                $pemohonLain = SuratBalasanPemohon::where('id_surat', $val->id)->with('jurusan')->get();
+                $html = '<ul>';
+                foreach ($pemohonLain as $pm) {
+                    $html .= '<li>' . $pm->nama_pemohon . ' (' . $pm->jurusan->jurusan . ')</li>';
+                }
 
-                    $html .= '</ul>';
-                    return $html;
-                })
-                ->addColumn('asal_sekolah', function($val) {
-                   return $val->pemohonUtama->asal_sekolah;
-                })
-                ->addColumn('action', function($val) {
-                    $key = encrypt("surat".$val->id);
-                    $html = '<div class="btn-group">';
+                $html .= '</ul>';
+                return $html;
+            })
+            ->addColumn('asal_sekolah', function ($val) {
+                return $val->pemohonUtama->asal_sekolah;
+            })
+            ->addColumn('action', function ($val) {
+                $key = encrypt("surat" . $val->id);
+                $html = '<div class="btn-group">';
 
-                    $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="'.$key.'" title="Detail"><i class="fas fa-eye"></i></button>';
-                    
-                    if($val->statusDetail->id == 1){
-                        //  $html .= '<button class="btn btn-warning btn-sm btn-proses" data-key="'.$key.'" title="Proses Pengajuan"><i class="fas fa-check"></i></button>';
-                    }else if($val->statusDetail->id == 2){
-                         $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="'.$key.'" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
-                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
-                    }else if($val->statusDetail->id == 3){
-                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
-                    }else if($val->statusDetail->id == 4){
-                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
-                    }else if($val->statusDetail->id == 5){
-                        // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
-                    }
-                    $html .= '</div>';
-                    return $html;
-                })
-                ->rawColumns(['action', 'foto', 'status_surat', 'pemohon_lain'])
-                ->make(true);
+                $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="' . $key . '" title="Detail"><i class="fas fa-eye"></i></button>';
+
+                if ($val->statusDetail->id == 1) {
+                    //  $html .= '<button class="btn btn-warning btn-sm btn-proses" data-key="'.$key.'" title="Proses Pengajuan"><i class="fas fa-check"></i></button>';
+                } else if ($val->statusDetail->id == 2) {
+                    $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="' . $key . '" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
+                    // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                } else if ($val->statusDetail->id == 3) {
+                    // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                } else if ($val->statusDetail->id == 4) {
+                    // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                } else if ($val->statusDetail->id == 5) {
+                    // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                }
+                $html .= '</div>';
+                return $html;
+            })
+            ->rawColumns(['action', 'foto', 'status_surat', 'pemohon_lain'])
+            ->make(true);
     }
 
     /**
@@ -114,6 +122,7 @@ class InternshipController extends Controller
             $data = SuratBalasan::with([
                 'statusDetail',
                 'pemohon.pemohon.jurusanDetail',
+                'pemohon.divisi',
                 'pemohonUtama.jurusanDetail',
             ])->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
@@ -129,15 +138,15 @@ class InternshipController extends Controller
      * Store create or update sap bus settings
      */
     public function store(Request $req)
-    {  
+    {
         $pwRules = 'nullable';
         $user = Auth::user();
-      
+
         $validator = Validator::make($req->input(), [
             'key' => 'nullable|string',
         ]);
 
-        if($req->file('file_surat_pengantar')){
+        if ($req->file('file_surat_pengantar')) {
             $suratPengantar = $req->file('file_surat_pengantar')->store('uploads', 'public');
         }
 
@@ -146,7 +155,7 @@ class InternshipController extends Controller
         }
 
         try {
-            if(empty($req->key)){
+            if (empty($req->key)) {
                 // Create Data
                 $data = SuratBalasan::create([
                     'id_pemohon' => $user->id,
@@ -161,6 +170,7 @@ class InternshipController extends Controller
                     'id_surat' => $data->id,
                     'email' => $user->email,
                     'no_hp' => $user->no_hp,
+                    'nim' => $user->nim,
                     'nama_pemohon' => $user->name,
                     'id_jurusan' => $user->jurusan,
                 ]);
@@ -170,16 +180,16 @@ class InternshipController extends Controller
                         'id_surat' => $data->id,
                         'email' => $ag["email"],
                         'no_hp' => $ag["no_hp"],
+                        'nim' => $ag["nim"],
                         'nama_pemohon' => $ag["nama"],
                         'id_jurusan' => $ag["jurusan"],
                     ]);
                 }
-                
             } else {
                 // Validation
                 $key = str_replace("surat", "", decrypt($req->key));
                 $data = MasterDivisi::findOrFail($key);
-                
+
                 // Update Data
                 $data->update([
                     'divisi' => $req->divisi,
@@ -195,15 +205,15 @@ class InternshipController extends Controller
         }
     }
 
-      public function uploadMou(Request $req)
-    {  
+    public function uploadMou(Request $req)
+    {
         $validator = Validator::make($req->input(), [
             'key_proses' => 'nullable|string',
             'tanggal_surat_mou' => 'nullable|string',
             'nomor_surat_mou' => 'nullable|string',
         ]);
 
-        if($req->file('file_surat_mou')){
+        if ($req->file('file_surat_mou')) {
             $suratPengantar = $req->file('file_surat_mou')->store('uploads', 'public');
         }
 
@@ -244,5 +254,4 @@ class InternshipController extends Controller
             return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
         }
     }
-
 }

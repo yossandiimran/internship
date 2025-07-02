@@ -64,11 +64,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin','mid
          // Profile
         Route::group(['prefix' => 'profile', 'as' => 'profile.','middleware' => ['permission:2']], function () {
             Route::get('/', 'ProfileController@index')->name('index');
+            Route::post('/updateProfile', 'ProfileController@updateProfile')->name('updateProfile');
         });
         // Pengajuan Internship
         Route::group(['prefix' => 'pengajuan', 'as' => 'pengajuan.','middleware' => ['permission:2']], function () {
             Route::get('/', 'InternshipController@index')->name('index');
             Route::post('/scopeData', 'InternshipController@scopeData')->name('scopeData');
+            Route::post('/getInternshipUser', 'InternshipController@getInternshipUser')->name('getInternshipUser');
             Route::post('/store', 'InternshipController@store')->name('store');
             Route::post('/uploadMou', 'InternshipController@uploadMou')->name('uploadMou');
             Route::post('/detail', 'InternshipController@detail')->name('detail');

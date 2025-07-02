@@ -26,4 +26,9 @@ class SuratBalasanPemohon extends Model
         return $this->hasOne(MasterJurusan::class, 'id', 'id_jurusan');
     }
 
+    public function divisi()
+    {
+        return $this->hasOne(MasterDivisi::class, 'id', 'id_divisi');
+    }
+
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Admin\MasterAppMenu;
+use App\Models\SuratBalasanPemohon;
 
 function generatePassword($value)
 {
@@ -93,6 +94,12 @@ function getIdMenuCode($code, $id)
 function formatRupiah($angka)
 {
     return 'Rp ' . number_format($angka, 0, ',', '.');
+}
+
+function getStatusInternship(){
+    $stat = SuratBalasanPemohon::get();
+
+    return $stat;
 }
 
 ?>
