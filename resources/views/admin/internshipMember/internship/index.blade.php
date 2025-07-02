@@ -4,7 +4,6 @@
     <style>
         .blur-me {
             filter: blur(4px);
-            transition: filter 0.2s ease-in-out;
         }
 
         .modal-lg {
@@ -80,7 +79,7 @@
 
     <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
         data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-lg" role="document" style="width: 80%">
+        <div class="modal-dialog modal-lg" role="document" style="width: 95%">
             <div class="modal-content">
                 <form id="form-data" method="post" action="{{ route('admin.internshipMember.pengajuan.store') }}"
                     enctype="multipart/form-data">
@@ -98,7 +97,7 @@
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {{-- Nama Pemohon --}}
                                 <div class="form-group">
                                     <label for="nama_pemohon">Nama Pemohon</label>
@@ -106,7 +105,7 @@
                                         id="nama_pemohon" value="{{ $user->name }}" required />
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {{-- Asal Sekolah --}}
                                 <div class="form-group">
                                     <label for="asal_sekolah_pemohon">Asal Sekolah Pemohon</label>
@@ -114,9 +113,7 @@
                                         id="asal_sekolah_pemohon" value="{{ $user->asal_sekolah }}" required />
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {{-- Nama Pemohon --}}
                                 <div class="form-group">
                                     <label for="jurusan">Jurusan</label>
@@ -124,7 +121,9 @@
                                         value="{{ $user->jurusanDetail->jurusan }}" required />
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
                                 {{-- NIM --}}
                                 <div class="form-group">
                                     <label for="jurusan">NIM</label>
@@ -132,21 +131,23 @@
                                         value="{{ $user->nim }}" required />
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                {{-- Nomor Surat Pengantar --}}
+                                <div class="form-group">
+                                    <label for="nomor_surat_pengantar">Nomor Surat Pengantar</label>
+                                    <input type="text" name="nomor_surat_pengantar" class="form-control"
+                                        id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                               <div class="form-group upSuratPengantar">
+                                    <label for="file_surat_pengantar">Upload Surat Pengantar (PDF)</label>
+                                    <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar"
+                                        accept=".pdf" required />
+                                </div>
+                            </div>
                         </div>
-                        {{-- Nomor Surat Pengantar --}}
-                        <div class="form-group">
-                            <label for="nomor_surat_pengantar">Nomor Surat Pengantar</label>
-                            <input type="text" name="nomor_surat_pengantar" class="form-control"
-                                id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required />
-                        </div>
-
-                        {{-- Upload File Surat Pengantar --}}
                         <hr>
-                        <div class="form-group upSuratPengantar">
-                            <label for="file_surat_pengantar">Upload Surat Pengantar (PDF)</label>
-                            <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar"
-                                accept=".pdf" required />
-                        </div>
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="form-group viewSuratPengantar"></div>
@@ -162,9 +163,8 @@
                         {{-- Tombol Tambah Anggota --}}
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h4>Data Pemohon Lainya</h4>
-                            <br>
                             <button type="button" class="btn btn-success btn-sm upSuratPengantar" id="btnTambahAnggota">
-                                <i class="bi bi-plus-circle"></i> Tambah Pemohon
+                                <i class="fas fa-plus-circle"> </i>&nbsp;Tambah Pemohon 
                             </button>
                         </div>
 
@@ -199,8 +199,8 @@
     </div>
 
     {{-- Modal Tambah Anggota --}}
-    <div class="modal fade " id="modalTambahAnggota" role="dialog" aria-labelledby="modalDataLabel"
-        aria-hidden="true"data-keyboard="false" data-backdrop="dynamic">
+    <div class="modal fade" id="modalTambahAnggota" role="dialog" aria-labelledby="modalDataLabel"
+        aria-hidden="true"data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-md modal-dialog-centered" role="document" style="width: 80%">
             <div class="modal-content" style="background-color: grey">
                 <div class="modal-body" id="modal-body">
@@ -416,8 +416,7 @@
             });
 
             $("#btn-add").on("click", function() {
-                console.log(pengajuanList);
-                if (pengajuanList.length == 0) {
+                if (pengajuanList == null || pengajuanList.status_surat == 6 || pengajuanList.status_surat == 3 ) {
                     $(".upSuratPengantar").show();
                     $(".viewSuratPengantarDetail").hide();
                     $(".viewSuratPengantar").hide();

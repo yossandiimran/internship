@@ -22,12 +22,16 @@ class InternshipController extends Controller
     {
 
         $usr = Auth::user()->load('jurusanDetail');
-        $pengajuan =  SuratBalasan::with([
+        $pengajuan = SuratBalasan::with([
             'statusDetail',
-            'pemohon' => function ($query) use ($usr) {
-                $query->where('email', $usr->email);
-            }
-        ])->get();
+            'pemohonUtama',
+            'pemohon'
+        ])
+        ->rightJoin('surat_balasan_pemohon as sbp', 'sbp.id_surat', '=', 'surat_balasan.id')
+        ->where('sbp.email', $usr->email)
+        ->select('surat_balasan.*')
+        ->orderBy('id', 'desc')
+        ->first();
         $pemohon = User::where('is_internship', true)->with('jurusanDetail')->get();
         return view('admin.internshipMember.internship.index', [
             'user' => $usr,
@@ -52,10 +56,12 @@ class InternshipController extends Controller
         $data = SuratBalasan::with([
             'statusDetail',
             'pemohonUtama',
-            'pemohon' => function ($query) use ($user) {
-                $query->where('email', $user->email);
-            }
-        ])->get();
+            'pemohon'
+        ])
+        ->rightJoin('surat_balasan_pemohon as sbp', 'sbp.id_surat', '=', 'surat_balasan.id')
+        ->where('sbp.email', $user->email)
+        ->select('surat_balasan.*')
+        ->get();
         return DataTables::of($data)
             ->addIndexColumn()
             ->removeColumn('id')
