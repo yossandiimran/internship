@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
 use Validator;
+use Pdf;
 
 class InternshipController extends Controller
 {
@@ -27,11 +28,11 @@ class InternshipController extends Controller
             'pemohonUtama',
             'pemohon'
         ])
-        ->rightJoin('surat_balasan_pemohon as sbp', 'sbp.id_surat', '=', 'surat_balasan.id')
-        ->where('sbp.email', $usr->email)
-        ->select('surat_balasan.*')
-        ->orderBy('id', 'desc')
-        ->first();
+            ->rightJoin('surat_balasan_pemohon as sbp', 'sbp.id_surat', '=', 'surat_balasan.id')
+            ->where('sbp.email', $usr->email)
+            ->select('surat_balasan.*')
+            ->orderBy('id', 'desc')
+            ->first();
         $pemohon = User::where('is_internship', true)->with('jurusanDetail')->get();
         return view('admin.internshipMember.internship.index', [
             'user' => $usr,
@@ -40,6 +41,19 @@ class InternshipController extends Controller
             'pengajuan' => $pengajuan,
         ]);
     }
+
+    public function downloadSuratBalasan($keys)
+    {
+        $key = str_replace("surat", "", decrypt($keys));
+        $data = SuratBalasan::with(['statusDetail', 'pemohonUtama', 'pemohon'])->findOrFail($key);
+
+        $pdf = Pdf::loadView('pdf.suratBalasan', compact('data'))->setPaper('A4', 'portrait');
+
+        $filename = 'Surat-Balasan-' . $data->nomor_surat_balasan . '.pdf';
+
+        return $pdf->stream($filename);
+    }
+
 
     public function getInternshipUser()
     {
@@ -58,10 +72,10 @@ class InternshipController extends Controller
             'pemohonUtama',
             'pemohon'
         ])
-        ->rightJoin('surat_balasan_pemohon as sbp', 'sbp.id_surat', '=', 'surat_balasan.id')
-        ->where('sbp.email', $user->email)
-        ->select('surat_balasan.*')
-        ->get();
+            ->rightJoin('surat_balasan_pemohon as sbp', 'sbp.id_surat', '=', 'surat_balasan.id')
+            ->where('sbp.email', $user->email)
+            ->select('surat_balasan.*')
+            ->get();
         return DataTables::of($data)
             ->addIndexColumn()
             ->removeColumn('id')
@@ -102,11 +116,13 @@ class InternshipController extends Controller
                 if ($val->statusDetail->id == 1) {
                     //  $html .= '<button class="btn btn-warning btn-sm btn-proses" data-key="'.$key.'" title="Proses Pengajuan"><i class="fas fa-check"></i></button>';
                 } else if ($val->statusDetail->id == 2) {
-                    $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="' . $key . '" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
+                    // $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="' . $key . '" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
                     // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
                 } else if ($val->statusDetail->id == 3) {
+                    // $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="' . $key . '" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
                     // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
                 } else if ($val->statusDetail->id == 4) {
+                    $html .= '<button class="btn btn-secondary btn-sm btn-proses" data-key="' . $key . '" title="Upload Surat MOU"><i class="fas fa-upload"></i></button>';
                     // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
                 } else if ($val->statusDetail->id == 5) {
                     // $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
@@ -180,16 +196,18 @@ class InternshipController extends Controller
                     'nama_pemohon' => $user->name,
                     'id_jurusan' => $user->jurusan,
                 ]);
-
-                foreach ($req->anggota as $ag) {
-                    SuratBalasanPemohon::create([
-                        'id_surat' => $data->id,
-                        'email' => $ag["email"],
-                        'no_hp' => $ag["no_hp"],
-                        'nim' => $ag["nim"],
-                        'nama_pemohon' => $ag["nama"],
-                        'id_jurusan' => $ag["jurusan"],
-                    ]);
+                
+                if ($req->anggota) {
+                    foreach ($req->anggota as $ag) {
+                        SuratBalasanPemohon::create([
+                            'id_surat' => $data->id,
+                            'email' => $ag["email"],
+                            'no_hp' => $ag["no_hp"],
+                            'nim' => $ag["nim"],
+                            'nama_pemohon' => $ag["nama"],
+                            'id_jurusan' => $ag["jurusan"],
+                        ]);
+                    }
                 }
             } else {
                 // Validation
@@ -230,7 +248,7 @@ class InternshipController extends Controller
             $key = str_replace("surat", "", decrypt($req->key_proses));
             $data = SuratBalasan::findOrFail($key);
             $data->update([
-                'status_surat' => '4',
+                'status_surat' => '5',
                 'tanggal_surat_mou' => $req->tanggal_surat_mou,
                 'nomor_surat_mou' => $req->nomor_surat_mou,
                 'file_surat_mou' => $suratPengantar,

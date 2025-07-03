@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Admin\MasterAppMenu;
+use App\Models\SuratBalasan;
 use App\Models\SuratBalasanPemohon;
 
 function generatePassword($value)
@@ -96,10 +97,24 @@ function formatRupiah($angka)
     return 'Rp ' . number_format($angka, 0, ',', '.');
 }
 
-function getStatusInternship(){
+function getStatusInternship()
+{
     $stat = SuratBalasanPemohon::get();
 
     return $stat;
+}
+
+function generateNomorSuratBalasan()
+{
+    $stat = SuratBalasan::count();
+
+    $tanggal = str_pad(date('d'), 2, '0', STR_PAD_LEFT); // 2 digit tanggal
+    $bulan   = str_pad(date('m'), 2, '0', STR_PAD_LEFT); // 2 digit bulan
+    $tahun   = date('Y'); // 4 digit tahun
+
+    $idFormatted = str_pad($stat, 5, '0', STR_PAD_LEFT); // id jadi 5 digit
+
+    return "SE.{$tanggal}.{$bulan}/WIK.C.MJK.KP.{$idFormatted}/{$tahun}";
 }
 
 ?>

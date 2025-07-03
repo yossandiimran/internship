@@ -31,6 +31,9 @@ class CreateSuratBalasan extends Migration
             $table->string('status_permohonan')->nullable();
             $table->integer('status_surat')->nullable();
             $table->text('keterangan')->nullable();
+            $table->string('ttd_digital')->nullable();
+            $table->date('periode_awal')->nullable();
+            $table->date('periode_akhir')->nullable();
             $table->timestamps();
         });
     }

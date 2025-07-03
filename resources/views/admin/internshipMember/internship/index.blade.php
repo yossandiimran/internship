@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 {{-- NIM --}}
                                 <div class="form-group">
                                     <label for="jurusan">NIM</label>
@@ -131,7 +131,7 @@
                                         value="{{ $user->nim }}" required />
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {{-- Nomor Surat Pengantar --}}
                                 <div class="form-group">
                                     <label for="nomor_surat_pengantar">Nomor Surat Pengantar</label>
@@ -139,11 +139,19 @@
                                         id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required />
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                {{-- Nomor Surat Pengantar --}}
+                                <div class="form-group">
+                                    <label for="nomor_surat_balasan">Nomor Surat Balasan</label>
+                                    <input type="text" name="nomor_surat_balasan" class="form-control"
+                                        id="nomor_surat_balasan" placeholder="kosongkan" readonly />
+                                </div>
+                            </div>
                             <div class="col-md-4">
-                               <div class="form-group upSuratPengantar">
+                                <div class="form-group upSuratPengantar">
                                     <label for="file_surat_pengantar">Upload Surat Pengantar (PDF)</label>
-                                    <input type="file" name="file_surat_pengantar" class="form-control" id="file_surat_pengantar"
-                                        accept=".pdf" required />
+                                    <input type="file" name="file_surat_pengantar" class="form-control"
+                                        id="file_surat_pengantar" accept=".pdf" required />
                                 </div>
                             </div>
                         </div>
@@ -164,7 +172,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h4>Data Pemohon Lainya</h4>
                             <button type="button" class="btn btn-success btn-sm upSuratPengantar" id="btnTambahAnggota">
-                                <i class="fas fa-plus-circle"> </i>&nbsp;Tambah Pemohon 
+                                <i class="fas fa-plus-circle"> </i>&nbsp;Tambah Pemohon
                             </button>
                         </div>
 
@@ -262,6 +270,8 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="routeDownloadSuratBalasan"
+        value="{{ url('/admin/InternshipMember/pengajuan/downloadSuratBalasan') }}">
 @endsection
 
 @section('js')
@@ -368,7 +378,7 @@
         $(document).ready(function() {
 
             $('#pemohonTemp').select2({
-                dropdownParent: $('#modalTambahAnggota'), 
+                dropdownParent: $('#modalTambahAnggota'),
                 width: '100%',
                 placeholder: 'Pilih Pemohon',
                 allowClear: true
@@ -416,7 +426,8 @@
             });
 
             $("#btn-add").on("click", function() {
-                if (pengajuanList == null || pengajuanList.status_surat == 6 || pengajuanList.status_surat == 3 ) {
+                if (pengajuanList == null || pengajuanList.status_surat == 6 || pengajuanList
+                    .status_surat == 3) {
                     $(".upSuratPengantar").show();
                     $(".viewSuratPengantarDetail").hide();
                     $(".viewSuratPengantar").hide();
@@ -456,6 +467,8 @@
                             'readonly', true)
                         $('#nim').val(res.data.pemohon_utama.nim).prop('readonly', true)
                         $('#nomor_surat_pengantar').val(res.data.nomor_surat_pengantar).prop(
+                            'readonly', true)
+                        $('#nomor_surat_balasan').val(res.data.nomor_surat_balasan).prop(
                             'readonly', true)
 
                         const fileUrlPengantar =
@@ -499,11 +512,23 @@
                         </a>
                     `);
 
-                        if (res.data.file_surat_balasan != null) {
+                        // if (res.data.file_surat_balasan != null) {
+                        //     $(".viewSuratBalasan").show().html(`
+                    //     <label>Surat Balasan</label><br>
+                    //     <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
+                    //         <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Balasan
+                    //     </a>
+                    // `);
+                        // }
+
+                        let baseDownload = $('#routeDownloadSuratBalasan').val();
+                        let finalUrl = `${baseDownload}/${key}`;
+
+                        if (res.data.nomor_surat_balasan != null) {
                             $(".viewSuratBalasan").show().html(`
                             <label>Surat Balasan</label><br>
-                            <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
-                                <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Balasan
+                            <a href="${finalUrl}" target="_blank" class="btn btn-lg btn-warning">
+                                <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
                             </a>
                         `);
                         }
@@ -515,6 +540,8 @@
                                 <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat MOU
                             </a>
                         `);
+                        } else {
+                            $(".viewSuratMou").show().html();
                         }
 
                         $.each(res.data.pemohon, function(i, pm) {

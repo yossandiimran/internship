@@ -52,6 +52,7 @@
                                             <center>No</center>
                                         </th>
                                         <th>No Surat Pengantar</th>
+                                        <th>No Surat Balasan</th>
                                         <th>Asal Sekolah</th>
                                         <th>Pemohon</th>
                                         <th width="20px">
@@ -126,11 +127,23 @@
                             </div>
                         </div>
                         {{-- Nomor Surat Pengantar --}}
-                        <div class="form-group">
-                            <label for="nomor_surat_pengantar">Nomor Surat Pengantar</label>
-                            <input type="text" name="nomor_surat_pengantar" class="form-control"
-                                id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nomor_surat_pengantar">Nomor Surat Pengantar</label>
+                                    <input type="text" name="nomor_surat_pengantar" class="form-control"
+                                        id="nomor_surat_pengantar" placeholder="Contoh: 420/123/SMKN1" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nomor_surat_balasan">Nomor Surat Balasan</label>
+                                    <input type="text" name="nomor_surat_balasan" class="form-control"
+                                        id="nomor_surat_balasan" placeholder="Contoh: 420/123/SMKN1" readonly />
+                                </div>
+                            </div>
                         </div>
+
 
                         {{-- Upload File Surat Pengantar --}}
                         <hr>
@@ -190,22 +203,82 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalAppendDivisi" role="dialog" aria-hidden="true"
+    {{-- Modal Proses --}}
+    <div class="modal fade" id="modalProses" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
         data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-lg" role="document" style="width: 80%">
+        <div class="modal-dialog modal-lg" role="document" style="width: 95%">
             <div class="modal-content">
-                <form id="form-data-acc" method="post" action="{{ route('admin.permintaan.accDivisi') }}"
+                <form id="form-proses" method="post" action="{{ route('admin.permintaan.uploadSuratBalasan') }}"
                     enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="key" class="form-control" id="key-form-acc">
+                    <input type="hidden" name="key_proses" class="form-control" id="key-form-proses">
+
                     <div class="modal-body" id="modal-body">
                         <div class="row">
                             <div class="col-md-11">
-                                <h3 class="modal-title">Acc Internship</h3>
+                                <h3 class="modal-title" id="modalDataLabel">Proses Pengajuan Internship</h3>
                             </div>
                         </div>
                         <hr>
-                        {{-- Tabel Anggota --}}
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="nomor_surat_balasan">Nomor Surat Balasan</label>
+                                    <input type="text" name="nomor_surat_balasan" class="form-control"
+                                        value="{{ generateNomorSuratBalasan() }}" id="nomor_surat_balasan"
+                                        placeholder="Contoh: 420/123/SMKN1" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="status_surat">Status Penerimaan</label>
+                                    <select class="form-control" name="status_surat" id="status_surat">
+                                        <option value="4">Sudah Kami Terima</option>
+                                        <option value="3">Belum Bisa Kami Terima</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="tanggal_surat_balasan">Tanggal Surat Balasan</label>
+                                    <input type="date" name="tanggal_surat_balasan" class="form-control"
+                                        id="tanggal_surat_balasan" required />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="pembimbing">Pembimbing</label>
+                                    <input type="text" name="pembimbing" class="form-control" id="pembimbing"
+                                        placeholder="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="periode_awal">Tanggal Mulai</label>
+                                    <input type="date" name="periode_awal" class="form-control" id="periode_awal"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="periode_akhir">Tanggal Akhir</label>
+                                    <input type="date" name="periode_akhir" class="form-control" id="periode_akhir"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group upSuratPengantar">
+                                    <label for="ttd_digital">Upload TTD Digital / QrCode</label>
+                                    <input type="file" name="ttd_digital" class="form-control" id="ttd_digital"
+                                        accept=".png" required />
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <b>Pemohon : </b>
+                        <hr>
                         <div class="table-responsive">
                             <table class="table table-bordered" id="tabel-anggota-acc">
                                 <thead>
@@ -223,50 +296,6 @@
                                 </tbody>
                             </table>
                         </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary btn-md">ACC</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Modal Proses --}}
-    <div class="modal fade" id="modalProses" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
-        data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-md" role="document" style="width: 80%">
-            <div class="modal-content">
-                <form id="form-proses" method="post" action="{{ route('admin.permintaan.uploadSuratBalasan') }}"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="key_proses" class="form-control" id="key-form-proses">
-
-                    <div class="modal-body" id="modal-body">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <h3 class="modal-title" id="modalDataLabel">Proses Pengajuan Internship</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="form-group">
-                            <label for="nomor_surat_balasan">Nomor Surat Balasan</label>
-                            <input type="text" name="nomor_surat_balasan" class="form-control"
-                                id="nomor_surat_balasan" placeholder="Contoh: 420/123/SMKN1" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="tanggal_surat_balasan">Tanggal Surat Balasan</label>
-                            <input type="date" name="tanggal_surat_balasan" class="form-control"
-                                id="tanggal_surat_balasan" placeholder="Contoh: 420/123/SMKN1" required />
-                        </div>
-                        {{-- Upload File Surat Pengantar --}}
-                        <div class="form-group">
-                            <label for="file_surat_balasan">Upload Surat Balasan</label>
-                            <input type="file" name="file_surat_balasan" class="form-control" id="file_surat_balasan"
-                                accept=".pdf" required />
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
@@ -276,6 +305,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="routeDownloadSuratBalasan" value="{{ url('/admin/permintaan/downloadSuratBalasan') }}">
 @endsection
 
 @section('js')
@@ -378,9 +408,42 @@
             });
         });
 
-        $("body").on("click", ".btn-acc", function() {
+
+        let anggotaIndex = 0;
+
+        $("#form-proses").ajaxForm({
+            beforeSend: function() {
+                formLoading("#form-proses", "#modal-body", true, true);
+            },
+            success: function(res) {
+                dt.ajax.reload(null, false);
+                notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
+                $("#form-data .form-control").val("")
+                $("#modalProses").modal("hide");
+            },
+            error: function(err, status, message) {
+                response = err.responseJSON;
+                title = "Notifikasi Error";
+                message = (typeof response != "undefined") ? response.message : message;
+                if (message == "Error validation") {
+                    title = "Error Validasi";
+                    $.each(response.data, function(k, v) {
+                        message = v[0];
+                        return false;
+                    });
+                }
+                notif("danger", "fas fa-exclamation", title, message, "error");
+            },
+            complete: function() {
+                formLoading("#form-data", "#modal-body", false);
+            }
+        });
+
+        $("body").on("click", ".btn-proses", function() {
             let key = $(this).data("key");
-            $('#key-form-acc').val(key);
+            $('#key-form-proses').val(key);
+            console.log(key);
+
             let divisiOption = '';
             divisiList.forEach(j => {
                 divisiOption += `<option value="${j.id}">${j.divisi}</option>`;
@@ -422,43 +485,6 @@
                     formLoading("#form-data", "#modal-body", false);
                 }
             });
-            $("#modalAppendDivisi").modal("show");
-        });
-
-        let anggotaIndex = 0;
-
-        $("#form-proses").ajaxForm({
-            beforeSend: function() {
-                formLoading("#form-proses", "#modal-body", true, true);
-            },
-            success: function(res) {
-                dt.ajax.reload(null, false);
-                notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
-                $("#form-data .form-control").val("")
-                $("#modalProses").modal("hide");
-            },
-            error: function(err, status, message) {
-                response = err.responseJSON;
-                title = "Notifikasi Error";
-                message = (typeof response != "undefined") ? response.message : message;
-                if (message == "Error validation") {
-                    title = "Error Validasi";
-                    $.each(response.data, function(k, v) {
-                        message = v[0];
-                        return false;
-                    });
-                }
-                notif("danger", "fas fa-exclamation", title, message, "error");
-            },
-            complete: function() {
-                formLoading("#form-data", "#modal-body", false);
-            }
-        });
-
-        $("body").on("click", ".btn-proses", function() {
-            let key = $(this).data("key");
-            $('#key-form-proses').val(key);
-            console.log(key);
 
             $("#modalProses").modal("show");
         });
@@ -508,6 +534,10 @@
                     {
                         data: "nomor_surat_pengantar",
                         name: "nomor_surat_pengantar"
+                    },
+                    {
+                        data: "nomor_surat_balasan",
+                        name: "nomor_surat_balasan"
                     },
                     {
                         data: "asal_sekolah",
@@ -572,6 +602,8 @@
                         $('#nim').val(res.data.pemohon_utama.nim).prop('readonly', true)
                         $('#nomor_surat_pengantar').val(res.data.nomor_surat_pengantar).prop(
                             'readonly', true)
+                        $('#nomor_surat_balasan').val(res.data.nomor_surat_balasan).prop(
+                            'readonly', true)
 
                         const fileUrlPengantar =
                             `{{ asset('storage/') }}/${res.data.file_surat_pengantar}`;
@@ -610,18 +642,28 @@
                         $(".viewSuratPengantar").show().html(`
                         <label>Surat Pengantar</label><br>
                         <a href="${fileUrlPengantar}" target="_blank" class="btn btn-lg btn-warning">
-                            <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Pengantar
+                            <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Pengantar
                         </a>
                     `);
 
-                        if (res.data.file_surat_balasan != null) {
-                            $(".viewSuratBalasan").show().html(`
+                        // if (res.data.file_surat_balasan != null) {
+                        //     $(".viewSuratBalasan").show().html(`
+                    //     <label>Surat Balasan</label><br>
+                    //     <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
+                    //         <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
+                    //     </a>
+                    // `);
+                        // }
+
+                        let baseDownload = $('#routeDownloadSuratBalasan').val();
+                        let finalUrl = `${baseDownload}/${key}`;
+
+                        $(".viewSuratBalasan").show().html(`
                             <label>Surat Balasan</label><br>
-                            <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
-                                <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Balasan
+                            <a href="${finalUrl}" target="_blank" class="btn btn-lg btn-warning">
+                                <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
                             </a>
                         `);
-                        }
 
                         if (res.data.file_surat_mou != null) {
                             $(".viewSuratMou").show().html(`
@@ -630,6 +672,8 @@
                                 <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat MOU
                             </a>
                         `);
+                        } else {
+                            $(".viewSuratMou").hide().html();
                         }
 
                         $.each(res.data.pemohon, function(i, pm) {
@@ -714,34 +758,6 @@
                 $("#password-form").prop("required", true);
                 $("#pwInfo").addClass("hidden");
                 if ($("#key-form").val()) $("#form-data .form-control").val("");
-            });
-
-            $("#form-data-acc").ajaxForm({
-                beforeSend: function() {
-                    formLoading("#form-data-acc", "#modal-body", true, true);
-                },
-                success: function(res) {
-                    dt.ajax.reload(null, false);
-                    notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
-                    $("#form-data-acc .form-control").val("")
-                    $("#modalAppendDivisi").modal("hide");
-                },
-                error: function(err, status, message) {
-                    response = err.responseJSON;
-                    title = "Notifikasi Error";
-                    message = (typeof response != "undefined") ? response.message : message;
-                    if (message == "Error validation") {
-                        title = "Error Validasi";
-                        $.each(response.data, function(k, v) {
-                            message = v[0];
-                            return false;
-                        });
-                    }
-                    notif("danger", "fas fa-exclamation", title, message, "error");
-                },
-                complete: function() {
-                    formLoading("#form-data", "#modal-body", false);
-                }
             });
         });
     </script>
