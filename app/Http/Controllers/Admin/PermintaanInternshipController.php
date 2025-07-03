@@ -166,11 +166,13 @@ class PermintaanInternshipController extends Controller
                 'periode_akhir' => $req->periode_akhir,
                 'ttd_digital' => $suratPengantar,
             ]);
-
-            foreach ($req->anggota as $ag) {
-                SuratBalasanPemohon::where('email', $ag['email'])->update([
-                    'id_divisi' => $ag['divisi']
-                ]);
+            
+            if ($req->anggota) {
+                foreach ($req->anggota as $ag) {
+                    SuratBalasanPemohon::where('email', $ag['email'])->update([
+                        'id_divisi' => $ag['divisi']
+                    ]);
+                }
             }
 
             return $this->sendResponse(null, "Berhasil memproses data.");
