@@ -22,13 +22,13 @@
                         <p>Permintaan Internship</p>
                     </a>
                 </li>
-                 <li class="nav-item {{ request()->is('admin/peserta/') || request()->is('admin/peserta/*') ? 'active' : '' }}">
+                 <li class="nav-item {{ request()->is('admin/peserta') || request()->is('admin/peserta/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.peserta.index') }}">
                         <i class="fas fa-users"></i>
                         <p>Peserta Internship</p>
                     </a>
                 </li>
-                 <li class="nav-item {{ request()->is('admin/sertifikat/') || request()->is('admin/sertifikat/*') ? 'active' : '' }}">
+                 <li class="nav-item {{ request()->is('admin/sertifikat') || request()->is('admin/sertifikat/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.sertifikat.index') }}">
                         <i class="fas fa-star"></i>
                         <p>Sertifikat & Penilaian</p>
