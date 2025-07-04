@@ -70,6 +70,8 @@ class PesertaInternshipController extends Controller
 
                 if ($val->header->statusDetail->id == 5) {
                     $html .= '<button class="btn btn-warning btn-sm btn-absensi" data-key="' . $key . '" title="Absensi"><i class="fas fa-calendar"></i></button>';
+                }else if ($val->header->statusDetail->id == 6) {
+                    $html .= '<button class="btn btn-warning btn-sm btn-absensi" data-key="' . $key . '" title="Absensi"><i class="fas fa-calendar"></i></button>';
                     $html .= '<button class="btn btn-default btn-sm btn-sertifikat" data-key="' . $key . '" title="Nilai & Sertifikat"><i class="fas fa-star"></i></button>';
                 }
                 $html .= '</div>';

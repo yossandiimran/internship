@@ -79,6 +79,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::get('/', 'PenilaianSertifikatController@index')->name('index');
         Route::post('/scopeData', 'PenilaianSertifikatController@scopeData')->name('scopeData');
         Route::post('/detail', 'PenilaianSertifikatController@detail')->name('detail');
+        Route::post('/store', 'PenilaianSertifikatController@store')->name('store');
+        Route::post('/destroy', 'PenilaianSertifikatController@destroy')->name('destroy');
     });
 
     // Route untuk Anak Internship

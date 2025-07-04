@@ -8,6 +8,7 @@ use App\Models\MasterJurusan;
 use App\Models\MasterDivisi;
 use App\Models\SuratBalasan;
 use App\Models\SuratBalasanPemohon;
+use App\Models\Penilaian;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -22,15 +23,7 @@ class PenilaianSertifikatController extends Controller
      */
     public function index()
     {
-        return view('admin.penilaian.index', [
-            'divisi' => MasterDivisi::all(),
-        ]);
-    }
-    
-    public function scopeData(Request $req)
-    {
-        $user = Auth::user();
-        $data = SuratBalasanPemohon::with([
+        $pemohon = SuratBalasanPemohon::with([
             'divisi',
             'jurusan',
             'pemohon',
@@ -41,37 +34,30 @@ class PenilaianSertifikatController extends Controller
         ->select('surat_balasan_pemohon.*')
         ->get();
 
+        return view('admin.penilaian.index', [
+            'divisi' => MasterDivisi::all(),
+            'pemohon' => $pemohon,
+        ]);
+    }
+    
+    public function scopeData(Request $req)
+    {
+        $user = Auth::user();
+        $data = Penilaian::with([
+            'user.jurusanDetail',
+        ])
+        ->get();
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->removeColumn('id')
-            ->addColumn('status_internship', function ($val) {
-                if ($val->header->statusDetail->id == 1) {
-                    return '<button class="btn btn-primary btn-sm">' . $val->header->statusDetail->status . '</button>';
-                } else if ($val->header->statusDetail->id == 2) {
-                    return '<button class="btn btn-warning btn-sm">' . $val->header->statusDetail->status . '</button>';
-                } else if ($val->header->statusDetail->id == 3) {
-                    return '<button class="btn btn-danger btn-sm">' . $val->header->statusDetail->status . '</button>';
-                } else if ($val->header->statusDetail->id == 4) {
-                    return '<button class="btn btn-warning btn-sm">' . $val->header->statusDetail->status . '</button>';
-                } else if ($val->header->statusDetail->id == 5) {
-                    return '<button class="btn btn-success btn-sm">' . $val->header->statusDetail->status . '</button>';
-                } else if ($val->header->statusDetail->id == 6) {
-                    return '<button class="btn btn-secondary btn-sm">' . $val->header->statusDetail->status . '</button>';
-                }
-            })
-            ->addColumn('asal_sekolah', function ($val) {
-                return $val->pemohon->asal_sekolah;
-            })
             ->addColumn('action', function ($val) {
-                $key = encrypt("surat" . $val->id);
+                $key = encrypt("penilaian" . $val->id);
                 $html = '<div class="btn-group">';
 
-                $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="' . $key . '" title="Detail"><i class="fas fa-eye"></i></button>';
+                $html .= '<button class="btn btn-success btn-sm btn-view" data-key="' . $key . '" title="Downlad Sertifikat"><i class="fas fa-download"></i></button>';
+                $html .= '<button class="btn btn-primary btn-sm btn-edit" data-key="' . $key . '" title="Edit"><i class="fas fa-edit"></i></button>';
 
-                if ($val->header->statusDetail->id == 5) {
-                    $html .= '<button class="btn btn-warning btn-sm btn-absensi" data-key="' . $key . '" title="Absensi"><i class="fas fa-calendar"></i></button>';
-                    $html .= '<button class="btn btn-default btn-sm btn-sertifikat" data-key="' . $key . '" title="Nilai & Sertifikat"><i class="fas fa-star"></i></button>';
-                }
                 $html .= '</div>';
                 return $html;
             })
@@ -79,13 +65,66 @@ class PenilaianSertifikatController extends Controller
             ->make(true);
     }
 
-    /**
-     * Return sap bus settings detail
-     */
+        public function store(Request $req)
+    {
+        $pwRules = 'nullable';
+        $user = Auth::user();
+
+        $validator = Validator::make($req->input(), [
+            'key' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError("Error validation", $validator->errors());
+        }
+
+        try {
+            if (empty($req->key)) {
+                // Create Data
+                $data = Penilaian::create([
+                    "nomor_surat_penilaian" => $req->nomor_surat_penilaian,
+                    "user" => $req->user,
+                    "kedisiplinan" => $req->kedisiplinan,
+                    "tanggung_jawab" => $req->tanggung_jawab,
+                    "kerapihan" => $req->kerapihan,
+                    "komunikasi" => $req->komunikasi,
+                    "pemahaman_pekerjaan" => $req->pemahaman_pekerjaan,
+                    "manahemen_waktu" => $req->manajemen_waktu,
+                    "kerja_sama" => $req->kerja_sama,
+                    "kriteria" => $req->kriteria,
+                ]);
+
+            } else {
+                // Validation
+                $key = str_replace("penilaian", "", decrypt($req->key));
+                $data = Penilaian::findOrFail($key);
+
+                // Update Data
+                $data->update([
+                    "user" => $req->user,
+                    "kedisiplinan" => $req->kedisiplinan,
+                    "tanggung_jawab" => $req->tanggung_jawab,
+                    "kerapihan" => $req->kerapihan,
+                    "komunikasi" => $req->komunikasi,
+                    "pemahaman_pekerjaan" => $req->pemahaman_pekerjaan,
+                    "manahemen_waktu" => $req->manajemen_waktu,
+                    "kerja_sama" => $req->kerja_sama,
+                    "kriteria" => $req->kriteria,
+                ]);
+            }
+            return $this->sendResponse(null, "Berhasil memproses data.");
+        } catch (ModelNotFoundException $e) {
+            return $this->sendError("Data tidak dapat ditemukan.");
+        } catch (\Throwable $err) {
+            dd($err);
+            return $this->sendError("Kesalahan sistem saat proses penyimpanan data, silahkan hubungi admin");
+        }
+    }
+
     public function detail(Request $req)
     {
         try {
-            $key = str_replace("surat", "", decrypt($req->key));
+            $key = str_replace("penilaian", "", decrypt($req->key));
             $data = SuratBalasan::with([
                 'statusDetail',
                 'pemohon.pemohon.jurusanDetail',
@@ -100,10 +139,6 @@ class PenilaianSertifikatController extends Controller
         }
     }
 
-
-    /**
-     * Store create or update sap bus settings
-     */
     public function uploadSuratBalasan(Request $req)
     {
         $validator = Validator::make($req->input(), [
@@ -111,10 +146,6 @@ class PenilaianSertifikatController extends Controller
             'tanggal_surat_balasan' => 'nullable|string',
             'nomor_surat_balasan' => 'nullable|string',
         ]);
-
-        // if($req->file('file_surat_balasan')){
-        //     $suratPengantar = $req->file('file_surat_balasan')->store('uploads', 'public');
-        // }
 
         if ($req->file('ttd_digital')) {
             $suratPengantar = $req->file('ttd_digital')->store('uploads', 'public');
@@ -125,7 +156,7 @@ class PenilaianSertifikatController extends Controller
         }
 
         try {
-            $key = str_replace("surat", "", decrypt($req->key_proses));
+            $key = str_replace("penilaian", "", decrypt($req->key_proses));
             $data = SuratBalasan::findOrFail($key);
             $data->update([
                 'status_surat' => $req->status_surat,
@@ -158,73 +189,11 @@ class PenilaianSertifikatController extends Controller
     {
         try {
             // Validation
-            $key = str_replace("surat", "", decrypt($req->key));
-            $data = MasterDivisi::findOrFail($key);
+            $key = str_replace("penilaian", "", decrypt($req->key));
+            $data = Penilaian::findOrFail($key);
             // Delete Process
             $data->delete();
             return $this->sendResponse(null, "Berhasil menghapus data.");
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError("Data tidak dapat ditemukan.");
-        } catch (\Throwable $err) {
-            return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
-        }
-    }
-
-    public function accDivisi(Request $req)
-    {
-        try {
-            // Validation
-            $key = str_replace("surat", "", decrypt($req->key));
-            $data = SuratBalasan::findOrFail($key);
-
-
-            $data->update([
-                'status_surat' => '5'
-            ]);
-
-            foreach ($req->anggota as $ag) {
-                SuratBalasanPemohon::where('email', $ag['email'])->update([
-                    'id_divisi' => $ag['divisi']
-                ]);
-            }
-            return $this->sendResponse(null, "Proses Berhasil.");
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError("Data tidak dapat ditemukan.");
-        } catch (\Throwable $err) {
-            dd($err);
-            return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
-        }
-    }
-
-    public function tolak(Request $req)
-    {
-        try {
-            // Validation
-            $key = str_replace("surat", "", decrypt($req->key));
-            $data = SuratBalasan::findOrFail($key);
-            // Delete Process
-            $data->update([
-                'status_surat' => '3'
-            ]);
-            return $this->sendResponse(null, "Proses Berhasil.");
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError("Data tidak dapat ditemukan.");
-        } catch (\Throwable $err) {
-            return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
-        }
-    }
-
-    public function selesai(Request $req)
-    {
-        try {
-            // Validation
-            $key = str_replace("surat", "", decrypt($req->key));
-            $data = SuratBalasan::findOrFail($key);
-            // Delete Process
-            $data->update([
-                'status_surat' => '6'
-            ]);
-            return $this->sendResponse(null, "Proses Berhasil.");
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
         } catch (\Throwable $err) {

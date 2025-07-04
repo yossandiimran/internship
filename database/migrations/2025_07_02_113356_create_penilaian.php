@@ -16,7 +16,7 @@ class CreatePenilaian extends Migration
         Schema::create('penilaian', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_surat_penilaian');
-            $table->integer('user');
+            $table->string('user');
             $table->integer('kedisiplinan');
             $table->double('tanggung_jawab');
             $table->double('kerapihan');
@@ -24,6 +24,7 @@ class CreatePenilaian extends Migration
             $table->double('pemahaman_pekerjaan');
             $table->double('manahemen_waktu');
             $table->double('kerja_sama');
+            $table->string('kriteria');
             $table->timestamps();
         });
     }

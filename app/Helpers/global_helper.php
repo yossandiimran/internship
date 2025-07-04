@@ -3,6 +3,7 @@
 use App\Models\Admin\MasterAppMenu;
 use App\Models\SuratBalasan;
 use App\Models\SuratBalasanPemohon;
+use App\Models\Penilaian;
 
 function generatePassword($value)
 {
@@ -115,6 +116,19 @@ function generateNomorSuratBalasan()
     $idFormatted = str_pad($stat, 5, '0', STR_PAD_LEFT); // id jadi 5 digit
 
     return "SE.{$tanggal}.{$bulan}/WIK.C.MJK.KP.{$idFormatted}/{$tahun}";
+}
+
+function generateNomorSertifikat()
+{
+    $stat = Penilaian::count();
+
+    $tanggal = str_pad(date('d'), 2, '0', STR_PAD_LEFT); // 2 digit tanggal
+    $bulan   = str_pad(date('m'), 2, '0', STR_PAD_LEFT); // 2 digit bulan
+    $tahun   = date('Y'); // 4 digit tahun
+
+    $idFormatted = str_pad($stat+1, 5, '0', STR_PAD_LEFT); // id jadi 5 digit
+
+    return "SR.{$tanggal}.{$bulan}/WIK.C.SERTI.{$idFormatted}/{$tahun}";
 }
 
 ?>
