@@ -67,6 +67,20 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::get('/destroy', 'PermintaanInternshipController@destroy')->name('destroy');
     });
 
+    // List Peserta Internship Internship
+    Route::group(['prefix' => 'peserta', 'as' => 'peserta.', 'middleware' => ['permission:1']], function () {
+        Route::get('/', 'PesertaInternshipController@index')->name('index');
+        Route::post('/scopeData', 'PesertaInternshipController@scopeData')->name('scopeData');
+        Route::post('/detail', 'PesertaInternshipController@detail')->name('detail');
+    });
+
+     // List Peserta Internship Internship
+    Route::group(['prefix' => 'sertifikat', 'as' => 'sertifikat.', 'middleware' => ['permission:1']], function () {
+        Route::get('/', 'PenilaianSertifikatController@index')->name('index');
+        Route::post('/scopeData', 'PenilaianSertifikatController@scopeData')->name('scopeData');
+        Route::post('/detail', 'PenilaianSertifikatController@detail')->name('detail');
+    });
+
     // Route untuk Anak Internship
     Route::group(['prefix' => 'InternshipMember', 'namespace' => 'InternshipMember', 'as' => 'internshipMember.', 'middleware' => ['permission:2']], function () {
         // Profile
