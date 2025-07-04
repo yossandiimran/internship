@@ -96,7 +96,16 @@
                                         id="nomor_surat_penilaian" value="{{generateNomorSertifikat()}}" required />
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                             <div class="col-md-12 viewSerti">
+                                <div class="form-group">
+                                   <div class="form-group">
+                                    <label for="namaSerti">Internship</label>
+                                    <input readonly type="text" name="namaSerti" class="form-control"
+                                        id="namaSerti" value="" required />
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 createSerti">
                                 <div class="form-group">
                                     <label for="user">Internship</label>
                                     <select name="user" id="user" class="form-control select2">
@@ -202,8 +211,7 @@
             success: function(res) {
                 dt.ajax.reload(null, false);
                 notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
-                $("#form-data .form-control").val("")
-                $("#modalProses").modal("hide");
+                $("#modalData").modal("hide");
             },
             error: function(err, status, message) {
                 response = err.responseJSON;
@@ -279,121 +287,51 @@
             });
 
             $("#btn-add").on("click", function() {
+                $(".viewSerti").hide();
+                $(".createSerti").show();
+                
+                $('#key-form').val("")
+                $('#nomor_surat_penilaian').val('{{generateNomorSertifikat()}}')
+                $('#user').val("")
+                $('#kedisiplinan').val("")
+                $('#tanggung_jawab').val("")
+                $('#kerapihan').val("")
+                $('#komunikasi').val("")
+                $('#pemahaman_pekerjaan').val("")
+                $('#manajemen_waktu').val("")
+                $('#kerja_sama').val("")
+                $('#kriteria').val("")
                 $("#modalDataLabel").text("Penilaian");
                 $("#modalData").modal("show");
             });
                 
             $("body").on("click", ".btn-view", function() {
-                $('#tabel-anggota tbody').html('');
                 $("#modalDataLabel").text("Detail Pengajuan");
-                formLoading("#form-data", "#modal-body", true);
+                formLoading("#form-proses", "#modal-body", true);
                 let key = $(this).data("key");
                 $.ajax({
-                    url: "{{ route('admin.permintaan.detail') }}",
+                    url: "{{ route('admin.sertifikat.detail') }}",
                     type: "POST",
                     data: {
                         key: key
                     },
                     success: function(res) {
                         console.log(res.data);
-                        $('#nama_pemohon').val(res.data.pemohon_utama.name).prop('readonly',
-                            true)
-                        $('#asal_sekolah_pemohon').val(res.data.pemohon_utama.asal_sekolah)
-                            .prop('readonly', true)
-                        $('#jurusan').val(res.data.pemohon_utama.jurusan_detail.jurusan).prop(
-                            'readonly', true)
-                        $('#nim').val(res.data.pemohon_utama.nim).prop('readonly', true)
-                        $('#nomor_surat_pengantar').val(res.data.nomor_surat_pengantar).prop(
-                            'readonly', true)
-                        $('#nomor_surat_balasan').val(res.data.nomor_surat_balasan).prop(
-                            'readonly', true)
-
-                        const fileUrlPengantar =
-                            `{{ asset('storage/') }}/${res.data.file_surat_pengantar}`;
-                        const fileUrlBalasan =
-                            `{{ asset('storage/') }}/${res.data.file_surat_balasan}`;
-                        const fileUrlMou =
-                            `{{ asset('storage/') }}/${res.data.file_surat_mou}`;
-
-                        let statusHtml = '';
-
-                        if (res.data.status_surat == 1) {
-                            statusHtml =
-                                `<button class="btn btn-primary btn-md btn-status-permohonan">Dikirim</button>`;
-                        } else if (res.data.status_surat == 2) {
-                            statusHtml =
-                                `<button class="btn btn-warning btn-md btn-status-permohonan">Diproses</button>`;
-                        } else if (res.data.status_surat == 3) {
-                            statusHtml =
-                                `<button class="btn btn-danger btn-md btn-status-permohonan">Ditolak</button>`;
-                        } else if (res.data.status_surat == 4) {
-                            statusHtml =
-                                `<button class="btn btn-warning btn-md btn-status-permohonan">Ditinjau</button>`;
-                        } else if (res.data.status_surat == 5) {
-                            statusHtml =
-                                `<button class="btn btn-success btn-md btn-status-permohonan">Aktif</button>`;
-                        } else {
-                            statusHtml =
-                                `<button class="btn btn-secondary btn-md btn-status-permohonan">Selesai</button>`;
-                        }
-                        $('.btn-status-permohonan').replaceWith(statusHtml);
-
-                        // Sembunyiin input file, tampilkan view link
-                        $(".upSuratPengantar").hide();
-                        $(".viewSuratPengantarDetail").show();
-
-                        $(".viewSuratPengantar").show().html(`
-                        <label>Surat Pengantar</label><br>
-                        <a href="${fileUrlPengantar}" target="_blank" class="btn btn-lg btn-warning">
-                            <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Pengantar
-                        </a>
-                    `);
-
-                        // if (res.data.file_surat_balasan != null) {
-                        //     $(".viewSuratBalasan").show().html(`
-                    //     <label>Surat Balasan</label><br>
-                    //     <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
-                    //         <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
-                    //     </a>
-                    // `);
-                        // }
-
-                        let baseDownload = $('#routeDownloadSuratBalasan').val();
-                        let finalUrl = `${baseDownload}/${key}`;
-
-                        $(".viewSuratBalasan").show().html(`
-                            <label>Surat Balasan</label><br>
-                            <a href="${finalUrl}" target="_blank" class="btn btn-lg btn-warning">
-                                <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
-                            </a>
-                        `);
-
-                        if (res.data.file_surat_mou != null) {
-                            $(".viewSuratMou").show().html(`
-                            <label>Surat MOU</label><br>
-                            <a href="${fileUrlMou}" target="_blank" class="btn btn-lg btn-warning">
-                                <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat MOU
-                            </a>
-                        `);
-                        } else {
-                            $(".viewSuratMou").hide().html();
-                        }
-
-                        $.each(res.data.pemohon, function(i, pm) {
-                            $('#tabel-anggota tbody').append(`
-                            <tr>
-                                <td>${pm.nama_pemohon}</td>
-                                <td>${pm.email ?? ''}</td>
-                                <td>${pm.no_hp ?? ''}</td>
-                                <td>${pm.nim ?? ''}</td>
-                                <td>${pm.pemohon.jurusan_detail.jurusan ?? ''}</td>
-                                <td>${pm.divisi != null  ? pm.divisi.divisi : '-'}</td>
-                                <td>#</td>
-                            </tr>
-                        `);
-                        });
-
-
+                        $(".viewSerti").show();
+                        $(".createSerti").hide();
+                        $('#namaSerti').val(res.data.user.name)
+                        $('#key-form').val(key)
+                        $('#nomor_surat_penilaian').val(res.data.nomor_surat_penilaian)
+                        $('#user').val(res.data.user)
+                        $('#kedisiplinan').val(res.data.kedisiplinan)
+                        $('#tanggung_jawab').val(res.data.tanggung_jawab)
+                        $('#kerapihan').val(res.data.kerapihan)
+                        $('#komunikasi').val(res.data.komunikasi)
+                        $('#pemahaman_pekerjaan').val(res.data.pemahaman_pekerjaan)
+                        $('#manajemen_waktu').val(res.data.manahemen_waktu)
+                        $('#kerja_sama').val(res.data.kerja_sama)
+                        $('#kriteria').val(res.data.kriteria)
+                        formLoading("#form-prses", "#modal-body", false);
                     },
                     error: function(err, status, message) {
                         response = err.responseJSON;
@@ -402,7 +340,7 @@
                             "error");
                     },
                     complete: function() {
-                        formLoading("#form-data", "#modal-body", false);
+                        formLoading("#form-proses", "#modal-body", false);
                     }
                 });
                 $("#modalData").modal("show");

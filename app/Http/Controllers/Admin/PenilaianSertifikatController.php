@@ -55,8 +55,9 @@ class PenilaianSertifikatController extends Controller
                 $key = encrypt("penilaian" . $val->id);
                 $html = '<div class="btn-group">';
 
-                $html .= '<button class="btn btn-success btn-sm btn-view" data-key="' . $key . '" title="Downlad Sertifikat"><i class="fas fa-download"></i></button>';
-                $html .= '<button class="btn btn-primary btn-sm btn-edit" data-key="' . $key . '" title="Edit"><i class="fas fa-edit"></i></button>';
+                $html .= '<button class="btn btn-success btn-sm btn-download" data-key="' . $key . '" title="Downlad Sertifikat"><i class="fas fa-download"></i></button>';
+                $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="' . $key . '" title="Edit"><i class="fas fa-edit"></i></button>';
+                $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus"><i class="fas fa-trash"></i></button>';
 
                 $html .= '</div>';
                 return $html;
@@ -101,7 +102,6 @@ class PenilaianSertifikatController extends Controller
 
                 // Update Data
                 $data->update([
-                    "user" => $req->user,
                     "kedisiplinan" => $req->kedisiplinan,
                     "tanggung_jawab" => $req->tanggung_jawab,
                     "kerapihan" => $req->kerapihan,
@@ -125,11 +125,8 @@ class PenilaianSertifikatController extends Controller
     {
         try {
             $key = str_replace("penilaian", "", decrypt($req->key));
-            $data = SuratBalasan::with([
-                'statusDetail',
-                'pemohon.pemohon.jurusanDetail',
-                'pemohon.divisi',
-                'pemohonUtama.jurusanDetail',
+            $data = Penilaian::with([
+                'user',
             ])->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
         } catch (ModelNotFoundException $e) {
