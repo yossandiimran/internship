@@ -40,6 +40,20 @@ class PenilaianSertifikatController extends Controller
         ]);
     }
     
+    public function downloadSertifikat($keys)
+    {
+        $key = str_replace("penilaian", "", decrypt($keys));
+        $data = Penilaian::findOrFail($key);
+
+        $pdf = Pdf::loadView('pdf.sertifikat', [
+            'data' => $data,
+        ])->setPaper('A4', 'landscape');
+
+        $filename = 'Surat-Balasan-' . $data->nomor_surat_balasan . '.pdf';
+
+        return $pdf->stream($filename);
+    }
+    
     public function scopeData(Request $req)
     {
         $user = Auth::user();
@@ -55,7 +69,7 @@ class PenilaianSertifikatController extends Controller
                 $key = encrypt("penilaian" . $val->id);
                 $html = '<div class="btn-group">';
 
-                $html .= '<button class="btn btn-success btn-sm btn-download" data-key="' . $key . '" title="Downlad Sertifikat"><i class="fas fa-download"></i></button>';
+                $html .= '<a target="_blank" href="'.url('/admin/sertifikat/downloadSertifikat').'/'.$key.'" class="btn btn-success btn-sm btn-download" title="Downlad Sertifikat"><i class="fas fa-download"></i></a>&nbsp;';
                 $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="' . $key . '" title="Edit"><i class="fas fa-edit"></i></button>';
                 $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus"><i class="fas fa-trash"></i></button>';
 
@@ -66,7 +80,7 @@ class PenilaianSertifikatController extends Controller
             ->make(true);
     }
 
-        public function store(Request $req)
+    public function store(Request $req)
     {
         $pwRules = 'nullable';
         $user = Auth::user();

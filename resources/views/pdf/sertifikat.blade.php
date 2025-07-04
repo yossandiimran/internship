@@ -47,9 +47,12 @@
     </style>
 </head>
 <body>
+    
 <!-- Sertifikat -->
 <?php
-    function formatDate($inputDate) {
+// dd($data);
+$uss = getdetailSertifikat($data->user);
+function formatDate($inputDate) {
             $months = [
                 'Januari', 'Februari', 'Maret', 'April',
                 'Mei', 'Juni', 'Juli', 'Agustus',
@@ -64,7 +67,6 @@
         return $day . ' ' . $month . ' ' . $year;
     } 
 ?>
-<?php foreach ($query as $data) { ?>
         <!-- Kondisi Keterangan -->
         <?php 
             function predikat($nilai) {
@@ -85,31 +87,30 @@
                 return $predikatNilai;
             }
 
-            $jumlah = $data->kedisiplinan + $data->tanggung_jawab + $data->kerapihan + $data->komunikasi + $data->pemahaman_pekerjaan + $data->manajemen_waktu + $data->kerjasama_tim;
+            $jumlah = $data->kedisiplinan + $data->tanggung_jawab + $data->kerapihan + $data->komunikasi + $data->pemahaman_pekerjaan + $data->manahemen_waktu + $data->kerja_sama;
 
             $rata = ($jumlah / 7);
             $rataRataNilai = floor($rata * 100) / 100;
             
         ?>
         
-    <?php } ?>
         <!-- Kondisi Keterangan -->
        
 <div style="height: 100vh;">
-    <img src="<?= base_url(); ?>assets/img/bahanSertifikat/logo.png" style="width: 1000px; margin: 7% 4.1%;  opacity: 0.2; z-index: -1; position: absolute;">
+    <img src="{{ asset('assets/bahanSertifikat') }}/logo.png" style="width: 1000px; margin: 7% 4.1%;  opacity: 0.2; z-index: -1; position: absolute;">
     <div style="margin-top: -10px;">
         <table class="" style="width: 100%; align:center;">
                 <tr>
                     <input type="text" class="idUserKirim" id="idUserKirim" value="<?= $data->idUser ?>" style="opacity: .1; border: 0; position: absolute; margin-top: 60px; padding-left: 200px;">
                     <td style="width: 200px; text-align: center;">
-                        <img src="<?= base_url(); ?>assets/img/bahanSertifikat/sertifikat/industriLogo.png" alt="" width="350">
+                        <img src="{{ asset('assets/bahanSertifikat') }}/sertifikat/industriLogo.png" alt="" width="350">
                     </td>
 
                     <td style="" colspan="2" style="width: 400px; text-align: center;">
                         
                     </td>
                     <td style="width: 200px; text-align: center;">
-                        <img src="<?= base_url(); ?>assets/img/bahanSertifikat/sertifikat/LogoSertifikat.png" alt="" width="250">
+                        <img src="{{ asset('assets/bahanSertifikat') }}/sertifikat/LogoSertifikat.png" alt="" width="250">
                     </td>
                 </tr>
 
@@ -121,28 +122,23 @@
                 PRAKTIK KERJA INDUSTRI
             </h3>
             <h5 style="text-align: center; margin-top: -30px; font-size: 20px;  font-weight: bold; color: #00022F;">
-                Nomor : <?php foreach ($query as $data) { ?> 
-                                <?= $data->no_surat_penilaian ?>
-                        <?php } ?>
+                Nomor : <?= $data->nomor_surat_penilaian ?>
             </h5>
             <div style="text-align: center; margin-top: -60px; color: #00022F;">
                 <h1>
                     Diberikan Kepada :
                 </h1>
                 <h1 style="font-family: Algerian; font-size: 50px; font-weight: lighter; margin-top: -10px; color: #00022F; text-decoration: underline;">
-                    <?php foreach ($query as $data) { ?>
-                        
-                        <?= $data->namaLengkap; ?>
+                    <?= $uss->nama_pemohon; ?>    
                 </h1>
                 <h1 style="color: #00022F; margin-top: -30px;">
-                <?= $data->asalSekolah; ?>
+                <?= $uss->pemohon->asal_sekolah; ?>
                 </h1>
-                <?php }?>
                 <div>
                     <p style="margin-top: 20px; color: #00022F; text-align: center; width: 70%; font-size: 25px; font-weight: bold; margin: auto; margin-bottom: 10px;">
                         Telah melaksanakan Praktik Kerja Industri pada <br>
                         PT. WIKA Industri & Konstruksi Pabrikasi Baja Majalengka Terhitung <br>
-                        mulai tanggal <span id="serti_tgl_mulai"></span> s.d <span id="serti_tgl_akhir"></span> dengan hasil <br>
+                        mulai tanggal {{$uss->header->periode_awal}} s.d {{$uss->header->periode_akhir}} dengan hasil <br>
                         “<span id="predikat_jumlah">
                             <?= predikat($rataRataNilai); ?>
                         </span>”
@@ -154,17 +150,15 @@
                 <div style="  width: 70%; margin: auto;">
                     <table style="line-height: 1.3; width: 100%; text-align: center;">
                         <tr>
-                        <?php foreach ($query as $data) { ?>
                             <td style="">
-                            Majalengka,  <?= formatDate($data->tgl_dibuat) ?> <br>
+                            Majalengka,  <?= formatDate($data->created_at) ?> <br>
                             PT WIKA Industri & Konstruksi <br>
                                 Pabrikasi Baja Majalengka
                             </td>
-                            <?php } ?>
                         </tr>
                         <tr >
                             <td style="">
-                            <img src="<?= base_url(); ?>assets/img/QrCode/Personalia.png" alt="QR Code" width="80">
+                            <img src="{{ asset('assets/QrCode') }}/Personalia.png" alt="QR Code" width="80">
                             </td>
                         </tr>
                         <tr>
@@ -185,15 +179,12 @@
 
 <!-- Penilaian -->
 <div class="" style="">
-  <?php foreach ($query as $data) { 
-    
-    ?>
     <div class="" style=" margin: auto;
     width: 100%;">
         <table class="" style="width: 100%; align:center;">
             <tr>
                 <td style="width: 200px; text-align: center;">
-                    <img src="<?= base_url(); ?>assets/img/bahanSertifikat/logo.png" alt="" width="250">
+                    <img src="{{ asset('assets/bahanSertifikat') }}/logo.png" alt="" width="250">
                 </td>
 
                 <td style="" colspan="2" style="width: 400px; text-align: center;">
@@ -203,21 +194,21 @@
                                 PENILAIAN PRAKTIK KERJA LAPANGAN
                             </span> <br>
                             
-                            Nomor : <?= $data->no_surat_penilaian ?>
+                            Nomor : <?= $data->nomor_surat_penilaian ?>
                             
                         </p>
                     </div>
                 </td>
                 <td style="width: 200px; text-align: center; z-index: 5;" class="logoRight">
-                    <img src="<?= base_url(); ?>assets/img/bahanSertifikat/akhlak.png" alt="" width="150">
+                    <img src="{{ asset('assets/bahanSertifikat') }}/akhlak.png" alt="" width="150">
                 </td>
             </tr>
         </table>
         <div id="backgroundKanan" style=" position: absolute; right: 0; top: 0; z-index: -5;" class="bgTopRight">
-            <img src="<?= base_url(); ?>assets/img/bahanSertifikat/kanan.png" alt="" width="500" height="500">
+            <img src="{{ asset('assets/bahanSertifikat') }}/kanan.png" alt="" width="500" height="500">
         </div>
         <div id="backgroundKiri" style="margin-top: 180px; position: absolute; left: 0; z-index: -1;">
-            <img src="<?= base_url(); ?>assets/img/bahanSertifikat/kiri.png" alt="" width="500" height="420">
+            <img src="{{ asset('assets/bahanSertifikat') }}/kiri.png" alt="" width="500" height="420">
         </div>
 
         <!-- Biodata -->
@@ -227,22 +218,22 @@
                 <tr>
                     <td width="130">Nama Siswa</td>
                     <td width="10"> : </td>
-                    <td> <?= $data->namaLengkap ?> </td>
+                    <td> <?= $uss->nama_pemohon ?> </td>
                 </tr>
                 <tr>
                     <td width="130">Nomor Induk</td>
                     <td width="10"> : </td>
-                    <td> <?= $data->nim ?> </td>
+                    <td> <?= $uss->nim ?> </td>
                 </tr>
                 <tr>
                     <td width="130">Program Studi</td>
                     <td width="10"> : </td>
-                    <td> <?= $data->jurusan ?> </td>
+                    <td> <?= $uss->jurusan->jurusan ?> </td>
                 </tr>
                 <tr>
                     <td width="130">Sekolah </td>
                     <td width="10"> : </td>
-                    <td> <?= $data->asalSekolah ?> </td>
+                    <td> <?= $uss->pemohon->asal_sekolah ?> </td>
                 </tr>
             </table>
         </div>
@@ -339,10 +330,10 @@
                     <th style="padding: 5px; font-weight: normal;">10%</th>
                     <!-- Nilai -->
                     <th style="padding: 5px; font-weight: normal;">
-                        <?= $data->manajemen_waktu ?>
+                        <?= $data->manahemen_waktu ?>
                     </th>
                     <!-- Keterangan -->
-                    <th style="padding: 5px; font-weight: normal;"><?= predikat( $data->manajemen_waktu) ?></th>
+                    <th style="padding: 5px; font-weight: normal;"><?= predikat( $data->manahemen_waktu) ?></th>
                 </tr>
                 <tr style="">
                     <th style="padding: 5px; font-weight: normal;">3</th>
@@ -351,10 +342,10 @@
                     <th style="padding: 5px; font-weight: normal;">10%</th>
                     <!-- Nilai -->
                     <th style="padding: 5px; font-weight: normal;">
-                        <?= $data->kerjasama_tim ?>
+                        <?= $data->kerja_sama ?>
                     </th>
                     <!-- Keterangan -->
-                    <th style="padding: 5px; font-weight: normal;"><?= predikat( $data->kerjasama_tim) ?></th>
+                    <th style="padding: 5px; font-weight: normal;"><?= predikat( $data->kerja_sama) ?></th>
                 </tr>
                 <tr class="bg2" style="font-weight: bold; background-color: #daeef3;">
                     <th style="font-weight: bold; padding: 5px; text-align: center;" colspan="2"> NILAI AKHIR</th>
@@ -434,14 +425,14 @@
                 <table style="line-height: 1.3; width: 100%; text-align: right;">
                     <tr>
                         <td style="padding-right: 25px;">
-                            Majalengka, <?= formatDate($data->tgl_dibuat) ?>
+                            Majalengka, <?= formatDate($data->created_at) ?>
                             <input type="text" id="idUserGet" style="display: none;" value="<?= $data->idUser ?>"></input>
                             
                         </td>
                     </tr>
                     <tr >
                         <td style="padding-right: 155px;">
-                        <img src="<?= base_url(); ?>assets/img/QrCode/Personalia.png" alt="QR Code" width="80">
+                        <img src="{{ asset('assets/QrCode') }}/Personalia.png" alt="QR Code" width="80">
                         </td>
                     </tr>
                     <tr>
@@ -463,78 +454,7 @@
         <!-- Nilai -->
 
    </div>
-  <?php } ?>
 </div>
-<script src="<?= base_url(); ?>assets/vendor/jquery/jquery.min.js"></script>
-<script>
-
-
-function formatDate(inputDate) {
-        const months = [
-        'Januari', 'Februari', 'Maret', 'April',
-        'Mei', 'Juni', 'Juli', 'Agustus',
-        'September', 'Oktober', 'November', 'Desember'
-        ];
-        const dateParts = inputDate.split('-');
-        const year = dateParts[0];
-        const month = months[parseInt(dateParts[1]) - 1];
-        const day = dateParts[2];
-        const keluaran = day + ' ' + month + ' ' + year;
-        return keluaran;
-    }
-
-    // Fungsi untuk menghasilkan nomor surat
-    function generateNomorSurat(divisi, bulan, tanggal, perusahaan, hurufAbjad, lokasiPerusahaan, jenisSurat, jumlahSurat, tahunSekarang) {
-        // Format nomor surat sesuai dengan parameter yang diberikan
-        var nomorSurat = divisi + "." +
-            bulan + "." +
-            tanggal + "/" +
-            perusahaan + "." +
-            hurufAbjad + "." +
-            lokasiPerusahaan + "." +
-            jenisSurat + "." +
-            jumlahSurat.toString().padStart(5, '0') + "/" +
-            tahunSekarang;
-        return nomorSurat;
-    }
-
-    function singkatanDariKata(kata) {
-        var kataArray = kata.split(" ");
-        var singkatan = "";
-        for (var i = 0; i < kataArray.length; i++) {
-            var kata = kataArray[i];
-            if (/[A-Z]/.test(kata.charAt(0))) {
-                var hurufBesar = kata.charAt(0);
-                singkatan += hurufBesar;
-            }
-        }
-        return singkatan;
-    }
-    
-    $(document).ready(function() {
-       
-
-        var id = document.getElementById('idUserKirim').value;
-        var idUser = {idUser : id };
-                    console.log(id);
-        
-        $.ajax({  
-            type: "POST", 
-            data: idUser,
-            url: "<?php echo base_url('SertifikatController/getTanggal'); ?>",
-            success: function(response){
-                console.log("Get Tgl Surat", response.getTanggal);
-
-            // $('#noSertiBaru').text(formatDate(response.getTanggal.nomorSuratBalasan));
-            $('#serti_tgl_mulai').text(formatDate(response.getTanggal.tglMulai));
-            $('#serti_tgl_akhir').text(formatDate(response.getTanggal.tglAkhir));
-
-            }
-        });
-
-    });
-
-</script>
 
 </body>
 </html>

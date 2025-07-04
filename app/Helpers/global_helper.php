@@ -131,4 +131,12 @@ function generateNomorSertifikat()
     return "SR.{$tanggal}.{$bulan}/WIK.C.SERTI.{$idFormatted}/{$tahun}";
 }
 
+function getdetailSertifikat($email)
+{
+    // dd($email);
+    $stat = SuratBalasanPemohon::with(['header', 'jurusan', 'divisi', 'pemohon'])->where('email', $email)->first();
+
+    return $stat;
+}
+
 ?>

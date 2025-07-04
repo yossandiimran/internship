@@ -78,12 +78,6 @@
                         <p>Status Surat</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->is('admin/laporan') || request()->is('admin/laporan/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.permintaan.index') }}">
-                        <i class="fas fa-user"></i>
-                        <p>User</p>
-                    </a>
-                </li>
                 @endif
                 {{-- Sidebar untuk hak akses group_user level 2 (internship) --}}
                 @if(permission([2]))

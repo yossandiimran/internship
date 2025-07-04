@@ -80,6 +80,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::post('/scopeData', 'PenilaianSertifikatController@scopeData')->name('scopeData');
         Route::post('/detail', 'PenilaianSertifikatController@detail')->name('detail');
         Route::post('/store', 'PenilaianSertifikatController@store')->name('store');
+        Route::get('/downloadSertifikat/{key}', 'PenilaianSertifikatController@downloadSertifikat')->name('downloadSertifikat');
         Route::post('/destroy', 'PenilaianSertifikatController@destroy')->name('destroy');
     });
 

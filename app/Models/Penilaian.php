@@ -15,5 +15,11 @@ class Penilaian extends Model
     {
         return $this->hasOne(User::class, 'email', 'user');
     }
+    
+    public function userDetail()
+    {
+        return $this->hasOne(User::class, 'email', 'user');
+    }
+
 
 }
