@@ -1,8 +1,8 @@
 <div class="main-header">
     <!-- Logo Header -->
-    <div class="logo-header" data-background-color="purple">
+    <div class="logo-header" data-background-color="white">
         <a href="{{ route('admin.index') }}" class="logo">
-           <font color="white">Wika Internship</font>
+           <img src="{{ asset('assets/bahanSertifikat/logo.png') }}" width="60%">
         </a>
         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon">
@@ -19,7 +19,7 @@
     <!-- End Logo Header -->
 
     <!-- Navbar Header -->
-    <nav class="navbar navbar-header navbar-expand-lg" data-background-color="purple">
+    <nav class="navbar navbar-header navbar-expand-lg" data-background-color="white">
         <div class="container-fluid">
             <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
                 <li class="nav-item dropdown hidden-caret">

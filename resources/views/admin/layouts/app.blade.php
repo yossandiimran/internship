@@ -40,7 +40,7 @@
 			<footer class="footer">
 				<div class="container-fluid">
 					<div class="copyright ml-auto">
-						Copyright &copy; 2024</a>
+						Copyright &copy; Wika 2025</a>
 					</div>				
 				</div>
 			</footer>

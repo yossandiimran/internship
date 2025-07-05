@@ -131,9 +131,6 @@ class PermintaanInternshipController extends Controller
     }
 
 
-    /**
-     * Store create or update sap bus settings
-     */
     public function uploadSuratBalasan(Request $req)
     {
         $validator = Validator::make($req->input(), [
@@ -141,10 +138,6 @@ class PermintaanInternshipController extends Controller
             'tanggal_surat_balasan' => 'nullable|string',
             'nomor_surat_balasan' => 'nullable|string',
         ]);
-
-        // if($req->file('file_surat_balasan')){
-        //     $suratPengantar = $req->file('file_surat_balasan')->store('uploads', 'public');
-        // }
 
         if ($req->file('ttd_digital')) {
             $suratPengantar = $req->file('ttd_digital')->store('uploads', 'public');

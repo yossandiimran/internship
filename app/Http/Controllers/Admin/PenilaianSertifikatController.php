@@ -49,7 +49,7 @@ class PenilaianSertifikatController extends Controller
             'data' => $data,
         ])->setPaper('A4', 'landscape');
 
-        $filename = 'Surat-Balasan-' . $data->nomor_surat_balasan . '.pdf';
+        $filename = 'Sertifikat-' . $data->nomor_surat_balasan . '.pdf';
 
         return $pdf->stream($filename);
     }
@@ -147,52 +147,6 @@ class PenilaianSertifikatController extends Controller
             return $this->sendError("Data tidak dapat ditemukan.");
         } catch (\Throwable $err) {
             return $this->sendError("Kesalahan sistem saat proses pengambilan data, silahkan hubungi admin.");
-        }
-    }
-
-    public function uploadSuratBalasan(Request $req)
-    {
-        $validator = Validator::make($req->input(), [
-            'key_proses' => 'nullable|string',
-            'tanggal_surat_balasan' => 'nullable|string',
-            'nomor_surat_balasan' => 'nullable|string',
-        ]);
-
-        if ($req->file('ttd_digital')) {
-            $suratPengantar = $req->file('ttd_digital')->store('uploads', 'public');
-        }
-
-        if ($validator->fails()) {
-            return $this->sendError("Error validation", $validator->errors());
-        }
-
-        try {
-            $key = str_replace("penilaian", "", decrypt($req->key_proses));
-            $data = SuratBalasan::findOrFail($key);
-            $data->update([
-                'status_surat' => $req->status_surat,
-                'pembimbing' => $req->pembimbing,
-                'nomor_surat_balasan' => $req->nomor_surat_balasan,
-                'tanggal_surat_balasan' => $req->tanggal_surat_balasan,
-                'periode_awal' => $req->periode_awal,
-                'periode_akhir' => $req->periode_akhir,
-                'ttd_digital' => $suratPengantar,
-            ]);
-            
-            if ($req->anggota) {
-                foreach ($req->anggota as $ag) {
-                    SuratBalasanPemohon::where('email', $ag['email'])->update([
-                        'id_divisi' => $ag['divisi']
-                    ]);
-                }
-            }
-
-            return $this->sendResponse(null, "Berhasil memproses data.");
-        } catch (ModelNotFoundException $e) {
-            return $this->sendError("Data tidak dapat ditemukan.");
-        } catch (\Throwable $err) {
-            dd($err);
-            return $this->sendError("Kesalahan sistem saat proses penyimpanan data, silahkan hubungi admin");
         }
     }
 

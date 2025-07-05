@@ -10,7 +10,7 @@
                 </span>
             </div>
             <div class="col-md-6">
-                <img src="{{ asset('assets/image/home/welcome.png') }}" width="100%">
+                <img src="{{ asset('assets/bahanSertifikat/kanan.png') }}" width="100%">
             </div>
         </div>
     </div>

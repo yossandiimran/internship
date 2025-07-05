@@ -443,7 +443,7 @@
             let key = $(this).data("key");
             $('#key-form-proses').val(key);
             console.log(key);
-
+            $(".upSuratPengantar").show();
             let divisiOption = '';
             divisiList.forEach(j => {
                 divisiOption += `<option value="${j.id}">${j.divisi}</option>`;
@@ -657,13 +657,14 @@
 
                         let baseDownload = $('#routeDownloadSuratBalasan').val();
                         let finalUrl = `${baseDownload}/${key}`;
-
-                        $(".viewSuratBalasan").show().html(`
-                            <label>Surat Balasan</label><br>
-                            <a href="${finalUrl}" target="_blank" class="btn btn-lg btn-warning">
-                                <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
-                            </a>
-                        `);
+                        if (res.data.nomor_surat_balasan != null) {
+                            $(".viewSuratBalasan").show().html(`
+                                <label>Surat Balasan</label><br>
+                                <a href="${finalUrl}" target="_blank" class="btn btn-lg btn-warning">
+                                    <i class="fas fa-file"></i>&nbsp;&nbsp;Unduh Surat Balasan
+                                </a>
+                            `);                            
+                        }
 
                         if (res.data.file_surat_mou != null) {
                             $(".viewSuratMou").show().html(`

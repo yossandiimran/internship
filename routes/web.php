@@ -71,10 +71,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::group(['prefix' => 'peserta', 'as' => 'peserta.', 'middleware' => ['permission:1']], function () {
         Route::get('/', 'PesertaInternshipController@index')->name('index');
         Route::post('/scopeData', 'PesertaInternshipController@scopeData')->name('scopeData');
+        Route::get('/downloadSertifikat/{key}', 'PesertaInternshipController@downloadSertifikat')->name('downloadSertifikat');
         Route::post('/detail', 'PesertaInternshipController@detail')->name('detail');
     });
 
-     // List Peserta Internship Internship
+    // Penilaian & Sertifikat
     Route::group(['prefix' => 'sertifikat', 'as' => 'sertifikat.', 'middleware' => ['permission:1']], function () {
         Route::get('/', 'PenilaianSertifikatController@index')->name('index');
         Route::post('/scopeData', 'PenilaianSertifikatController@scopeData')->name('scopeData');
@@ -114,6 +115,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         // Penilaian
         Route::group(['prefix' => 'penilaian', 'as' => 'penilaian.', 'middleware' => ['permission:2']], function () {
             Route::get('/', 'PenilaianController@index')->name('index');
+            Route::post('/scopeData', 'PenilaianController@scopeData')->name('scopeData');
+            Route::post('/detail', 'PenilaianController@detail')->name('detail');
+            Route::get('/downloadSertifikat/{key}', 'PenilaianController@downloadSertifikat')->name('downloadSertifikat');
         });
     });
 });

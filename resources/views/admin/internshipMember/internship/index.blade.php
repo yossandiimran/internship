@@ -366,9 +366,10 @@
         });
 
         $('#btnTambahAnggota').on('click', function() {
-            $('#modalData .modal-content').addClass('blur-me'); // blur modal pertama
+            $('#modalData .modal-content').addClass('blur-me'); 
             $("#modalTambahAnggota").modal("show");
         });
+        
         // Hapus baris anggota
         $(document).on('click', '.btn-hapus-anggota', function() {
             $(this).closest('tr').remove();
@@ -501,7 +502,6 @@
                         }
                         $('.btn-status-permohonan').replaceWith(statusHtml);
 
-                        // Sembunyiin input file, tampilkan view link
                         $(".upSuratPengantar").hide();
                         $(".viewSuratPengantarDetail").show();
 
@@ -511,15 +511,6 @@
                             <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Pengantar
                         </a>
                     `);
-
-                        // if (res.data.file_surat_balasan != null) {
-                        //     $(".viewSuratBalasan").show().html(`
-                    //     <label>Surat Balasan</label><br>
-                    //     <a href="${fileUrlBalasan}" target="_blank" class="btn btn-lg btn-warning">
-                    //         <i class="fas fa-file"></i>&nbsp;&nbsp;Lihat Surat Balasan
-                    //     </a>
-                    // `);
-                        // }
 
                         let baseDownload = $('#routeDownloadSuratBalasan').val();
                         let finalUrl = `${baseDownload}/${key}`;
