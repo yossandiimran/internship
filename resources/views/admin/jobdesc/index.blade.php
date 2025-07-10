@@ -41,7 +41,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Sertifikat & Penilaian</h4>
+                        <h4 class="card-title">Jobdesc & Aktifitas</h4>
                     </div>
                     <div class="card-body">
                         <button type="button" id="btn-add" class="btn btn-primary btn-md">
@@ -74,7 +74,7 @@
 
     <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
         data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-lg" role="document" style="width: 60%">
+        <div class="modal-dialog modal-md" role="document" style="width: 80%">
             <div class="modal-content">
                 <form id="form-proses" method="post" action="{{ route('admin.sertifikat.store') }}"
                     enctype="multipart/form-data">
@@ -111,7 +111,7 @@
                                     <select name="user" id="user" class="form-control select2">
                                         <option value="">---- Pilih Internship ----</option>
                                         @foreach ($pemohon as $p)
-                                        <option value="{{ $p->email }}||{{$p->header->id}}">{{ $p->nama_pemohon }} - {{$p->header->nomor_surat_balasan}}</option>
+                                        <option value="{{ $p->email }}">{{ $p->nama_pemohon }}</option>
                                         @endForeach
                                     </select>
                                 </div>
@@ -172,6 +172,17 @@
                                     <label for="kerja_sama">Kerja Sama</label>
                                     <input type="number" name="kerja_sama" class="form-control" id="kerja_sama"
                                         value="" required />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="kriteria">Predikat</label>
+                                    <select name="kriteria" id="kriteria" class="form-control select2">
+                                        <option value="Kurang">Kurang</option>
+                                        <option value="Cukup">Cukup</option>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Sangat Baik">Sangat Baik</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

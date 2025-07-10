@@ -16,7 +16,7 @@ use DataTables;
 use Pdf;
 use Validator;
 
-class PenilaianSertifikatController extends Controller
+class JobDescController extends Controller
 {
     /**
      * Return sap bus settings view
@@ -29,24 +29,17 @@ class PenilaianSertifikatController extends Controller
             'pemohon',
             'header.statusDetail',
         ])
-        ->leftJoin('surat_balasan as sb', 'sb.id', '=', 'surat_balasan_pemohon.id_surat')
-        ->leftJoin('penilaian as pn', function ($join) {
-            $join->on('pn.user', '=', 'surat_balasan_pemohon.email')
-            ->on('pn.id_surat_balasan', '=', 'surat_balasan_pemohon.id_surat');
-        })
-        ->where('sb.status_surat', '>=', 6)
-        ->whereNull('pn.user')
-        ->whereNull('pn.id_surat_balasan')
+        ->join('surat_balasan as sb', 'sb.id', '=', 'surat_balasan_pemohon.id_surat')
+        ->where('sb.status_surat', '>=', 4)
         ->select('surat_balasan_pemohon.*')
         ->get();
-        // dd($pemohon);
 
-        return view('admin.penilaian.index', [
+        return view('admin.jobdesc.index', [
             'divisi' => MasterDivisi::all(),
             'pemohon' => $pemohon,
         ]);
     }
-
+    
     public function downloadSertifikat($keys)
     {
         $key = str_replace("penilaian", "", decrypt($keys));
@@ -60,14 +53,14 @@ class PenilaianSertifikatController extends Controller
 
         return $pdf->stream($filename);
     }
-
+    
     public function scopeData(Request $req)
     {
         $user = Auth::user();
         $data = Penilaian::with([
             'user.jurusanDetail',
         ])
-            ->get();
+        ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -76,7 +69,7 @@ class PenilaianSertifikatController extends Controller
                 $key = encrypt("penilaian" . $val->id);
                 $html = '<div class="btn-group">';
 
-                $html .= '<a target="_blank" href="' . url('/admin/sertifikat/downloadSertifikat') . '/' . $key . '" class="btn btn-success btn-sm btn-download" title="Downlad Sertifikat"><i class="fas fa-download"></i></a>&nbsp;';
+                $html .= '<a target="_blank" href="'.url('/admin/sertifikat/downloadSertifikat').'/'.$key.'" class="btn btn-success btn-sm btn-download" title="Downlad Sertifikat"><i class="fas fa-download"></i></a>&nbsp;';
                 $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="' . $key . '" title="Edit"><i class="fas fa-edit"></i></button>';
                 $html .= '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus"><i class="fas fa-trash"></i></button>';
 
@@ -105,8 +98,7 @@ class PenilaianSertifikatController extends Controller
                 // Create Data
                 $data = Penilaian::create([
                     "nomor_surat_penilaian" => $req->nomor_surat_penilaian,
-                    "id_surat_balasan" => explode('||', $req->user)[1],
-                    "user" => explode('||', $req->user)[0],
+                    "user" => $req->user,
                     "kedisiplinan" => $req->kedisiplinan,
                     "tanggung_jawab" => $req->tanggung_jawab,
                     "kerapihan" => $req->kerapihan,
@@ -114,7 +106,9 @@ class PenilaianSertifikatController extends Controller
                     "pemahaman_pekerjaan" => $req->pemahaman_pekerjaan,
                     "manahemen_waktu" => $req->manajemen_waktu,
                     "kerja_sama" => $req->kerja_sama,
+                    "kriteria" => $req->kriteria,
                 ]);
+
             } else {
                 // Validation
                 $key = str_replace("penilaian", "", decrypt($req->key));
@@ -129,6 +123,7 @@ class PenilaianSertifikatController extends Controller
                     "pemahaman_pekerjaan" => $req->pemahaman_pekerjaan,
                     "manahemen_waktu" => $req->manajemen_waktu,
                     "kerja_sama" => $req->kerja_sama,
+                    "kriteria" => $req->kriteria,
                 ]);
             }
             return $this->sendResponse(null, "Berhasil memproses data.");

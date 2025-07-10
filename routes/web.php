@@ -85,6 +85,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::post('/destroy', 'PenilaianSertifikatController@destroy')->name('destroy');
     });
 
+    // Jobdesc
+    Route::group(['prefix' => 'jobdesc', 'as' => 'jobdesc.', 'middleware' => ['permission:1']], function () {
+        Route::get('/', 'JobDescController@index')->name('index');
+        Route::post('/scopeData', 'JobDescController@scopeData')->name('scopeData');
+        Route::post('/detail', 'JobDescController@detail')->name('detail');
+        Route::post('/store', 'JobDescController@store')->name('store');
+        Route::post('/destroy', 'JobDescController@destroy')->name('destroy');
+    });
+
     // Route untuk Anak Internship
     Route::group(['prefix' => 'InternshipMember', 'namespace' => 'InternshipMember', 'as' => 'internshipMember.', 'middleware' => ['permission:2']], function () {
         // Profile

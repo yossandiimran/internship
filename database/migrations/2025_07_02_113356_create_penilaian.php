@@ -16,6 +16,7 @@ class CreatePenilaian extends Migration
         Schema::create('penilaian', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_surat_penilaian');
+            $table->integer('id_surat_balasan');
             $table->string('user');
             $table->integer('kedisiplinan');
             $table->double('tanggung_jawab');
