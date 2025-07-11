@@ -15,13 +15,13 @@ class CreateJobdescTable extends Migration
     {
         Schema::create('jobdesc', function (Blueprint $table) {
             $table->id();
-            $table->integer('assign_to');
+            $table->string('assign_to');
             $table->string('pekerjaan');
-            $table->string('gambar_awal');
-            $table->string('gambar_akhir');
+            $table->string('gambar_awal')->nullable();
+            $table->string('gambar_akhir')->nullable();
             $table->integer('status');
-            $table->timestamp('waktu_mulai');
-            $table->timestamp('waktu_akhir');
+            $table->timestamp('waktu_mulai')->nullable();
+            $table->timestamp('waktu_akhir')->nullable();
             $table->timestamps();
         });
     }

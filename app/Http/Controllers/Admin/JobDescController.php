@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\MasterJurusan;
 use App\Models\MasterDivisi;
-use App\Models\SuratBalasan;
 use App\Models\SuratBalasanPemohon;
-use App\Models\Penilaian;
-use App\Models\User;
+use App\Models\Jobdesc;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
@@ -30,34 +27,20 @@ class JobDescController extends Controller
             'header.statusDetail',
         ])
         ->join('surat_balasan as sb', 'sb.id', '=', 'surat_balasan_pemohon.id_surat')
-        ->where('sb.status_surat', '>=', 4)
+        ->where('sb.status_surat', '=', 5)
         ->select('surat_balasan_pemohon.*')
         ->get();
 
         return view('admin.jobdesc.index', [
-            'divisi' => MasterDivisi::all(),
-            'pemohon' => $pemohon,
+                'pemohon' => $pemohon,
         ]);
     }
     
-    public function downloadSertifikat($keys)
-    {
-        $key = str_replace("penilaian", "", decrypt($keys));
-        $data = Penilaian::findOrFail($key);
-
-        $pdf = Pdf::loadView('pdf.sertifikat', [
-            'data' => $data,
-        ])->setPaper('A4', 'landscape');
-
-        $filename = 'Sertifikat-' . $data->nomor_surat_balasan . '.pdf';
-
-        return $pdf->stream($filename);
-    }
     
     public function scopeData(Request $req)
     {
         $user = Auth::user();
-        $data = Penilaian::with([
+        $data = Jobdesc::with([
             'user.jurusanDetail',
         ])
         ->get();
@@ -66,7 +49,7 @@ class JobDescController extends Controller
             ->addIndexColumn()
             ->removeColumn('id')
             ->addColumn('action', function ($val) {
-                $key = encrypt("penilaian" . $val->id);
+                $key = encrypt("Jobdesc" . $val->id);
                 $html = '<div class="btn-group">';
 
                 $html .= '<a target="_blank" href="'.url('/admin/sertifikat/downloadSertifikat').'/'.$key.'" class="btn btn-success btn-sm btn-download" title="Downlad Sertifikat"><i class="fas fa-download"></i></a>&nbsp;';
@@ -96,23 +79,15 @@ class JobDescController extends Controller
         try {
             if (empty($req->key)) {
                 // Create Data
-                $data = Penilaian::create([
-                    "nomor_surat_penilaian" => $req->nomor_surat_penilaian,
-                    "user" => $req->user,
-                    "kedisiplinan" => $req->kedisiplinan,
-                    "tanggung_jawab" => $req->tanggung_jawab,
-                    "kerapihan" => $req->kerapihan,
-                    "komunikasi" => $req->komunikasi,
-                    "pemahaman_pekerjaan" => $req->pemahaman_pekerjaan,
-                    "manahemen_waktu" => $req->manajemen_waktu,
-                    "kerja_sama" => $req->kerja_sama,
-                    "kriteria" => $req->kriteria,
+                $data = Jobdesc::create([
+                    "assign_to" => $req->assign_to,
+                    "pekerjaan" => $req->pekerjaan,
                 ]);
 
             } else {
                 // Validation
-                $key = str_replace("penilaian", "", decrypt($req->key));
-                $data = Penilaian::findOrFail($key);
+                $key = str_replace("Jobdesc", "", decrypt($req->key));
+                $data = Jobdesc::findOrFail($key);
 
                 // Update Data
                 $data->update([
@@ -138,8 +113,8 @@ class JobDescController extends Controller
     public function detail(Request $req)
     {
         try {
-            $key = str_replace("penilaian", "", decrypt($req->key));
-            $data = Penilaian::with([
+            $key = str_replace("Jobdesc", "", decrypt($req->key));
+            $data = Jobdesc::with([
                 'user',
             ])->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
@@ -154,8 +129,8 @@ class JobDescController extends Controller
     {
         try {
             // Validation
-            $key = str_replace("penilaian", "", decrypt($req->key));
-            $data = Penilaian::findOrFail($key);
+            $key = str_replace("Jobdesc", "", decrypt($req->key));
+            $data = Jobdesc::findOrFail($key);
             // Delete Process
             $data->delete();
             return $this->sendResponse(null, "Berhasil menghapus data.");

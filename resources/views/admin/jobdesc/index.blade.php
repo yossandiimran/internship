@@ -45,7 +45,7 @@
                     </div>
                     <div class="card-body">
                         <button type="button" id="btn-add" class="btn btn-primary btn-md">
-                            Tambah Sertifikat
+                            Tambah Pekerjaan
                         </button>
                         <div class="table-responsive">
                             <table id="table-data" class="table table-bordered table-hover" width="100%">
@@ -54,11 +54,12 @@
                                         <th width="20px">
                                             <center>No</center>
                                         </th>
-                                        <th>No Sertifikat</th>
-                                        <th>Diberikan Kepada</th>
-                                        <th>NIM</th>
-                                        <th>Asal Sekolah</th>
-                                        <th>Jurusan</th>
+                                        <th>Pekerjaan</th>
+                                        <th>Ditugaskan kepada</th>
+                                        <th>Dibuat Oleh</th>
+                                        <th>Divisi</th>
+                                        <th>Status</th>
+                                        <th>Foto</th>
                                         <th width="80px">
                                             <center>Aksi</center>
                                         </th>
@@ -76,7 +77,7 @@
         data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-md" role="document" style="width: 80%">
             <div class="modal-content">
-                <form id="form-proses" method="post" action="{{ route('admin.sertifikat.store') }}"
+                <form id="form-proses" method="post" action="{{ route('admin.jobdesc.store') }}"
                     enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="key" class="form-control" id="key-form">
@@ -84,109 +85,29 @@
                     <div class="modal-body" id="modal-body">
                         <div class="row">
                             <div class="col-md-11">
-                                <h3 class="modal-title" id="modalDataLabel">Penilaian</h3>
+                                <h3 class="modal-title" id="modalDataLabel">Jobdesc</h3>
                             </div>
                             </div>
                         <hr>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="nomor_surat_penilaian">Nomor Sertifikat</label>
-                                    <input readonly type="text" name="nomor_surat_penilaian" class="form-control"
-                                        id="nomor_surat_penilaian" value="{{generateNomorSertifikat()}}" required />
-                                </div>
-                            </div>
-                             <div class="col-md-12 viewSerti">
-                                <div class="form-group">
-                                   <div class="form-group">
-                                    <label for="namaSerti">Internship</label>
-                                    <input readonly type="text" name="namaSerti" class="form-control"
-                                        id="namaSerti" value="" required />
-                                </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 createSerti">
-                                <div class="form-group">
-                                    <label for="user">Internship</label>
-                                    <select name="user" id="user" class="form-control select2">
+                                    <label for="assign_to">Ditugaskan Kepada</label>
+                                    <select name="assign_to" id="assign_to" class="form-control select2">
                                         <option value="">---- Pilih Internship ----</option>
                                         @foreach ($pemohon as $p)
-                                        <option value="{{ $p->email }}">{{ $p->nama_pemohon }}</option>
+                                        <option value="{{ $p->email }}">{{ $p->nama_pemohon }} - {{ $p->divisi->divisi }}</option>
                                         @endForeach
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <hr>
-                        <h4>Kriteria Penilaian</h4>
-                        <font color="red"><i>*) Point penilaian min 0 - max 4</i></font>    
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="kedisiplinan">Kedisiplinan</label>
-                                    <input type="number" name="kedisiplinan" class="form-control" id="kedisiplinan"
-                                        value="" max="4" required />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="tanggung_jawab">Tanggung Jawab</label>
-                                    <input type="number" name="tanggung_jawab" class="form-control" id="tanggung_jawab"
-                                        value="" required />
-                                </div>
-                            </div>
-                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="kerapihan">Kerapihan</label>
-                                    <input type="number" name="kerapihan" class="form-control" id="kerapihan"
-                                        value="" required />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="komunikasi">Komunikasi</label>
-                                    <input type="number" name="komunikasi" class="form-control" id="komunikasi"
-                                        value="" required />
-                                </div>
-                            </div>
-                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="pemahaman_pekerjaan">Pemahaman</label>
-                                    <input type="number" name="pemahaman_pekerjaan" class="form-control" id="pemahaman_pekerjaan"
-                                        value="" required />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="manajemen_waktu">Manajemen Waktu</label>
-                                    <input type="number" name="manajemen_waktu" class="form-control" id="manajemen_waktu"
-                                        value="" required />
-                                </div>
-                            </div>
-                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="kerja_sama">Kerja Sama</label>
-                                    <input type="number" name="kerja_sama" class="form-control" id="kerja_sama"
-                                        value="" required />
-                                </div>
-                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="kriteria">Predikat</label>
-                                    <select name="kriteria" id="kriteria" class="form-control select2">
-                                        <option value="Kurang">Kurang</option>
-                                        <option value="Cukup">Cukup</option>
-                                        <option value="Baik">Baik</option>
-                                        <option value="Sangat Baik">Sangat Baik</option>
-                                    </select>
+                                    <label for="namaSerti">Pekerjaan</label>
+                                    <textarea class="form-control" name="pekerjaan" id="pekerjaan"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <hr>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">Batal</button>
@@ -196,8 +117,6 @@
             </div>
         </div>
     </div>
-
-    <input type="hidden" id="routeDownloadSuratBalasan" value="{{ url('/admin/permintaan/downloadSuratBalasan') }}">
 @endsection
 
 @section('js')
@@ -245,7 +164,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('admin.sertifikat.scopeData') }}",
+                    url: "{{ route('admin.jobdesc.scopeData') }}",
                     type: "post"
                 },
                 columns: [{
@@ -310,7 +229,7 @@
                 formLoading("#form-proses", "#modal-body", true);
                 let key = $(this).data("key");
                 $.ajax({
-                    url: "{{ route('admin.sertifikat.detail') }}",
+                    url: "{{ route('admin.jobdesc.detail') }}",
                     type: "POST",
                     data: {
                         key: key
@@ -368,7 +287,7 @@
                         notifLoading(
                             "Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                         $.ajax({
-                            url: "{{ route('admin.sertifikat.destroy') }}",
+                            url: "{{ route('admin.jobdesc.destroy') }}",
                             type: "POST",
                             data: {
                                 key: key

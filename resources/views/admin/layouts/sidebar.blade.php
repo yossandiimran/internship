@@ -42,13 +42,13 @@
                     </span>
                     <h4 class="text-section">Laporan</h4>
                 </li>
-                <li class="nav-item {{ request()->is('admin/laporan/') || request()->is('admin/laporan/*') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/laporan') || request()->is('admin/laporan/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.permintaan.index') }}">
                         <i class="fas fa-file-pdf"></i>
                         <p>Laporan Absensi</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->is('admin/jobdesc/') || request()->is('admin/jobdesc/*') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/jobdesc') || request()->is('admin/jobdesc/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.jobdesc.index') }}">
                         <i class="fas fa-calendar"></i>
                         <p>Jobdesc & Aktifitas</p>
