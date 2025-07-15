@@ -6,8 +6,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use App\Models\Log\UserLog;
-use App\Models\Log\ErrorLog;
 
 class Controller extends BaseController
 {
@@ -18,12 +16,12 @@ class Controller extends BaseController
      */
     public function sendResponse($result, $message, $success = true)
     {
-    	$response = [
+        $response = [
             'success' => $success,
-            'message' => $message,
+            'message' => $message
         ];
 
-        if(!empty($result)){
+        if (!empty($result)) {
             $response['data'] = $result;
         }
 
@@ -35,22 +33,24 @@ class Controller extends BaseController
      */
     public function sendError($error, $errorMessages = [], $code = 400)
     {
-    	$response = [
+        $response = [
             'success' => false,
             'message' => $error,
         ];
 
-        if(!empty($errorMessages)){
+        if (!empty($errorMessages)) {
             $response['data'] = $errorMessages;
         }
 
         return response()->json($response, $code);
     }
 
-    private function dataChanges($oldValue, $newValue){
-        $result_array = array_diff($oldValue,$newValue);
+    private function dataChanges($oldValue, $newValue)
+    {
+        $result_array = array_diff($oldValue, $newValue);
 
-        if(count($result_array) == 0) return false;
+        if (count($result_array) == 0)
+            return false;
         return true;
     }
 }
