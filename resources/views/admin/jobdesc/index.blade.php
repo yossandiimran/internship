@@ -77,6 +77,16 @@
         </div>
     </div>
 
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="imgModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" class="img-fluid" alt="Preview Gambar">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modalData" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
         data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-md" role="document" style="width: 80%">
@@ -221,45 +231,9 @@
                 $("#modalData").modal("show");
             });
 
-            $("body").on("click", ".btn-view", function() {
-                $("#modalDataLabel").text("Detail Pengajuan");
-                formLoading("#form-proses", "#modal-body", true);
-                let key = $(this).data("key");
-                $.ajax({
-                    url: "{{ route('admin.jobdesc.detail') }}",
-                    type: "POST",
-                    data: {
-                        key: key
-                    },
-                    success: function(res) {
-                        console.log(res.data);
-                        $(".viewSerti").show();
-                        $(".createSerti").hide();
-                        $('#namaSerti').val(res.data.user.name)
-                        $('#key-form').val(key)
-                        $('#nomor_surat_penilaian').val(res.data.nomor_surat_penilaian)
-                        $('#user').val(res.data.user)
-                        $('#kedisiplinan').val(res.data.kedisiplinan)
-                        $('#tanggung_jawab').val(res.data.tanggung_jawab)
-                        $('#kerapihan').val(res.data.kerapihan)
-                        $('#komunikasi').val(res.data.komunikasi)
-                        $('#pemahaman_pekerjaan').val(res.data.pemahaman_pekerjaan)
-                        $('#manajemen_waktu').val(res.data.manahemen_waktu)
-                        $('#kerja_sama').val(res.data.kerja_sama)
-                        $('#kriteria').val(res.data.kriteria)
-                        formLoading("#form-prses", "#modal-body", false);
-                    },
-                    error: function(err, status, message) {
-                        response = err.responseJSON;
-                        message = (typeof response != "undefined") ? response.message : message;
-                        notif("danger", "fas fa-exclamation", "Notifikasi Error", message,
-                            "error");
-                    },
-                    complete: function() {
-                        formLoading("#form-proses", "#modal-body", false);
-                    }
-                });
-                $("#modalData").modal("show");
+            $('body').on('click', 'img[data-toggle="modal"]', function() {
+                const imgUrl = $(this).data('img');
+                $('#modalImage').attr('src', imgUrl);
             });
 
             $("body").on("click", ".btn-delete", function() {
