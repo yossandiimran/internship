@@ -84,7 +84,7 @@
                     <div class="modal-body" id="modal-body">
                         <div class="row">
                             <div class="col-md-11">
-                                <h3 class="modal-title" id="modalDataLabel">Jobdesc</h3>
+                                <h3 class="modal-title">Jobdesc</h3>
                             </div>
                         </div>
                         <hr>

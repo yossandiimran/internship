@@ -92,7 +92,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::post('/detail', 'JobDescController@detail')->name('detail');
         Route::post('/store', 'JobDescController@store')->name('store');
         Route::post('/destroy', 'JobDescController@destroy')->name('destroy');
-        Route::post('/destroy', 'JobDescController@destroy')->name('destroy');
+        Route::post('/cancel', 'JobDescController@cancel')->name('cancel');
     });
 
     // Route untuk Anak Internship
