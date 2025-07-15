@@ -13,7 +13,7 @@ class Jobdesc extends Model
 
     public function assignTo()
     {
-        return $this->hasOne(SuratBalasanPemohon::class, 'id', 'assign_to');
+        return $this->hasOne(SuratBalasanPemohon::class, 'email', 'assign_to');
     }
     
     

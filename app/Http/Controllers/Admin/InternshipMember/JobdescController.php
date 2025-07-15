@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\InternshipMember;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\MasterDivisi;
+use App\Models\JobDesc;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use DataTables;
 use Validator;
@@ -24,19 +24,59 @@ class JobdescController extends Controller
      */
     public function scopeData(Request $req)
     {
-        $data = MasterDivisi::select('*');
+        $data = Jobdesc::with([
+            'assignTo.divisi',
+        ])
+            ->get();
         return DataTables::of($data)
-                ->addIndexColumn()
-                ->removeColumn('id')
-                ->addColumn('action', function($val) {
-                    $key = encrypt("divisi".$val->id);
-                    return '<div class="btn-group">'.
-                                '<button class="btn btn-warning btn-sm btn-edit" data-key="'.$key.'" title="Ubah Data"><i class="fas fa-pen"></i></button>'.
-                                '<button class="btn btn-danger btn-sm btn-delete" data-key="'.$key.'" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>'.
-                            '</div>';
-                })
-                ->rawColumns(['action', 'foto', 'status'])
-                ->make(true);
+            ->addIndexColumn()
+            ->removeColumn('id')
+            ->addColumn('status', function ($val) {
+                if ($val->status == 1) {
+                    $html = '<button class="btn btn-primary btn-sm" title="Tugas Baru"><i class="fas fa-star"></i>&nbsp;&nbsp; Task Baru</button>';
+                } else if ($val->status == 2) {
+                    $html = '<button class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-clock"></i>&nbsp;&nbsp; Sedang Dikerjakan</button>';
+                } else if ($val->status == 3) {
+                    $html = '<button class="btn btn-success btn-sm" title="Edit"><i class="fas fa-check"></i>&nbsp;&nbsp; Selesai</button>';
+                } else if ($val->status == 4) {
+                    $html = '<button class="btn btn-danger btn-sm" title="Edit"><i class="fas fa-times"></i>&nbsp;&nbsp; Dibatalkan</button>';
+                } else if ($val->status == 5) {
+                    $html = '<button class="btn btn-secondary btn-sm" title="Edit"><i class="fas fa-clock"></i>&nbsp;&nbsp; Pending</button>';
+                }
+
+                return $html;
+            })
+            ->addColumn('action', function ($val) {
+                $key = encrypt("jobdesc" . $val->id);
+                if ($val->status == 1) {
+                    return '<div class="btn-group">' .
+                        '<button class="btn btn-warning btn-sm btn-edit" data-key="' . $key . '" title="Ubah Data"><i class="fas fa-pen"></i></button>' .
+                        '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>' .
+                        '</div>';
+                } else if ($val->status == 2) {
+                    return '<div class="btn-group">' .
+                        '<button class="btn btn-warning btn-sm btn-edit" data-key="' . $key . '" title="Ubah Data"><i class="fas fa-pen"></i></button>' .
+                        '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>' .
+                        '</div>';
+                } else if ($val->status == 3) {
+                    return '<div class="btn-group">' .
+                        '<button class="btn btn-warning btn-sm btn-edit" data-key="' . $key . '" title="Ubah Data"><i class="fas fa-pen"></i></button>' .
+                        '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>' .
+                        '</div>';
+                } else if ($val->status == 4) {
+                    return '<div class="btn-group">' .
+                        '<button class="btn btn-warning btn-sm btn-edit" data-key="' . $key . '" title="Ubah Data"><i class="fas fa-pen"></i></button>' .
+                        '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>' .
+                        '</div>';
+                } else if ($val->status == 5) {
+                    return '<div class="btn-group">' .
+                        '<button class="btn btn-warning btn-sm btn-edit" data-key="' . $key . '" title="Ubah Data"><i class="fas fa-pen"></i></button>' .
+                        '<button class="btn btn-danger btn-sm btn-delete" data-key="' . $key . '" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>' .
+                        '</div>';
+                }
+            })
+            ->rawColumns(['action', 'foto', 'status'])
+            ->make(true);
     }
 
     /**
@@ -45,8 +85,8 @@ class JobdescController extends Controller
     public function detail(Request $req)
     {
         try {
-            $key = str_replace("divisi", "", decrypt($req->key));
-            $data = MasterDivisi::select('*')->whereId($key)->firstOrFail();
+            $key = str_replace("jobdesc", "", decrypt($req->key));
+            $data = JobDesc::select('*')->whereId($key)->firstOrFail();
             return $this->sendResponse($data, "Berhasil mengambil data.");
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
@@ -62,14 +102,14 @@ class JobdescController extends Controller
     public function store(Request $req)
     {
         $pwRules = 'nullable';
-      
+
         $validator = Validator::make($req->input(), [
             'key' => 'nullable|string',
             'divisi' => 'required|string',
             'lokasi' => 'required|string',
         ]);
 
-        if($req->file('foto')){
+        if ($req->file('foto')) {
             $foto = $req->file('foto')->store('uploads', 'public');
         }
 
@@ -78,18 +118,18 @@ class JobdescController extends Controller
         }
 
         try {
-            if(empty($req->key)){
+            if (empty($req->key)) {
                 // Create Data
-                $data = MasterDivisi::create([
+                $data = JobDesc::create([
                     'divisi' => $req->divisi,
                     'lokasi' => $req->lokasi,
                 ]);
                 // Save Log
             } else {
                 // Validation
-                $key = str_replace("divisi", "", decrypt($req->key));
-                $data = MasterDivisi::findOrFail($key);
-                
+                $key = str_replace("jobdesc", "", decrypt($req->key));
+                $data = JobDesc::findOrFail($key);
+
                 // Update Data
                 $data->update([
                     'divisi' => $req->divisi,
@@ -108,8 +148,8 @@ class JobdescController extends Controller
     {
         try {
             // Validation
-            $key = str_replace("divisi", "", decrypt($req->key));
-            $data = MasterDivisi::findOrFail($key);
+            $key = str_replace("jobdesc", "", decrypt($req->key));
+            $data = JobDesc::findOrFail($key);
             // Delete Process
             $data->delete();
             return $this->sendResponse(null, "Berhasil menghapus data.");
@@ -119,5 +159,4 @@ class JobdescController extends Controller
             return $this->sendError("Kesalahan sistem saat proses penghapusan data, silahkan hubungi admin");
         }
     }
-
 }

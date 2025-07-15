@@ -54,12 +54,11 @@
                                         <th width="20px">
                                             <center>No</center>
                                         </th>
-                                        <th>Pekerjaan</th>
+                                        <th>Deskripsi Pekerjaan</th>
                                         <th>Ditugaskan kepada</th>
-                                        <th>Dibuat Oleh</th>
                                         <th>Divisi</th>
                                         <th>Status</th>
-                                        <th>Foto</th>
+                                        <th>Tanggal Ditugaskan</th>
                                         <th width="80px">
                                             <center>Aksi</center>
                                         </th>
@@ -87,7 +86,7 @@
                             <div class="col-md-11">
                                 <h3 class="modal-title" id="modalDataLabel">Jobdesc</h3>
                             </div>
-                            </div>
+                        </div>
                         <hr>
                         <div class="row">
                             <div class="col-md-12">
@@ -96,7 +95,8 @@
                                     <select name="assign_to" id="assign_to" class="form-control select2">
                                         <option value="">---- Pilih Internship ----</option>
                                         @foreach ($pemohon as $p)
-                                        <option value="{{ $p->email }}">{{ $p->nama_pemohon }} - {{ $p->divisi->divisi }}</option>
+                                            <option value="{{ $p->email }}">{{ $p->nama_pemohon }} -
+                                                {{ $p->divisi->divisi }}</option>
                                         @endForeach
                                     </select>
                                 </div>
@@ -152,7 +152,7 @@
 
         var dt;
         $(document).ready(function() {
-            
+
             $('#user').select2({
                 dropdownParent: $('#modalData'),
                 width: '100%',
@@ -174,24 +174,24 @@
                         orderable: "false"
                     },
                     {
-                        data: "nomor_surat_penilaian",
-                        name: "nomor_surat_penilaian"
+                        data: "pekerjaan",
+                        name: "pekerjaan"
                     },
                     {
-                        data: "user.name",
-                        name: "user.name"
+                        data: "assign_to.nama_pemohon",
+                        name: "assign_to.nama_pemohon"
                     },
                     {
-                        data: "user.nim",
-                        name: "user.nim"
+                        data: "assign_to.divisi.divisi",
+                        name: "assign_to.divisi.divisi"
                     },
                     {
-                        data: "user.asal_sekolah",
-                        name: "user.asal_sekolah"
+                        data: "status",
+                        name: "status"
                     },
                     {
-                        data: "user.jurusan_detail.jurusan",
-                        name: "user.jurusan_detail.jurusan"
+                        data: "created_at",
+                        name: "created_at"
                     },
                     {
                         data: "action",
@@ -208,9 +208,9 @@
             $("#btn-add").on("click", function() {
                 $(".viewSerti").hide();
                 $(".createSerti").show();
-                
+
                 $('#key-form').val("")
-                $('#nomor_surat_penilaian').val('{{generateNomorSertifikat()}}')
+                $('#nomor_surat_penilaian').val('{{ generateNomorSertifikat() }}')
                 $('#user').val("")
                 $('#kedisiplinan').val("")
                 $('#tanggung_jawab').val("")
@@ -223,7 +223,7 @@
                 $("#modalDataLabel").text("Penilaian");
                 $("#modalData").modal("show");
             });
-                
+
             $("body").on("click", ".btn-view", function() {
                 $("#modalDataLabel").text("Detail Pengajuan");
                 formLoading("#form-proses", "#modal-body", true);
@@ -288,6 +288,55 @@
                             "Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
                         $.ajax({
                             url: "{{ route('admin.jobdesc.destroy') }}",
+                            type: "POST",
+                            data: {
+                                key: key
+                            },
+                            success: function(res) {
+                                notif("success", "fas fa-check", "Notifikasi Progress",
+                                    res.message, "done");
+                                dt.ajax.reload(null, false);
+                            },
+                            error: function(err, status, message) {
+                                response = err.responseJSON;
+                                message = (typeof response != "undefined") ? response
+                                    .message : message;
+                                notif("danger", "fas fa-exclamation",
+                                    "Notifikasi Error", message, "error");
+                            },
+                            complete: function() {
+                                setTimeout(() => {
+                                    loadNotif.close();
+                                }, 1000);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("body").on("click", ".btn-cancel", function() {
+                let key = $(this).data("key");
+                swal({
+                    title: "Apakah anda yakin?",
+                    text: "Batalkan penugasan?",
+                    icon: "warning",
+                    buttons: {
+                        cancel: {
+                            visible: true,
+                            text: 'Batal',
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            text: 'Lanjutkan',
+                            className: 'btn btn-primary'
+                        }
+                    }
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        notifLoading(
+                            "Jangan tinggalkan halaman ini sampai proses selesai !");
+                        $.ajax({
+                            url: "{{ route('admin.jobdesc.cancel') }}",
                             type: "POST",
                             data: {
                                 key: key

@@ -92,6 +92,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::post('/detail', 'JobDescController@detail')->name('detail');
         Route::post('/store', 'JobDescController@store')->name('store');
         Route::post('/destroy', 'JobDescController@destroy')->name('destroy');
+        Route::post('/destroy', 'JobDescController@destroy')->name('destroy');
     });
 
     // Route untuk Anak Internship
@@ -120,6 +121,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         // Jobdesc
         Route::group(['prefix' => 'jobdesc', 'as' => 'jobdesc.', 'middleware' => ['permission:2']], function () {
             Route::get('/', 'JobdescController@index')->name('index');
+            Route::post('/scopeData', 'JobdescController@scopeData')->name('scopeData');
+            Route::post('/update', 'JobdescController@update')->name('update');
+            Route::post('/detail', 'JobdescController@detail')->name('detail');
+            Route::post('/destroy', 'JobdescController@destroy')->name('destroy');
+            Route::post('/cancel', 'JobdescController@cancel')->name('cancel');
         });
         // Penilaian
         Route::group(['prefix' => 'penilaian', 'as' => 'penilaian.', 'middleware' => ['permission:2']], function () {
