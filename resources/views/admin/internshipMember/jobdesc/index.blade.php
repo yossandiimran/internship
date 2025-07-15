@@ -32,6 +32,11 @@
         .swal-text {
             text-align: center !important;
         }
+
+        img[data-toggle="modal"]:hover {
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
     </style>
 @endsection
 
@@ -51,10 +56,14 @@
                                         <th width="20px">
                                             <center>No</center>
                                         </th>
-                                        <th>Deskripsi Pekerjaan</th>
-                                        <th>Status</th>
-                                        <th>Waktu Dikerjakan</th>
-                                        <th>Selesai Dikerjakan</th>
+                                        <th width="50%">Deskripsi Pekerjaan</th>
+                                        <th>
+                                            <center>Mulai Dikerjakan</center>
+                                        </th>
+                                        <th>
+                                            <center>Selesai Dikerjakan</center>
+                                        </th>
+                                        <th width="30px">Status</th>
                                         <th width="80px">
                                             <center>Aksi</center>
                                         </th>
@@ -63,6 +72,16 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="imgModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" class="img-fluid" alt="Preview Gambar">
                 </div>
             </div>
         </div>
@@ -106,20 +125,104 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalKerjakan" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
+        data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-md" role="document" style="width: 80%">
+            <div class="modal-content">
+                <form id="form-kerjakan" method="post" action="{{ route('admin.internshipMember.jobdesc.kerjakan') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="key" class="form-control" id="key-pengerjaan">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3 class="modal-title" id="modalDataLabel">Jobdesc</h3>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="namaSerti">Detail Pekerjaan</label>
+                                    <textarea class="form-control" name="detail_pekerjaan" id="detail_pekerjaan" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="gambar_awal">Foto Mulai Pengerjaan</label>
+                                    <input type="file" name="gambar_awal" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">kembali</button>
+                        <button type="submit" class="btn btn-primary btn-md">Mulai Kerjakan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSelesaikan" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true"
+        data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-md" role="document" style="width: 80%">
+            <div class="modal-content">
+                <form id="form-selesaikan" method="post"
+                    action="{{ route('admin.internshipMember.jobdesc.selesaikan') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="key" class="form-control" id="key-selesaikan">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3 class="modal-title" id="modalDataLabel">Jobdesc</h3>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="detail_pekerjaan">Detail Pekerjaan</label>
+                                    <textarea class="form-control" name="detail_pekerjaan_selesai" id="detail_pekerjaan_selesai" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="waktu_mulai">Waktu Mulai Pengrjaan</label>
+                                    <input type="text" readonly id="waktu_mulai" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="gambar_akhir">Foto Selesai Pengerjaan</label>
+                                    <input type="file" name="gambar_akhir" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-md" data-dismiss="modal">kembali</button>
+                        <button type="submit" class="btn btn-primary btn-md">Selesaikan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js')
     <script>
         let anggotaIndex = 0;
 
-        $("#form-proses").ajaxForm({
+        $("#form-kerjakan").ajaxForm({
             beforeSend: function() {
-                formLoading("#form-proses", "#modal-body", true, true);
+                formLoading("#form-kerjakan", ".modal-body", true, true);
             },
             success: function(res) {
                 dt.ajax.reload(null, false);
                 notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
-                $("#modalData").modal("hide");
+                $("#modalKerjakan").modal("hide");
             },
             error: function(err, status, message) {
                 response = err.responseJSON;
@@ -135,20 +238,39 @@
                 notif("danger", "fas fa-exclamation", title, message, "error");
             },
             complete: function() {
-                formLoading("#form-proses", "#modal-body", false);
+                formLoading("#form-kerjakan", ".modal-body", false);
+            }
+        });
+
+        $("#form-selesaikan").ajaxForm({
+            beforeSend: function() {
+                formLoading("#form-selesaikan", ".modal-body", true, true);
+            },
+            success: function(res) {
+                dt.ajax.reload(null, false);
+                notif("success", "fas fa-check", "Notifikasi Progress", res.message, "done");
+                $("#modalSelesaikan").modal("hide");
+            },
+            error: function(err, status, message) {
+                response = err.responseJSON;
+                title = "Notifikasi Error";
+                message = (typeof response != "undefined") ? response.message : message;
+                if (message == "Error validation") {
+                    title = "Error Validasi";
+                    $.each(response.data, function(k, v) {
+                        message = v[0];
+                        return false;
+                    });
+                }
+                notif("danger", "fas fa-exclamation", title, message, "error");
+            },
+            complete: function() {
+                formLoading("#form-selesaikan", ".modal-body", false);
             }
         });
 
         var dt;
         $(document).ready(function() {
-
-            $('#user').select2({
-                dropdownParent: $('#modalData'),
-                width: '100%',
-                placeholder: 'Pilih Internship',
-                allowClear: true
-            });
-
             dt = $("#table-data").DataTable({
                 processing: true,
                 serverSide: true,
@@ -167,10 +289,6 @@
                         name: "pekerjaan"
                     },
                     {
-                        data: "status",
-                        name: "status"
-                    },
-                    {
                         data: "waktu_mulai",
                         name: "waktu_mulai"
                     },
@@ -179,39 +297,29 @@
                         name: "waktu_akhir"
                     },
                     {
+                        data: "status",
+                        name: "status"
+                    },
+                    {
                         data: "action",
                         name: "action",
                         searchable: "false",
                         orderable: "false"
                     }
                 ],
+                ordering: false,
                 order: [
                     [0, "asc"]
                 ],
             });
 
-            $("#btn-add").on("click", function() {
-                $(".viewSerti").hide();
-                $(".createSerti").show();
-
-                $('#key-form').val("")
-                $('#nomor_surat_penilaian').val('{{ generateNomorSertifikat() }}')
-                $('#user').val("")
-                $('#kedisiplinan').val("")
-                $('#tanggung_jawab').val("")
-                $('#kerapihan').val("")
-                $('#komunikasi').val("")
-                $('#pemahaman_pekerjaan').val("")
-                $('#manajemen_waktu').val("")
-                $('#kerja_sama').val("")
-                $('#kriteria').val("")
-                $("#modalDataLabel").text("Penilaian");
-                $("#modalData").modal("show");
+            $('body').on('click', 'img[data-toggle="modal"]', function() {
+                const imgUrl = $(this).data('img');
+                $('#modalImage').attr('src', imgUrl);
             });
 
-            $("body").on("click", ".btn-view", function() {
-                $("#modalDataLabel").text("Detail Pengajuan");
-                formLoading("#form-proses", "#modal-body", true);
+            $("body").on("click", ".btn-kerjakan", function() {
+                formLoading("#form-kerjakan", ".modal-body", true);
                 let key = $(this).data("key");
                 $.ajax({
                     url: "{{ route('admin.internshipMember.jobdesc.detail') }}",
@@ -221,21 +329,9 @@
                     },
                     success: function(res) {
                         console.log(res.data);
-                        $(".viewSerti").show();
-                        $(".createSerti").hide();
-                        $('#namaSerti').val(res.data.user.name)
-                        $('#key-form').val(key)
-                        $('#nomor_surat_penilaian').val(res.data.nomor_surat_penilaian)
-                        $('#user').val(res.data.user)
-                        $('#kedisiplinan').val(res.data.kedisiplinan)
-                        $('#tanggung_jawab').val(res.data.tanggung_jawab)
-                        $('#kerapihan').val(res.data.kerapihan)
-                        $('#komunikasi').val(res.data.komunikasi)
-                        $('#pemahaman_pekerjaan').val(res.data.pemahaman_pekerjaan)
-                        $('#manajemen_waktu').val(res.data.manahemen_waktu)
-                        $('#kerja_sama').val(res.data.kerja_sama)
-                        $('#kriteria').val(res.data.kriteria)
-                        formLoading("#form-prses", "#modal-body", false);
+                        $('#detail_pekerjaan').val(res.data.pekerjaan)
+                        $('#key-pengerjaan').val(key)
+                        formLoading("#form-kerjakan", ".modal-body", false);
                     },
                     error: function(err, status, message) {
                         response = err.responseJSON;
@@ -244,59 +340,39 @@
                             "error");
                     },
                     complete: function() {
-                        formLoading("#form-proses", "#modal-body", false);
+                        formLoading("#form-kerjakan", ".modal-body", false);
                     }
                 });
-                $("#modalData").modal("show");
+                $("#modalKerjakan").modal("show");
             });
 
-            $("body").on("click", ".btn-delete", function() {
+            $("body").on("click", ".btn-selesaikan", function() {
+                formLoading("#form-selesaikan", ".modal-body", true);
                 let key = $(this).data("key");
-                swal({
-                    title: "Apakah anda yakin?",
-                    text: "Data yang dihapus tidak akan bisa dikembalikan!",
-                    icon: "warning",
-                    buttons: {
-                        cancel: {
-                            visible: true,
-                            text: 'Batal',
-                            className: 'btn btn-danger'
-                        },
-                        confirm: {
-                            text: 'Yakin',
-                            className: 'btn btn-primary'
-                        }
-                    }
-                }).then((willDelete) => {
-                    if (willDelete) {
-                        notifLoading(
-                            "Jangan tinggalkan halaman ini sampai proses penghapusan selesai !");
-                        $.ajax({
-                            url: "{{ route('admin.internshipMember.jobdesc.destroy') }}",
-                            type: "POST",
-                            data: {
-                                key: key
-                            },
-                            success: function(res) {
-                                notif("success", "fas fa-check", "Notifikasi Progress",
-                                    res.message, "done");
-                                dt.ajax.reload(null, false);
-                            },
-                            error: function(err, status, message) {
-                                response = err.responseJSON;
-                                message = (typeof response != "undefined") ? response
-                                    .message : message;
-                                notif("danger", "fas fa-exclamation",
-                                    "Notifikasi Error", message, "error");
-                            },
-                            complete: function() {
-                                setTimeout(() => {
-                                    loadNotif.close();
-                                }, 1000);
-                            }
-                        });
+                $.ajax({
+                    url: "{{ route('admin.internshipMember.jobdesc.detail') }}",
+                    type: "POST",
+                    data: {
+                        key: key
+                    },
+                    success: function(res) {
+                        console.log(res.data);
+                        $('#detail_pekerjaan_selesai').val(res.data.pekerjaan)
+                        $('#waktu_mulai').val(res.data.waktu_mulai)
+                        $('#key-selesaikan').val(key)
+                        formLoading("#form-selesaikan", ".modal-body", false);
+                    },
+                    error: function(err, status, message) {
+                        response = err.responseJSON;
+                        message = (typeof response != "undefined") ? response.message : message;
+                        notif("danger", "fas fa-exclamation", "Notifikasi Error", message,
+                            "error");
+                    },
+                    complete: function() {
+                        formLoading("#form-selesaikan", ".modal-body", false);
                     }
                 });
+                $("#modalSelesaikan").modal("show");
             });
 
             $("body").on("click", ".btn-cancel", function() {

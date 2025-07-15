@@ -71,7 +71,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::group(['prefix' => 'peserta', 'as' => 'peserta.', 'middleware' => ['permission:1']], function () {
         Route::get('/', 'PesertaInternshipController@index')->name('index');
         Route::post('/scopeData', 'PesertaInternshipController@scopeData')->name('scopeData');
-        Route::get('/downloadSertifikat/{key}', 'PesertaInternshipController@downloadSertifikat')->name('downloadSertifikat');
+        Route::get('/downloadSertifikat/{key}/{surat_balasan}', 'PesertaInternshipController@downloadSertifikat')->name('downloadSertifikat');
         Route::post('/detail', 'PesertaInternshipController@detail')->name('detail');
     });
 
@@ -93,6 +93,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::post('/store', 'JobDescController@store')->name('store');
         Route::post('/destroy', 'JobDescController@destroy')->name('destroy');
         Route::post('/cancel', 'JobDescController@cancel')->name('cancel');
+        Route::post('/verifikasi', 'JobDescController@verifikasi')->name('verifikasi');
     });
 
     // Route untuk Anak Internship
@@ -125,6 +126,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
             Route::post('/update', 'JobdescController@update')->name('update');
             Route::post('/detail', 'JobdescController@detail')->name('detail');
             Route::post('/destroy', 'JobdescController@destroy')->name('destroy');
+            Route::post('/kerjakan', 'JobdescController@kerjakan')->name('kerjakan');
+            Route::post('/selesaikan', 'JobdescController@selesaikan')->name('selesaikan');
+            Route::post('/pending', 'JobdescController@pending')->name('pending');
             Route::post('/cancel', 'JobdescController@cancel')->name('cancel');
         });
         // Penilaian

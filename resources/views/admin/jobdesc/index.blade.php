@@ -48,7 +48,7 @@
                             Tambah Pekerjaan
                         </button>
                         <div class="table-responsive">
-                            <table id="table-data" class="table table-bordered table-hover" width="100%">
+                            <table id="table-data" class="table table-hover" width="100%">
                                 <thead>
                                     <tr>
                                         <th width="20px">
@@ -56,9 +56,14 @@
                                         </th>
                                         <th>Deskripsi Pekerjaan</th>
                                         <th>Ditugaskan kepada</th>
-                                        <th>Divisi</th>
+                                        <th width="20px">Divisi</th>
+                                        <th>
+                                            <center>Mulai Dikerjakan</center>
+                                        </th>
+                                        <th>
+                                            <center>Selesai Dikerjakan</center>
+                                        </th>
                                         <th>Status</th>
-                                        <th>Tanggal Ditugaskan</th>
                                         <th width="80px">
                                             <center>Aksi</center>
                                         </th>
@@ -186,12 +191,16 @@
                         name: "assign_to.divisi.divisi"
                     },
                     {
-                        data: "status",
-                        name: "status"
+                        data: "waktu_mulai",
+                        name: "waktu_mulai"
                     },
                     {
-                        data: "created_at",
-                        name: "created_at"
+                        data: "waktu_akhir",
+                        name: "waktu_akhir"
+                    },
+                    {
+                        data: "status",
+                        name: "status"
                     },
                     {
                         data: "action",
@@ -206,21 +215,9 @@
             });
 
             $("#btn-add").on("click", function() {
-                $(".viewSerti").hide();
-                $(".createSerti").show();
-
                 $('#key-form').val("")
-                $('#nomor_surat_penilaian').val('{{ generateNomorSertifikat() }}')
-                $('#user').val("")
-                $('#kedisiplinan').val("")
-                $('#tanggung_jawab').val("")
-                $('#kerapihan').val("")
-                $('#komunikasi').val("")
-                $('#pemahaman_pekerjaan').val("")
-                $('#manajemen_waktu').val("")
-                $('#kerja_sama').val("")
-                $('#kriteria').val("")
-                $("#modalDataLabel").text("Penilaian");
+                $('#assign_to').val("")
+                $('#pekerjaan').val("")
                 $("#modalData").modal("show");
             });
 
@@ -337,6 +334,55 @@
                             "Jangan tinggalkan halaman ini sampai proses selesai !");
                         $.ajax({
                             url: "{{ route('admin.jobdesc.cancel') }}",
+                            type: "POST",
+                            data: {
+                                key: key
+                            },
+                            success: function(res) {
+                                notif("success", "fas fa-check", "Notifikasi Progress",
+                                    res.message, "done");
+                                dt.ajax.reload(null, false);
+                            },
+                            error: function(err, status, message) {
+                                response = err.responseJSON;
+                                message = (typeof response != "undefined") ? response
+                                    .message : message;
+                                notif("danger", "fas fa-exclamation",
+                                    "Notifikasi Error", message, "error");
+                            },
+                            complete: function() {
+                                setTimeout(() => {
+                                    loadNotif.close();
+                                }, 1000);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("body").on("click", ".btn-selesai", function() {
+                let key = $(this).data("key");
+                swal({
+                    title: "Apakah anda yakin?",
+                    text: "Verifikasi Pekerjaan?",
+                    icon: "success",
+                    buttons: {
+                        cancel: {
+                            visible: true,
+                            text: 'Batal',
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            text: 'Lanjutkan',
+                            className: 'btn btn-primary'
+                        }
+                    }
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        notifLoading(
+                            "Jangan tinggalkan halaman ini sampai proses selesai !");
+                        $.ajax({
+                            url: "{{ route('admin.jobdesc.verifikasi') }}",
                             type: "POST",
                             data: {
                                 key: key

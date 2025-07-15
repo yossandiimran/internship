@@ -29,11 +29,11 @@ class PesertaInternshipController extends Controller
         ]);
     }
 
-    public function downloadSertifikat($keys)
+    public function downloadSertifikat($keys, $id_surat_balasan)
     {
         try {
             $key = str_replace("peserta", "", decrypt($keys));
-            $data = Penilaian::where('user', $key)->first();
+            $data = Penilaian::where('user', $key)->where('id_surat_balasan', $id_surat_balasan)->first();
 
             $pdf = Pdf::loadView('pdf.sertifikat', [
                 'data' => $data,
@@ -120,10 +120,8 @@ class PesertaInternshipController extends Controller
                 $html .= '<button class="btn btn-primary btn-sm btn-view" data-key="' . $key . '" title="Detail"><i class="fas fa-eye"></i></button>';
 
                 if ($val->header->statusDetail->id == 5) {
-                    $html .= '<button class="btn btn-warning btn-sm btn-absensi" data-key="' . $key . '" title="Absensi"><i class="fas fa-calendar"></i></button>';
                 } else if ($val->header->statusDetail->id == 6) {
-                    $html .= '<button class="btn btn-warning btn-sm btn-absensi" data-key="' . $key . '" title="Absensi"><i class="fas fa-calendar"></i></button>';                    
-                    $html .= '<a target="_blank" href="' . url('/admin/peserta/downloadSertifikat') . '/' . $key . '" class="btn btn-success btn-sm btn-download" title="Downlad Sertifikat"><i class="fas fa-download"></i></a>&nbsp;';
+                    $html .= '<a target="_blank" href="' . url('/admin/peserta/downloadSertifikat') . '/' . $key . '/'.$val->header->id.'" class="btn btn-success btn-sm btn-download" title="Downlad Sertifikat"><i class="fas fa-download"></i></a>&nbsp;';
                 }
                 $html .= '</div>';
                 return $html;
