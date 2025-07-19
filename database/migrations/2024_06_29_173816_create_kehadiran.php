@@ -16,7 +16,7 @@ class CreateKehadiran extends Migration
         Schema::create('kehadiran', function (Blueprint $table) {
             $table->id();
             $table->integer('id_user');
-            $table->timestamp('kehadiran')->nullable(); //Hadir, Izin, Sakit
+            $table->string('kehadiran')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamp('jam_masuk')->nullable();
             $table->string('foto_masuk')->nullable();

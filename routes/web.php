@@ -96,7 +96,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Route::post('/verifikasi', 'JobDescController@verifikasi')->name('verifikasi');
     });
 
-    // Route untuk Anak Internship
+    // Absensi / Kehadiran
+    Route::group(['prefix' => 'absensi', 'as' => 'absensi.', 'middleware' => ['permission:1']], function () {
+        Route::get('/', 'AbsensiController@index')->name('index');
+        Route::post('/scopeData', 'AbsensiController@scopeData')->name('scopeData');
+        Route::post('/detail', 'AbsensiController@detail')->name('detail');
+    });
+
+    // Route untuk Anak Internship ===========================================================================================================================================================================================
     Route::group(['prefix' => 'InternshipMember', 'namespace' => 'InternshipMember', 'as' => 'internshipMember.', 'middleware' => ['permission:2']], function () {
         // Profile
         Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => ['permission:2']], function () {
@@ -118,6 +125,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         // Absensi
         Route::group(['prefix' => 'absensi', 'as' => 'absensi.', 'middleware' => ['permission:2']], function () {
             Route::get('/', 'AbsensiController@index')->name('index');
+            Route::post('/scopeData', 'AbsensiController@scopeData')->name('scopeData');
+            Route::post('/absensi', 'AbsensiController@absensi')->name('absensi');
         });
         // Jobdesc
         Route::group(['prefix' => 'jobdesc', 'as' => 'jobdesc.', 'middleware' => ['permission:2']], function () {

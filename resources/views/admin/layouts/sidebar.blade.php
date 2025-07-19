@@ -48,10 +48,10 @@
                         <p>Jobdesc & Aktifitas</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->is('admin/laporan') || request()->is('admin/laporan/*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.permintaan.index') }}">
+                <li class="nav-item {{ request()->is('admin/absensi') || request()->is('admin/absensi/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.absensi.index') }}">
                         <i class="fas fa-file-pdf"></i>
-                        <p>Laporan Absensi</p>
+                        <p>Laporan Kehadiran</p>
                     </a>
                 </li>
                 <li class="nav-section">
