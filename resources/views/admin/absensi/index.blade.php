@@ -191,10 +191,11 @@
     </div>
 
     <div class="modal" id="modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
-         <div class="modal-dialog modal-lg" role="document" style="width: 45%; height:100%">
+        <div class="modal-dialog modal-lg" role="document" style="width: 45%; height:100%">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title fs-1" id="modalDetailLabel">Absensi : <span id="namaAbsen">Yossandi Imran P</span></h3>
+                    <h3 class="modal-title fs-1" id="modalDetailLabel">Absensi : <span id="namaAbsen">Yossandi Imran
+                            P</span></h3>
                 </div>
                 <div class="modal-body" style="height: 100%;">
                     <div class="container-fluid">
@@ -210,6 +211,9 @@
 @endsection
 
 @section('js')
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
         const divisiList = @json($divisi);
@@ -282,10 +286,89 @@
                     success: function(res) {
                         console.log(res.data.kehadiran);
                         $("#namaAbsen").text(res.data.nama_pemohon);
+
+                        var events = res.data.kehadiran.map(function(item) {
+                            let isTerlambat = false;
+                            if (item.jam_masuk) {
+                                const jam = parseInt(item.jam_masuk.split(':')[0], 10);
+                                const menit = parseInt(item.jam_masuk.split(':')[1],
+                                    10);
+                                if (jam > 8 || (jam === 8 && menit > 0)) {
+                                    isTerlambat = true;
+                                }
+                            }
+
+                            return {
+                                title: isTerlambat ? 'Terlambat' : 'Hadir',
+                                start: item.created_at.split('T')[0],
+                                color: isTerlambat ? 'orange' : '',
+                                extendedProps: {
+                                    foto_masuk: item.foto_masuk,
+                                    foto_keluar: item.foto_keluar,
+                                    detail: `Absen Masuk: ${item.jam_masuk ?? '-'}\nAbsen Keluar: ${item.jam_keluar ?? '-'}`,
+                                    keterangan: isTerlambat ? 'Terlambat' : 'Hadir',
+                                },
+                            };
+                        });
+
                         var calendarEl = document.getElementById('calendar');
+
                         var calendar = new FullCalendar.Calendar(calendarEl, {
                             initialView: 'dayGridMonth',
-                            // events: events
+                            events: events,
+                            eventDidMount: function(info) {
+                                const masuk = info.event.extendedProps.foto_masuk ?
+                                    `<img src="/storage/${info.event.extendedProps.foto_masuk}" style="max-width:200px; display:block;">` :
+                                    '-';
+                                const keluar = info.event.extendedProps
+                                    .foto_keluar ?
+                                    `<img src="/storage/${info.event.extendedProps.foto_keluar}" style="max-width:200px; display:block;">` :
+                                    '-';
+
+                                const detail = `
+                                    <b>${info.event.extendedProps.keterangan}</b><br>
+                                    <b>${info.event.extendedProps.detail.replace(/\n/g, '<br>')}</b><br>
+                                    <b>Foto Masuk:</b><br>${masuk}
+                                    <b>Foto Keluar:</b><br>${keluar}
+                                `;
+
+                                tippy(info.el, {
+                                    content: detail,
+                                    allowHTML: true,
+                                    placement: 'right',
+                                    theme: 'light-border',
+                                });
+                            },
+                            // eventClick: function(info) {
+                            //     const props = info.event.extendedProps;
+                            //     const fotoMasuk = props.foto_masuk;
+                            //     const fotoKeluar = props.foto_keluar;
+                            //     const detail = props.detail || '';
+
+                            //     let htmlContent =
+                            //         `<p>${detail.replace(/\n/g, '<br>')}</p>`;
+
+                            //     if (fotoMasuk) {
+                            //         htmlContent += `
+                            //         <p><strong>Foto Masuk:</strong><br>
+                            //         <img class="zoomable" src="${fotoMasuk}" alt="Foto Masuk" onclick="zoomImage('${fotoMasuk}')">
+                            //         </p>`;
+                            //     }
+
+                            //     if (fotoKeluar) {
+                            //         htmlContent += `
+                            //         <p><strong>Foto Keluar:</strong><br>
+                            //         <img class="zoomable" src="${fotoKeluar}" alt="Foto Keluar" onclick="zoomImage('${fotoKeluar}')">
+                            //         </p>`;
+                            //     }
+
+                            //     swal({
+                            //         title: info.event.title,
+                            //         text: htmlContent,
+                            //         width: 600,
+                            //         confirmButtonText: 'Tutup'
+                            //     });
+                            // }
                         });
 
                         $('#modalDetail').modal('show');
