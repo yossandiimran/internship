@@ -312,17 +312,18 @@
                         });
 
                         var calendarEl = document.getElementById('calendar');
+                        var storageBaseUrl = "{{ asset('storage') }}";
 
                         var calendar = new FullCalendar.Calendar(calendarEl, {
                             initialView: 'dayGridMonth',
                             events: events,
                             eventDidMount: function(info) {
                                 const masuk = info.event.extendedProps.foto_masuk ?
-                                    `<img src="{{asset('storage/'}}${info.event.extendedProps.foto_masuk}" style="max-width:200px; display:block;">` :
+                                    `<img src="${storageBaseUrl}/${info.event.extendedProps.foto_masuk}" style="max-width:200px; display:block;">` :
                                     '-';
                                 const keluar = info.event.extendedProps
                                     .foto_keluar ?
-                                    `<img src="{{asset('storage/'}}${info.event.extendedProps.foto_keluar}" style="max-width:200px; display:block;">` :
+                                    `<img src="${storageBaseUrl}/${info.event.extendedProps.foto_keluar}" style="max-width:200px; display:block;">` :
                                     '-';
 
                                 const detail = `
