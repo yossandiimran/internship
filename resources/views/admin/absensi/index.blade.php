@@ -300,7 +300,7 @@
 
                             return {
                                 title: isTerlambat ? 'Terlambat' : 'Hadir',
-                                start: item.created_at.split('T')[0],
+                                start: `${item.created_at.split('T')[0]}T08:00:00`,
                                 color: isTerlambat ? 'orange' : '',
                                 extendedProps: {
                                     foto_masuk: item.foto_masuk,
@@ -340,36 +340,6 @@
                                     theme: 'light-border',
                                 });
                             },
-                            // eventClick: function(info) {
-                            //     const props = info.event.extendedProps;
-                            //     const fotoMasuk = props.foto_masuk;
-                            //     const fotoKeluar = props.foto_keluar;
-                            //     const detail = props.detail || '';
-
-                            //     let htmlContent =
-                            //         `<p>${detail.replace(/\n/g, '<br>')}</p>`;
-
-                            //     if (fotoMasuk) {
-                            //         htmlContent += `
-                            //         <p><strong>Foto Masuk:</strong><br>
-                            //         <img class="zoomable" src="${fotoMasuk}" alt="Foto Masuk" onclick="zoomImage('${fotoMasuk}')">
-                            //         </p>`;
-                            //     }
-
-                            //     if (fotoKeluar) {
-                            //         htmlContent += `
-                            //         <p><strong>Foto Keluar:</strong><br>
-                            //         <img class="zoomable" src="${fotoKeluar}" alt="Foto Keluar" onclick="zoomImage('${fotoKeluar}')">
-                            //         </p>`;
-                            //     }
-
-                            //     swal({
-                            //         title: info.event.title,
-                            //         text: htmlContent,
-                            //         width: 600,
-                            //         confirmButtonText: 'Tutup'
-                            //     });
-                            // }
                         });
 
                         $('#modalDetail').modal('show');
