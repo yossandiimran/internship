@@ -318,11 +318,11 @@
                             events: events,
                             eventDidMount: function(info) {
                                 const masuk = info.event.extendedProps.foto_masuk ?
-                                    `<img src="/storage/${info.event.extendedProps.foto_masuk}" style="max-width:200px; display:block;">` :
+                                    `<img src="{{asset('storage/'}}${info.event.extendedProps.foto_masuk}" style="max-width:200px; display:block;">` :
                                     '-';
                                 const keluar = info.event.extendedProps
                                     .foto_keluar ?
-                                    `<img src="/storage/${info.event.extendedProps.foto_keluar}" style="max-width:200px; display:block;">` :
+                                    `<img src="{{asset('storage/'}}${info.event.extendedProps.foto_keluar}" style="max-width:200px; display:block;">` :
                                     '-';
 
                                 const detail = `

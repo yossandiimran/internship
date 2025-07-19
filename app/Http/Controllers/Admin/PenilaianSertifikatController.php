@@ -135,7 +135,7 @@ class PenilaianSertifikatController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
         } catch (\Throwable $err) {
-            dd($err);
+            // dd($err);
             return $this->sendError("Kesalahan sistem saat proses penyimpanan data, silahkan hubungi admin");
         }
     }
