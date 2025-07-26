@@ -300,7 +300,7 @@
 
                             return {
                                 title: isTerlambat ? 'Terlambat' : 'Hadir',
-                                start: new Date(item.created_at),
+                                start: Date(item.created_at),
                                 color: isTerlambat ? 'orange' : '',
                                 extendedProps: {
                                     foto_masuk: item.foto_masuk,
