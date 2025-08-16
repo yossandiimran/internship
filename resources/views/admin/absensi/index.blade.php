@@ -41,7 +41,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Kehadiran</h4>
+                        <h4 class="card-title">Kehadirans</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -290,8 +290,11 @@
                         var events = res.data.kehadiran.map(function(item) {
                             let isTerlambat = false;
                             if (item.jam_masuk) {
-                                const jam = parseInt(item.jam_masuk.split(':')[0], 10);
-                                const menit = parseInt(item.jam_masuk.split(':')[1],
+                                var jmm = item.jam_masuk.split(' ')[1];
+                                console.log("++++++++++++++++++awokawoka+++++++++++++++++++++++++++++++");
+                                console.log(jmm);
+                                const jam = parseInt(jmm.split(':')[0], 10);
+                                const menit = parseInt(jmm.split(':')[1],
                                     10);
                                 if (jam > 8 || (jam === 8 && menit > 0)) {
                                     isTerlambat = true;
@@ -300,7 +303,7 @@
 
                             return {
                                 title: isTerlambat ? 'Terlambat' : 'Hadir',
-                                start: Date(item.created_at),
+                                start:  `${item.created_at.split('T')[0]}T08:00:00`,
                                 color: isTerlambat ? 'orange' : '',
                                 extendedProps: {
                                     foto_masuk: item.foto_masuk,
