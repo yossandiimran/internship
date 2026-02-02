@@ -36,12 +36,12 @@
     @font-face /*perintah untuk memanggil font eksternal*/
     {
         font-family: 'OldEnglish'; /*memberikan nama bebas untuk font*/
-        src: url('{{ 'file://' . public_path('assets/font/Monotype.ttf') }}');/*memanggil file font eksternalnya di folder nexa*/
+        src: url('{{ public_path('assets/font/Monotype.ttf') }}');/*memanggil file font eksternalnya di folder nexa*/
     }
     @font-face
     {
         font-family: 'Algerian'; /*memberikan nama bebas untuk font*/
-        src: url('{{ 'file://' . public_path('assets/font/Algerian.ttf') }}');/*memanggil file font eksternalnya di folder nexa*/
+        src: url('{{ public_path('assets/font/Algerian.ttf') }}');/*memanggil file font eksternalnya di folder nexa*/
     }
 
     </style>
@@ -97,20 +97,44 @@ function formatDate($inputDate) {
         <!-- Kondisi Keterangan -->
        
 <div style="height: 100vh;">
-    <img src="{{ 'file://' . public_path('assets/bahanSertifikat/logo.png') }}" style="width: 1000px; margin: 7% 4.1%;  opacity: 0.2; z-index: -1; position: absolute;">
+    <?php
+    $bgLogoPath = public_path('assets/bahanSertifikat/logo.png');
+    $bgLogoBase64 = '';
+    if (file_exists($bgLogoPath)) {
+        $bgLogoData = file_get_contents($bgLogoPath);
+        $bgLogoBase64 = 'data:image/png;base64,' . base64_encode($bgLogoData);
+    }
+    ?>
+    <img src="{{ $bgLogoBase64 }}" style="width: 1000px; margin: 7% 4.1%;  opacity: 0.2; z-index: -1; position: absolute;">
     <div style="margin-top: -10px;">
         <table class="" style="width: 100%; align:center;">
                 <tr>
                     <input type="text" class="idUserKirim" id="idUserKirim" value="<?= $data->idUser ?>" style="opacity: .1; border: 0; position: absolute; margin-top: 60px; padding-left: 200px;">
                     <td style="width: 200px; text-align: center;">
-                        <img src="{{ 'file://' . public_path('assets/bahanSertifikat/sertifikat/industriLogo.png') }}" alt="" width="350">
+                        <?php
+                        $industriLogoPath = public_path('assets/bahanSertifikat/sertifikat/industriLogo.png');
+                        $industriLogoBase64 = '';
+                        if (file_exists($industriLogoPath)) {
+                            $industriLogoData = file_get_contents($industriLogoPath);
+                            $industriLogoBase64 = 'data:image/png;base64,' . base64_encode($industriLogoData);
+                        }
+                        ?>
+                        <img src="{{ $industriLogoBase64 }}" alt="" width="350">
                     </td>
 
                     <td style="" colspan="2" style="width: 400px; text-align: center;">
                         
                     </td>
                     <td style="width: 200px; text-align: center;">
-                        <img src="{{ 'file://' . public_path('assets/bahanSertifikat/sertifikat/LogoSertifikat.png') }}" alt="" width="250">
+                        <?php
+                        $logoSertifikatPath = public_path('assets/bahanSertifikat/sertifikat/LogoSertifikat.png');
+                        $logoSertifikatBase64 = '';
+                        if (file_exists($logoSertifikatPath)) {
+                            $logoSertifikatData = file_get_contents($logoSertifikatPath);
+                            $logoSertifikatBase64 = 'data:image/png;base64,' . base64_encode($logoSertifikatData);
+                        }
+                        ?>
+                        <img src="{{ $logoSertifikatBase64 }}" alt="" width="250">
                     </td>
                 </tr>
 
@@ -158,7 +182,15 @@ function formatDate($inputDate) {
                         </tr>
                         <tr >
                             <td style="">
-                            <img src="{{ 'file://' . public_path('assets/QrCode/Personalia.png') }}" alt="QR Code" width="80">
+                            <?php
+                            $qrPath = public_path('assets/QrCode/Personalia.png');
+                            $qrBase64 = '';
+                            if (file_exists($qrPath)) {
+                                $qrData = file_get_contents($qrPath);
+                                $qrBase64 = 'data:image/png;base64,' . base64_encode($qrData);
+                            }
+                            ?>
+                            <img src="{{ $qrBase64 }}" alt="QR Code" width="80">
                             </td>
                         </tr>
                         <tr>
@@ -184,7 +216,15 @@ function formatDate($inputDate) {
         <table class="" style="width: 100%; align:center;">
             <tr>
                 <td style="width: 200px; text-align: center;">
-                    <img src="{{ 'file://' . public_path('assets/bahanSertifikat/logo.png') }}" alt="" width="250">
+                    <?php
+                    $logoPath2 = public_path('assets/bahanSertifikat/logo.png');
+                    $logoBase64_2 = '';
+                    if (file_exists($logoPath2)) {
+                        $logoData2 = file_get_contents($logoPath2);
+                        $logoBase64_2 = 'data:image/png;base64,' . base64_encode($logoData2);
+                    }
+                    ?>
+                    <img src="{{ $logoBase64_2 }}" alt="" width="250">
                 </td>
 
                 <td style="" colspan="2" style="width: 400px; text-align: center;">
@@ -200,15 +240,38 @@ function formatDate($inputDate) {
                     </div>
                 </td>
                 <td style="width: 200px; text-align: center; z-index: 5;" class="logoRight">
-                    <img src="{{ 'file://' . public_path('assets/bahanSertifikat/akhlak.png') }}" alt="" width="150">
+                    <?php
+                    $akhlakPath = public_path('assets/bahanSertifikat/akhlak.png');
+                    $akhlakBase64 = '';
+                    if (file_exists($akhlakPath)) {
+                        $akhlakData = file_get_contents($akhlakPath);
+                        $akhlakBase64 = 'data:image/png;base64,' . base64_encode($akhlakData);
+                    }
+                    ?>
+                    <img src="{{ $akhlakBase64 }}" alt="" width="150">
                 </td>
             </tr>
         </table>
-            <div id="backgroundKanan" style=" position: absolute; right: 0; top: 0; z-index: -5;" class="bgTopRight">
-            <img src="{{ 'file://' . public_path('assets/bahanSertifikat/kanan.png') }}" alt="" width="500" height="500">
+        <?php
+        $kananPath = public_path('assets/bahanSertifikat/kanan.png');
+        $kananBase64 = '';
+        if (file_exists($kananPath)) {
+            $kananData = file_get_contents($kananPath);
+            $kananBase64 = 'data:image/png;base64,' . base64_encode($kananData);
+        }
+        
+        $kiriPath = public_path('assets/bahanSertifikat/kiri.png');
+        $kiriBase64 = '';
+        if (file_exists($kiriPath)) {
+            $kiriData = file_get_contents($kiriPath);
+            $kiriBase64 = 'data:image/png;base64,' . base64_encode($kiriData);
+        }
+        ?>
+        <div id="backgroundKanan" style=" position: absolute; right: 0; top: 0; z-index: -5;" class="bgTopRight">
+            <img src="{{ $kananBase64 }}" alt="" width="500" height="500">
         </div>
         <div id="backgroundKiri" style="margin-top: 180px; position: absolute; left: 0; z-index: -1;">
-            <img src="{{ 'file://' . public_path('assets/bahanSertifikat/kiri.png') }}" alt="" width="500" height="420">
+            <img src="{{ $kiriBase64 }}" alt="" width="500" height="420">
         </div>
 
         <!-- Biodata -->
@@ -432,7 +495,15 @@ function formatDate($inputDate) {
                     </tr>
                     <tr >
                         <td style="padding-right: 155px;">
-                            <img src="{{ 'file://' . public_path('assets/QrCode/Personalia.png') }}" alt="QR Code" width="80">
+                            <?php
+                            $qrPath2 = public_path('assets/QrCode/Personalia.png');
+                            $qrBase64_2 = '';
+                            if (file_exists($qrPath2)) {
+                                $qrData2 = file_get_contents($qrPath2);
+                                $qrBase64_2 = 'data:image/png;base64,' . base64_encode($qrData2);
+                            }
+                            ?>
+                            <img src="{{ $qrBase64_2 }}" alt="QR Code" width="80">
                         </td>
                     </tr>
                     <tr>

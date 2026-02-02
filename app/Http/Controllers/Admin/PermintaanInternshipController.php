@@ -11,6 +11,7 @@ use App\Models\SuratBalasanPemohon;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Encryption\DecryptException;
 use DataTables;
 use Pdf;
 use Validator;
@@ -29,14 +30,46 @@ class PermintaanInternshipController extends Controller
 
     public function downloadSuratBalasan($keys)
     {
-        $key = str_replace("surat", "", decrypt($keys));
-        $data = SuratBalasan::with(['statusDetail', 'pemohonUtama', 'pemohon'])->findOrFail($key);
+        // decrypt safely
+        try {
+            $decrypted = decrypt($keys);
+            $key = str_replace("surat", "", $decrypted);
+        } catch (DecryptException $e) {
+            return $this->sendError("Tautan tidak valid atau sudah kedaluwarsa.");
+        } catch (\Throwable $e) {
+            return $this->sendError("Kesalahan saat memproses permintaan.");
+        }
 
-        $pdf = Pdf::loadView('pdf.suratBalasan', compact('data'))->setPaper('A4', 'portrait');
+        try {
+            $data = SuratBalasan::with(['statusDetail', 'pemohonUtama', 'pemohon'])->findOrFail($key);
 
-        $filename = 'Surat-Balasan-' . $data->nomor_surat_balasan . '.pdf';
+            // allow more time for PDF rendering
+            if (!ini_get('max_execution_time') || (int)ini_get('max_execution_time') < 120) {
+                ini_set('max_execution_time', 300);
+            }
+            set_time_limit(300);
 
-        return $pdf->stream($filename);
+            $pdf = Pdf::loadView('pdf.suratBalasan', compact('data'))->setPaper('A4', 'portrait');
+
+            try {
+                $pdf->setOptions([
+                    'isRemoteEnabled' => false,
+                    'isHtml5ParserEnabled' => true,
+                ]);
+            } catch (\Throwable $e) {
+                // ignore if library doesn't support setOptions
+            }
+
+            $safeNumber = preg_replace('/[^A-Za-z0-9\-_.]/', '_', $data->nomor_surat_balasan ?? 'unknown');
+            $filename = 'Surat-Balasan-' . $safeNumber . '.pdf';
+
+            return $pdf->stream($filename);
+        } catch (ModelNotFoundException $e) {
+            return $this->sendError("Data tidak dapat ditemukan.");
+        } catch (\Throwable $e) {
+            \Log::error('downloadSuratBalasan error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return $this->sendError("Kesalahan sistem saat menghasilkan surat.");
+        }
     }
 
     /**

@@ -19,7 +19,15 @@
         <div style=" margin: auto;
     width: 50%;
     padding: 10px;">
-            <img src="{{ asset('assets/bahanSertifikat') }}/logoSuratPenerimaan.png" alt="Logo"
+            <?php
+            $logoPath = public_path('assets/bahanSertifikat/logoSuratPenerimaan.png');
+            $logoBase64 = '';
+            if (file_exists($logoPath)) {
+                $logoData = file_get_contents($logoPath);
+                $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+            }
+            ?>
+            <img src="{{ $logoBase64 }}" alt="Logo"
                 style=" display: block; margin-left: 50px; width: 250px; height: 90px;">
 
         </div>
@@ -163,7 +171,18 @@
                         </tr>
                         <tr>
                             <td>
-                                <img src="{{ asset('storage') }}/{{$data->ttd_digital}}" alt="" srcset="">
+                                <?php
+                                $ttdPath = public_path('storage/' . $data->ttd_digital);
+                                $ttdBase64 = '';
+                                if (file_exists($ttdPath) && $data->ttd_digital) {
+                                    $ttdData = file_get_contents($ttdPath);
+                                    $mimeType = mime_content_type($ttdPath);
+                                    $ttdBase64 = 'data:' . $mimeType . ';base64,' . base64_encode($ttdData);
+                                }
+                                ?>
+                                @if($ttdBase64)
+                                <img src="{{ $ttdBase64 }}" alt="" style="max-width: 150px; max-height: 100px;">
+                                @endif
                             </td>
                         </tr>
                         <tr>
