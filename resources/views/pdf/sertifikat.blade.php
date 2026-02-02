@@ -36,12 +36,12 @@
     @font-face /*perintah untuk memanggil font eksternal*/
     {
         font-family: 'OldEnglish'; /*memberikan nama bebas untuk font*/
-        src: url('../assets/font/Monotype.ttf');/*memanggil file font eksternalnya di folder nexa*/
+        src: url('{{ 'file://' . public_path('assets/font/Monotype.ttf') }}');/*memanggil file font eksternalnya di folder nexa*/
     }
     @font-face
     {
         font-family: 'Algerian'; /*memberikan nama bebas untuk font*/
-        src: url('../assets/font/Algerian.ttf');/*memanggil file font eksternalnya di folder nexa*/
+        src: url('{{ 'file://' . public_path('assets/font/Algerian.ttf') }}');/*memanggil file font eksternalnya di folder nexa*/
     }
 
     </style>
@@ -97,20 +97,20 @@ function formatDate($inputDate) {
         <!-- Kondisi Keterangan -->
        
 <div style="height: 100vh;">
-    <img src="{{ asset('assets/bahanSertifikat') }}/logo.png" style="width: 1000px; margin: 7% 4.1%;  opacity: 0.2; z-index: -1; position: absolute;">
+    <img src="{{ 'file://' . public_path('assets/bahanSertifikat/logo.png') }}" style="width: 1000px; margin: 7% 4.1%;  opacity: 0.2; z-index: -1; position: absolute;">
     <div style="margin-top: -10px;">
         <table class="" style="width: 100%; align:center;">
                 <tr>
                     <input type="text" class="idUserKirim" id="idUserKirim" value="<?= $data->idUser ?>" style="opacity: .1; border: 0; position: absolute; margin-top: 60px; padding-left: 200px;">
                     <td style="width: 200px; text-align: center;">
-                        <img src="{{ asset('assets/bahanSertifikat') }}/sertifikat/industriLogo.png" alt="" width="350">
+                        <img src="{{ 'file://' . public_path('assets/bahanSertifikat/sertifikat/industriLogo.png') }}" alt="" width="350">
                     </td>
 
                     <td style="" colspan="2" style="width: 400px; text-align: center;">
                         
                     </td>
                     <td style="width: 200px; text-align: center;">
-                        <img src="{{ asset('assets/bahanSertifikat') }}/sertifikat/LogoSertifikat.png" alt="" width="250">
+                        <img src="{{ 'file://' . public_path('assets/bahanSertifikat/sertifikat/LogoSertifikat.png') }}" alt="" width="250">
                     </td>
                 </tr>
 
@@ -158,7 +158,7 @@ function formatDate($inputDate) {
                         </tr>
                         <tr >
                             <td style="">
-                            <img src="{{ asset('assets/QrCode') }}/Personalia.png" alt="QR Code" width="80">
+                            <img src="{{ 'file://' . public_path('assets/QrCode/Personalia.png') }}" alt="QR Code" width="80">
                             </td>
                         </tr>
                         <tr>
@@ -184,7 +184,7 @@ function formatDate($inputDate) {
         <table class="" style="width: 100%; align:center;">
             <tr>
                 <td style="width: 200px; text-align: center;">
-                    <img src="{{ asset('assets/bahanSertifikat') }}/logo.png" alt="" width="250">
+                    <img src="{{ 'file://' . public_path('assets/bahanSertifikat/logo.png') }}" alt="" width="250">
                 </td>
 
                 <td style="" colspan="2" style="width: 400px; text-align: center;">
@@ -200,15 +200,15 @@ function formatDate($inputDate) {
                     </div>
                 </td>
                 <td style="width: 200px; text-align: center; z-index: 5;" class="logoRight">
-                    <img src="{{ asset('assets/bahanSertifikat') }}/akhlak.png" alt="" width="150">
+                    <img src="{{ 'file://' . public_path('assets/bahanSertifikat/akhlak.png') }}" alt="" width="150">
                 </td>
             </tr>
         </table>
-        <div id="backgroundKanan" style=" position: absolute; right: 0; top: 0; z-index: -5;" class="bgTopRight">
-            <img src="{{ asset('assets/bahanSertifikat') }}/kanan.png" alt="" width="500" height="500">
+            <div id="backgroundKanan" style=" position: absolute; right: 0; top: 0; z-index: -5;" class="bgTopRight">
+            <img src="{{ 'file://' . public_path('assets/bahanSertifikat/kanan.png') }}" alt="" width="500" height="500">
         </div>
         <div id="backgroundKiri" style="margin-top: 180px; position: absolute; left: 0; z-index: -1;">
-            <img src="{{ asset('assets/bahanSertifikat') }}/kiri.png" alt="" width="500" height="420">
+            <img src="{{ 'file://' . public_path('assets/bahanSertifikat/kiri.png') }}" alt="" width="500" height="420">
         </div>
 
         <!-- Biodata -->
@@ -432,7 +432,7 @@ function formatDate($inputDate) {
                     </tr>
                     <tr >
                         <td style="padding-right: 155px;">
-                        <img src="{{ asset('assets/QrCode') }}/Personalia.png" alt="QR Code" width="80">
+                            <img src="{{ 'file://' . public_path('assets/QrCode/Personalia.png') }}" alt="QR Code" width="80">
                         </td>
                     </tr>
                     <tr>

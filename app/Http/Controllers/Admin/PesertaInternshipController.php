@@ -9,9 +9,9 @@ use App\Models\MasterDivisi;
 use App\Models\MasterJurusan;
 use App\Models\SuratBalasan;
 use App\Models\SuratBalasanPemohon;
-use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Encryption\DecryptException;
 use DataTables;
 use Pdf;
 use DB;
@@ -31,19 +31,50 @@ class PesertaInternshipController extends Controller
 
     public function downloadSertifikat($keys, $id_surat_balasan)
     {
+        // decrypt param safely
         try {
-            $key = str_replace("peserta", "", decrypt($keys));
-            $data = Penilaian::where('user', $key)->where('id_surat_balasan', $id_surat_balasan)->first();
+            $decrypted = decrypt($keys);
+            $key = str_replace("peserta", "", $decrypted);
+        } catch (DecryptException $e) {
+            return $this->sendError("Tautan tidak valid atau sudah kedaluwarsa.");
+        } catch (\Throwable $e) {
+            return $this->sendError("Kesalahan saat memproses permintaan.");
+        }
+
+        try {
+            $data = Penilaian::where('user', $key)
+                ->where('id_surat_balasan', $id_surat_balasan)
+                ->firstOrFail();
+
+            // give more time for PDF generation (temporary mitigation)
+            if (!ini_get('max_execution_time') || (int)ini_get('max_execution_time') < 120) {
+                ini_set('max_execution_time', 300);
+            }
+            set_time_limit(300);
 
             $pdf = Pdf::loadView('pdf.sertifikat', [
                 'data' => $data,
             ])->setPaper('A4', 'landscape');
 
-            $filename = 'Sertifikat-' . $data->nomor_surat_balasan . '.pdf';
+            // prevent DOMPDF from attempting remote http/https fetches
+            try {
+                $pdf->setOptions([
+                    'isRemoteEnabled' => false,
+                    'isHtml5ParserEnabled' => true,
+                ]);
+            } catch (\Throwable $e) {
+                // not critical, continue
+            }
+
+            $safeNumber = preg_replace('/[^A-Za-z0-9\-_.]/', '_', $data->nomor_surat_balasan ?? 'unknown');
+            $filename = 'Sertifikat-' . $safeNumber . '.pdf';
 
             return $pdf->stream($filename);
         } catch (ModelNotFoundException $e) {
             return $this->sendError("Data tidak dapat ditemukan.");
+        } catch (\Throwable $e) {
+            \Log::error('downloadSertifikat error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return $this->sendError("Kesalahan sistem saat menghasilkan sertifikat.");
         }
     }
 
